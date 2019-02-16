@@ -8,7 +8,7 @@
     "dev": "concurrently \"onchange ./src/css/*.css -- yarn minify-css\" \"yarn dev-server\"",
     "minify-css": "cat ./src/css/styles.css | uglifycss > ./dist/styles.css",
     "release": "webpack --config ./webpack.prod.js --mode production",
-    "test": "echo \"No test specified\" && exit 0"
+    "lint": "./node_modules/.bin/eslint --ext .js src"
   },
   "repository": {
     "type": "git",
@@ -43,7 +43,11 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "7.0.0",
     "@babel/plugin-transform-runtime": "7.2.0",
+    "babel-eslint": "8.0.3",
     "dexie": "2.0.4",
+    "eslint": "4.12.1",
+    "eslint-plugin-react": "7.12.4",
+    "prop-types": "15.7.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-redux": "6.0.0",

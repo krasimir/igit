@@ -1,0 +1,3 @@
+export const NO_TOKEN = 'NO_TOKEN';
+export const VERIFY_ACCESS_TOKEN = 'VERIFY_ACCESS_TOKEN';
+export const STORE_ACCESS_TOKEN = 'STORE_ACCESS_TOKEN';
