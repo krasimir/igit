@@ -15,11 +15,11 @@ body, html {
 a {
   color: #000;
   background: #e2e2e2;
+  text-decoration: none;
 }
 a:hover {
   background: #000;
   color: #fff;
-  text-decoration: none;
 }
 input[type="text"] {
   width: 100%;
@@ -32,6 +32,14 @@ input[type="text"] {
 p {
   margin: 0 0 1em 0;
   padding: 0;
+}
+.error {
+  padding: .5em 1em;
+  color: red;
+  border-radius: 4px;
+  font-size: .8em;
+  background: #ffebeb;
+  border: solid 1px red;
 }
 
 /* ---------------------------------------- generic */

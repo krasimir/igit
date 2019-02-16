@@ -18,7 +18,7 @@ class App extends React.Component {
     }
 
     return (
-      <p>He</p>
+      <p>Welcome, { profile.name }</p>
     );
   }
 }
