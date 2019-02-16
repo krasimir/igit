@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
-const title = 'Hello2';
+import store from './redux/store';
+import App from './components/App.js'
 
 ReactDOM.render(
-  <div>{title}</div>,
+  <Provider store={store}><App /></Provider>,
   document.getElementById('app')
 );
 
