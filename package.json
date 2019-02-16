@@ -4,7 +4,9 @@
   "description": "An app for managing GitHub pull requests",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config ./webpack.config.js --mode development",
+    "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development",
+    "dev": "concurrently \"onchange ./src/css/*.css -- yarn minify-css\" \"yarn dev-server\"",
+    "minify-css": "cat ./src/css/styles.css | uglifycss > ./dist/styles.css",
     "release": "webpack --config ./webpack.prod.js --mode production",
     "test": "echo \"No test specified\" && exit 0"
   },
@@ -32,11 +34,14 @@
     "react-hot-loader": "^4.3.11",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "uglifyjs-webpack-plugin": "2.1.1",
+    "uglifycss": "0.0.29",
+    "onchange": "5.2.0",
+    "concurrently": "4.0.1"
   },
   "dependencies": {
     "react": "^16.6.0",
-    "react-dom": "^16.6.0",
-    "uglifyjs-webpack-plugin": "2.1.1"
+    "react-dom": "^16.6.0"
   }
 }
