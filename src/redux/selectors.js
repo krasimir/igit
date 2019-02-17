@@ -6,3 +6,6 @@ export const getErrorByType = function (t) {
     return state.errors.find(({ type }) => type === t);
   };
 };
+export const getRepos = function (state) {
+  return state.repos;
+};

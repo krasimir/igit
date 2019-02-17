@@ -4,10 +4,9 @@ import { call, put, takeLatest, fork } from 'redux-saga/effects';
 import createDatabase from '../db';
 import { noToken, logError, setProfile, clearError } from './actions';
 import { VERIFY_ACCESS_TOKEN, ERROR_VERIFICATION_FAILED } from './constants';
-import createAPI from '../api';
+import api from '../api';
 
-const db = createDatabase();
-const api = createAPI();
+export const db = createDatabase();
 
 function * watchForVerificationOfAccessToken() {
   yield takeLatest(VERIFY_ACCESS_TOKEN, function * ({ token }) {
@@ -33,6 +32,7 @@ export default function * rootSaga() {
   if (profile === null) {
     yield put(noToken());
   } else {
+    api.setToken(profile.token);
     yield put(setProfile(profile));
   }
 }

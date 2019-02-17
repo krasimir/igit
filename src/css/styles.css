@@ -29,6 +29,15 @@ input[type="text"] {
   outline: none;
   border-radius: 4px;
 }
+a.default-link {
+  background: none;
+  text-decoration: underline;
+  font-weight: bold;
+}
+a.default-link:hover {
+  background: none;
+  color: #4a4a4a;
+}
 p {
   margin: 0 0 1em 0;
   padding: 0;
@@ -41,9 +50,12 @@ p {
   background: #ffebeb;
   border: solid 1px red;
 }
-
-/* ---------------------------------------- generic */
-
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
 .tac {
   text-align: center;
 }
@@ -65,10 +77,40 @@ h1, h2, h3, h4, h5 {
   margin: 0;
   padding: 0;
 }
+h1 {
+  margin-bottom: 1em;
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li {
+  margin: 0;
+  padding: 0;
+}
+.mt1 {
+  margin-top: 1em;
+}
+.mt2 {
+  margin-top: 2em;
+}
+.mt3 {
+  margin-top: 3em;
+}
 
 /* ---------------------------------------- loading */
 .loading {
   padding-top: 2em;
+}
+.loading p {
+  margin: 0;
+  padding: 0;
+  font-size: .9em;
+}
+.loading img {
+  display: block;
+  margin: 0 auto 1em auto;
 }
 
 /* ---------------------------------------- authorize */
@@ -80,10 +122,140 @@ h1, h2, h3, h4, h5 {
   width: 100px;
   margin: 0 auto 2em auto;
 }
-.authorize h1 {
-  margin-bottom: 1em;
-}
 .authorize input {
   display: block;
   margin-bottom: 3em;
 }
+
+/* ---------------------------------------- authorize */
+header {
+  padding: 1em;
+  border-bottom: solid 1px #e2e2e2;
+  line-height: 0;
+}
+header::after {
+  display: block;
+  content: " ";
+  clear: both;
+}
+header .logo {
+  float: left;
+}
+header .separator {
+  float: left;
+  width: 2px;
+  height: 32px;
+  background: #e2e2e2;
+  margin: 0 1em;
+}
+header a {
+  display: block;
+  background: none;
+  line-height: 0;
+  font-size: .9em;
+}
+header a span {
+  display: block;
+  padding: 6px;
+  line-height: 1.2em;
+}
+header .profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+}
+
+/* ---------------------------------------- repos */
+.repos {
+  padding: 3em 1em;
+}
+.repo {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  column-gap: .5em;
+  padding: 1em;
+  border: solid 1px #e2e2e2;
+  border-radius: 4px;
+}
+.repo + .repo {
+  margin-top: .5em;
+}
+.repo p {
+  margin: 0;
+  padding: 0;
+}
+.repo svg {
+  margin-right: 6px;
+  transform: translateY(3px);
+  -webkit-transform: translateY(3px);
+  opacity: .2;
+}
+.subscribe {
+  background: none;
+  cursor: pointer;
+}
+.subscribe:hover {
+  background: none;
+  color: black;
+  font-weight: bold;
+}
+.subscribe:hover svg {
+  opacity: 1;
+}
+
+/* ---------------------------------------- vendor */
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: black;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
+

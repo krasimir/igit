@@ -2,7 +2,8 @@ import { NO_TOKEN, LOG_ERROR, CLEAR_ERROR, SET_PROFILE } from './constants';
 
 const initialState = {
   profile: null,
-  errors: []
+  errors: [],
+  repos: []
 };
 
 export default function (state = initialState, action) {

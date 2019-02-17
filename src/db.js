@@ -6,7 +6,8 @@ export default function db() {
   const db = new Dexie('GitHorn');
 
   db.version(1).stores({
-    profile: '++id, token, name, avatar'
+    profile: '++id, token, name, avatar',
+    repos: '++id, name'
   });
 
   api.getProfile = async function () {
@@ -19,6 +20,9 @@ export default function db() {
   };
   api.setProfile = async function (token, name, avatar) {
     db.profile.add({ token, name, avatar });
+  };
+  api.getRepos = function () {
+    return db.repos.toArray();
   };
 
   return api;
