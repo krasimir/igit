@@ -1,8 +1,7 @@
-import { NO_TOKEN, LOG_ERROR, CLEAR_ERROR, SET_PROFILE } from './constants';
+import { NO_TOKEN, SET_PROFILE, SET_SUBSCRIBED_REPOS } from './constants';
 
 const initialState = {
   profile: null,
-  errors: [],
   repos: []
 };
 
@@ -13,23 +12,15 @@ export default function (state = initialState, action) {
         ...state,
         profile: NO_TOKEN
       };
-    case LOG_ERROR:
-      return {
-        ...state,
-        errors: [
-          ...state.errors,
-          { type: action.reason }
-        ]
-      };
-    case CLEAR_ERROR:
-      return {
-        ...state,
-        errors: state.errors.filter(({ type }) => type !== action.reason)
-      };
     case SET_PROFILE:
       return {
         ...state,
         profile: action.profile
+      };
+    case SET_SUBSCRIBED_REPOS:
+      return {
+        ...state,
+        repos: action.repos
       };
   }
   return state;

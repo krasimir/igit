@@ -1,9 +1,17 @@
-const USE_MOCKS = true;
+/* eslint-disable camelcase */
+import db from './db';
+import { NO_TOKEN } from './constants';
+
+const USE_MOCKS = false;
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
   const api = {};
+
   let token = null;
+  let profile = null;
+
+  /* ---------------- helpers ---------------- */
 
   const getHeaders = () => ({
     'Content-Type': 'application/json',
@@ -26,10 +34,30 @@ function createAPI() {
     return res.json();
   };
 
+  /* ---------------- methods ---------------- */
+
+  api.getProfile = async () => {
+    if (profile === null) {
+      const fromDB = await db.getProfile();
+
+      if (fromDB === null) {
+        return NO_TOKEN;
+      }
+      return fromDB;
+    }
+    return profile;
+  };
   api.setToken = (t) => (token = t);
   api.verify = async function () {
-    if (USE_MOCKS) return requestMock('user.json');
-    return request('/user');
+    if (USE_MOCKS) return (profile = await requestMock('user.json'));
+    const { name, avatar_url } = await request('/user');
+
+    db.setProfile(profile = {
+      name,
+      avatar: avatar_url,
+      token
+    });
+    return profile;
   };
   api.getRepos = function () {
     if (USE_MOCKS) return requestMock('user.repos.json');

@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Context from '../context';
+import Context from '../../context';
 
 export default class FetchRepos extends React.Component {
   constructor(props) {

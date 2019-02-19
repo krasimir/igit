@@ -1,7 +1,0 @@
-export const NO_TOKEN = 'NO_TOKEN';
-export const VERIFY_ACCESS_TOKEN = 'VERIFY_ACCESS_TOKEN';
-export const SET_PROFILE = 'SET_PROFILE';
-export const LOG_ERROR = 'LOG_ERROR';
-export const CLEAR_ERROR = 'CLEAR_ERROR';
-
-export const ERROR_VERIFICATION_FAILED = 'ERROR_VERIFICATION_FAILED';
