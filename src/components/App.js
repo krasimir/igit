@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-dom';
 
@@ -6,17 +7,15 @@ import Authorize from './Authorize';
 import Repos from './Repos';
 import Header from './Header';
 import { NO_TOKEN } from '../constants';
-import { useProcess, setInitialState } from '../react-process';
-import '../process/subscribers';
+import { useState } from '../react-process';
+import '../process/effects';
+import '../process/reducers';
 import { getProfile } from '../process/actions';
 
-setInitialState({
-  profile: null
-});
-
 export default function App() {
-  const [ state, dispatch ] = useProcess();
-  const profile = state.profile;
+  const [ profile, dispatch ] = useState('profile', null);
+
+  console.log(profile);
 
   useEffect(() => {
     dispatch(getProfile());

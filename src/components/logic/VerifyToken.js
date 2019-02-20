@@ -1,11 +1,11 @@
 /* eslint-disable max-len, camelcase */
-import { useState } from 'react';
+import { useState } from '../../react-process';
 import PropTypes from 'prop-types';
 
 import withAPI from './withAPI';
 
 function VerifyToken({ children, api }) {
-  const [ { error, verifying }, setState ] = useState({ error: null, verifying: false });
+  const [ { error, verifying }, setState ] = useState('verification', { error: null, verifying: false });
 
   const verify = async (token) => {
     setState({ verifying: true, error: null });
@@ -22,8 +22,7 @@ function VerifyToken({ children, api }) {
 }
 
 VerifyToken.propTypes = {
-  children: PropTypes.func.isRequired,
-  api: PropTypes.object.isRequired
+  children: PropTypes.func.isRequired
 };
 
-export default withAPI(VerifyToken);
+export default VerifyToken;

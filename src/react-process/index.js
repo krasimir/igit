@@ -1,53 +1,65 @@
-import { useState, useEffect } from 'react';
+import { useState as useStateReact, useEffect as userEffectReact } from 'react';
 
 const store = {
   state: {},
-  updaters: [],
-  reducers: [],
-  subscribers: {},
+  updaters: {},
+  reducers: {},
+  effects: {},
   setInitialState(value) {
     this.state = value;
   },
-  setState(value) {
-    this.state = value;
-    this.updaters.forEach(u => u(value));
-  },
-  dispatch(action) {
-    console.log('-->', JSON.stringify(action));
-    if (this.subscribers[action.type]) {
-      this.subscribers[action.type].forEach(s => s(action));
+  dispatch(slice, args) {
+    console.log('-->', JSON.stringify(args));
+    if (this.effects[slice]) {
+      this.effects[slice].forEach(effect => effect(
+        (...dispatchArgs) => this.dispatch(slice, dispatchArgs),
+        ...args
+      ));
     }
-    this.setState(
-      this.reducers.reduce((newState, reducer) => {
-        newState = reducer(newState, action);
+    if (this.reducers[slice]) {
+      this.state[slice] = this.reducers[slice].reduce((newState, reducer) => {
+        newState = reducer(newState, ...args);
         return newState;
-      }, this.state)
-    );
-  },
-  addReducer(reducer) {
-    this.reducers.push(reducer);
-  },
-  subscribe(actionType, subscriber) {
-    if (!this.subscribers[actionType]) this.subscribers[actionType] = [];
-    this.subscribers[actionType].push(subscriber);
+      }, this.state[slice]);
+      if (this.updaters[slice]) {
+        this.updaters[slice].forEach(u => u(this.state[slice]));
+      }
+    }
   }
 };
 
-export const dispatch = store.dispatch.bind(store);
-export const addReducer = store.addReducer.bind(store);
 export const setInitialState = store.setInitialState.bind(store);
-export const subscribe = store.subscribe.bind(store);
 
-export function useProcess() {
-  const [ state, setLocalState ] = useState(store.state);
+export function useState(slice, initialState) {
+  if (!slice) {
+    throw new Error('useProcess requires a state slice name that you are going to operate on.');
+  }
+  if (typeof initialState !== 'undefined' && typeof store.state[slice] === 'undefined') {
+    store.state[slice] = initialState;
+  }
+  const [ state, setLocalState ] = useStateReact(store.state[slice]);
 
-  if (!store.updaters.find(u => u === setLocalState)) {
-    store.updaters.push(setLocalState);
+  if (!store.updaters[slice]) store.updaters[slice] = [];
+  if (!store.updaters[slice].find(u => u === setLocalState)) {
+    store.updaters[slice].push(setLocalState);
   }
 
-  useEffect(() => () => {
-    store.updaters = store.updaters.filter(u => u !== setLocalState);
+  userEffectReact(() => () => {
+    store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
   }, []);
 
-  return [ state, dispatch ];
+  return [ state, (...args) => store.dispatch(slice, args) ];
 };
+
+export function useReducer(slice, reducer) {
+  if (!slice || typeof slice !== 'string') {
+    throw new Error('useReducer requires a state slice name as a first argument.');
+  }
+  if (!store.reducers[slice]) store.reducers[slice] = [];
+  store.reducers[slice].push(reducer);
+}
+
+export function useEffect(slice, effect) {
+  if (!store.effects[slice]) store.effects[slice] = [];
+  store.effects[slice].push(effect);
+}
