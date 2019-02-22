@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define */
+/* eslint-disable no-use-before-define, max-len */
 import { useState as useStateReact, useEffect as userEffectReact } from 'react';
 
 const log = (...args) => {
@@ -8,8 +8,39 @@ const log = (...args) => {
 const store = {
   state: {},
   updaters: {},
-  context: {}
+  context: {},
+  onUpdate(slice) {
+    if (this.updaters[slice]) {
+      this.updaters[slice].forEach(u => u(this.state[slice]));
+    }
+  }
 };
+
+function getContext(slice) {
+  if (!store.context[slice]) {
+    store.context[slice] = {
+      setState(newState) {
+        log('reducer', 'setState', newState);
+        store.state[slice] = newState;
+        store.onUpdate(slice);
+      }
+    };
+  }
+  return store.context[slice];
+}
+function validate(args, methodName) {
+  if (!args[0] || typeof args[0] !== 'string') {
+    throw new Error(`${ methodName } requires a string as a first argument.`);
+  }
+  if (!args[1] || typeof args[1] !== 'object') {
+    throw new Error(`${ methodName } requires an object as a second argument.`);
+  }
+}
+function validateContextMethod(slice, method) {
+  if (!store.context[slice][method]) {
+    throw new Error(`There is no "${ method }" defined for the "${ slice }" state. Check your useReducer and useEffect calls.`);
+  }
+}
 
 export function useState(slice, initialState) {
   if (!slice) {
@@ -29,53 +60,33 @@ export function useState(slice, initialState) {
     store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
   }, []);
 
-  return [ state, store.context[slice] ];
+  return [ state, getContext(slice) ];
 };
 
 export function useReducer(slice, actions) {
   validate([slice, actions], 'useReducer');
+  const context = getContext(slice);
 
   Object.keys(actions).forEach(actionName => {
-    const callbacksKey = `${ actionName }_callbacks`;
-
-    if (!store.context[slice]) store.context[slice] = {};
-    if (!store.context[slice][callbacksKey]) store.context[slice][callbacksKey] = [];
-    store.context[slice][callbacksKey].push(actions[actionName].bind(store.context[slice]));
-    store.context[slice][actionName] = (payload) => {
+    context[actionName] = (payload) => {
       log('reducer', actionName, payload);
-      store.context[slice][callbacksKey].forEach(callback => {
-        store.state[slice] = callback(store.state[slice], payload, store.context[slice]);
-        if (store.updaters[slice]) {
-          store.updaters[slice].forEach(u => u(store.state[slice]));
-        }
-      });
+      validateContextMethod(slice, actionName);
+      store.state[slice] = actions[actionName](store.state[slice], payload, context);
+      store.onUpdate(slice);
     };
   });
 }
 
 export function useEffect(slice, effects) {
   validate([slice, effects], 'useEffect');
+  const context = getContext(slice);
 
   Object.keys(effects).forEach(effectName => {
-    const callbacksKey = `${ effectName }_callbacks`;
-
-    if (!store.context[slice]) store.context[slice] = {};
-    if (!store.context[slice][callbacksKey]) store.context[slice][callbacksKey] = [];
-    store.context[slice][callbacksKey].push(effects[effectName].bind(store.context[slice]));
-    store.context[slice][effectName] = (action) => {
+    context[effectName] = (action) => {
       log('effect', effectName, action);
-      store.context[slice][callbacksKey].forEach(callback => {
-        callback(action, store.context[slice]);
-      });
+      validateContextMethod(slice, effectName);
+      effects[effectName](action, context);
+      store.onUpdate(slice);
     };
   });
-}
-
-function validate(args, methodName) {
-  if (!args[0] || typeof args[0] !== 'string') {
-    throw new Error(`${ methodName } requires a string as a first argument.`);
-  }
-  if (!args[1] || typeof args[1] !== 'object') {
-    throw new Error(`${ methodName } requires an object as a second argument.`);
-  }
 }
