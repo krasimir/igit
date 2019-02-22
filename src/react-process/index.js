@@ -16,18 +16,6 @@ const store = {
   }
 };
 
-function getContext(slice) {
-  if (!store.context[slice]) {
-    store.context[slice] = {
-      setState(newState) {
-        log('reducer', 'setState', newState);
-        store.state[slice] = newState;
-        store.onUpdate(slice);
-      }
-    };
-  }
-  return store.context[slice];
-}
 function validate(args, methodName) {
   if (!args[0] || typeof args[0] !== 'string') {
     throw new Error(`${ methodName } requires a string as a first argument.`);
@@ -36,9 +24,9 @@ function validate(args, methodName) {
     throw new Error(`${ methodName } requires an object as a second argument.`);
   }
 }
-function validateContextMethod(slice, method) {
-  if (!store.context[slice][method]) {
-    throw new Error(`There is no "${ method }" defined for the "${ slice }" state. Check your useReducer and useEffect calls.`);
+function validateContextMethod(method) {
+  if (!store.context[method]) {
+    throw new Error(`There is no "${ method }" defined for. Check your useReducer and useEffect calls.`);
   }
 }
 
@@ -60,18 +48,16 @@ export function useState(slice, initialState) {
     store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
   }, []);
 
-  return [ state, getContext(slice) ];
+  return [ state, store.context ];
 };
 
 export function useReducer(slice, actions) {
   validate([slice, actions], 'useReducer');
-  const context = getContext(slice);
-
   Object.keys(actions).forEach(actionName => {
-    context[actionName] = (payload) => {
+    store.context[actionName] = (payload) => {
       log('reducer', actionName, payload);
-      validateContextMethod(slice, actionName);
-      store.state[slice] = actions[actionName](store.state[slice], payload, context);
+      validateContextMethod(actionName);
+      store.state[slice] = actions[actionName](store.state[slice], payload, store.context);
       store.onUpdate(slice);
     };
   });
@@ -79,13 +65,11 @@ export function useReducer(slice, actions) {
 
 export function useEffect(slice, effects) {
   validate([slice, effects], 'useEffect');
-  const context = getContext(slice);
-
   Object.keys(effects).forEach(effectName => {
-    context[effectName] = (action) => {
+    store.context[effectName] = (action) => {
       log('effect', effectName, action);
-      validateContextMethod(slice, effectName);
-      effects[effectName](action, context);
+      validateContextMethod(effectName);
+      effects[effectName](action, store.context);
       store.onUpdate(slice);
     };
   });
