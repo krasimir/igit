@@ -8,17 +8,13 @@ import Repos from './Repos';
 import Header from './Header';
 import { NO_TOKEN } from '../constants';
 import { useState } from '../react-process';
-import '../process/effects';
-import '../process/reducers';
-import { getProfile } from '../process/actions';
+import '../process';
 
 export default function App() {
-  const [ profile, dispatch ] = useState('profile', null);
-
-  console.log(profile);
+  const [ profile, { initialize } ] = useState('profile', null);
 
   useEffect(() => {
-    dispatch(getProfile());
+    initialize();
   }, []);
 
   if (profile === null) {
