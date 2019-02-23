@@ -2,7 +2,7 @@
 import db from './db';
 import { NO_TOKEN } from './constants';
 
-const USE_MOCKS = false;
+const USE_MOCKS = true;
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
@@ -43,7 +43,8 @@ function createAPI() {
       if (fromDB === null) {
         return NO_TOKEN;
       }
-      return fromDB;
+      profile = fromDB;
+      token = profile.token;
     }
     return profile;
   };
@@ -59,7 +60,7 @@ function createAPI() {
     });
     return profile;
   };
-  api.getRepos = function () {
+  api.fetchRemoteRepos = async function () {
     if (USE_MOCKS) return requestMock('user.repos.json');
 
     let page = 1;
@@ -82,6 +83,12 @@ function createAPI() {
     };
 
     return get();
+  };
+  api.getLocalRepos = function () {
+    return db.getRepos();
+  };
+  api.toggleRepo = function (repo) {
+    return db.toggleRepo(repo);
   };
 
   return api;

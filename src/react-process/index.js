@@ -2,7 +2,7 @@
 import { useState as useStateReact, useEffect as userEffectReact } from 'react';
 
 const log = (...args) => {
-  console.log(...args);
+  // console.log(...args);
 };
 
 const store = {
@@ -11,30 +11,52 @@ const store = {
   context: {},
   onUpdate(slice) {
     if (this.updaters[slice]) {
-      this.updaters[slice].forEach(u => u(this.state[slice]));
+      this.updaters[slice].forEach(u => {
+        u(this.state[slice]);
+      });
     }
   }
 };
+let normalizedContext = store.context;
 
-function validate(args, methodName) {
-  if (!args[0] || typeof args[0] !== 'string') {
+function validate(slice, actions, methodName) {
+  if (!slice || typeof slice !== 'string') {
     throw new Error(`${ methodName } requires a string as a first argument.`);
   }
-  if (!args[1] || typeof args[1] !== 'object') {
+  if (!actions || typeof actions !== 'object') {
     throw new Error(`${ methodName } requires an object as a second argument.`);
   }
 }
-function validateContextMethod(method) {
-  if (!store.context[method]) {
-    throw new Error(`There is no "${ method }" defined for. Check your useReducer and useEffect calls.`);
-  }
+function createBuiltInContextMethods(slice) {
+  const setStateMethodName = `set${ slice.charAt(0).toUpperCase() + slice.substr(1) }`;
+
+  if (store.context[setStateMethodName]) return;
+
+  addToContext(setStateMethodName, (newState) => {
+    log(setStateMethodName, newState);
+    store.state[slice] = newState;
+    store.onUpdate(slice);
+  });
+}
+function addToContext(key, func) {
+  if (!store.context[key]) store.context[key] = [];
+  store.context[key].push(func);
+  normalizeContext();
+}
+function normalizeContext() {
+  normalizedContext = Object.keys(store.context).reduce((result, key) => {
+    result[key] = (...args) => {
+      store.context[key].forEach(f => f(...args));
+    };
+    return result;
+  }, {});
 }
 
 export function useState(slice, initialState) {
   if (!slice) {
-    throw new Error('useProcess requires a state slice name that you are going to operate on.');
+    throw new Error('useState requires a state slice name that you are going to operate on.');
   }
-  if (typeof initialState !== 'undefined') {
+  if (typeof initialState !== 'undefined' && typeof store.state[slice] === 'undefined') {
     store.state[slice] = initialState;
   }
   const [ state, setLocalState ] = useStateReact(store.state[slice]);
@@ -44,33 +66,34 @@ export function useState(slice, initialState) {
     store.updaters[slice].push(setLocalState);
   }
 
-  userEffectReact(() => () => {
-    store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
+  userEffectReact(() => {
+    createBuiltInContextMethods(slice);
+    return () => {
+      store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
+    };
   }, []);
-
-  return [ state, store.context ];
+  return [ state, normalizedContext ];
 };
 
 export function useReducer(slice, actions) {
-  validate([slice, actions], 'useReducer');
+  validate(slice, actions, 'useReducer');
+  createBuiltInContextMethods(slice);
   Object.keys(actions).forEach(actionName => {
-    store.context[actionName] = (payload) => {
+    addToContext(actionName, (payload) => {
       log('reducer', actionName, payload);
-      validateContextMethod(actionName);
-      store.state[slice] = actions[actionName](store.state[slice], payload, store.context);
+      store.state[slice] = actions[actionName](store.state[slice], payload, normalizedContext);
       store.onUpdate(slice);
-    };
+    });
   });
 }
 
 export function useEffect(slice, effects) {
-  validate([slice, effects], 'useEffect');
+  validate(slice, effects, 'useEffect');
+  createBuiltInContextMethods(slice);
   Object.keys(effects).forEach(effectName => {
-    store.context[effectName] = (action) => {
+    addToContext(effectName, (action) => {
       log('effect', effectName, action);
-      validateContextMethod(effectName);
-      effects[effectName](action, store.context);
-      store.onUpdate(slice);
-    };
+      effects[effectName](action, normalizedContext);
+    });
   });
 }

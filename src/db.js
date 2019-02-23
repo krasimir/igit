@@ -7,7 +7,7 @@ function createDb() {
 
   db.version(1).stores({
     profile: '++id, token, name, avatar',
-    repos: '++id, repoId, owner, repo, fullName'
+    repos: '++id, repoId, owner, repo, fullName, githubURL'
   });
 
   api.getProfile = async function () {
@@ -18,28 +18,21 @@ function createDb() {
     }
     return res.shift();
   };
-  api.setProfile = async function (token, name, avatar) {
-    db.profile.add({ token, name, avatar });
+  api.setProfile = async function (profile) {
+    db.profile.add(profile);
   };
   api.getRepos = function () {
     return db.repos.toArray();
   };
   api.toggleRepo = async function (repo) {
     const currentRepos = await db.repos.toArray();
-    const repoInDB = currentRepos.find(({ repoId }) => repoId === repo.id);
+    const repoInDB = currentRepos.find(({ repoId }) => repoId === repo.repoId);
 
     if (repoInDB) {
-      await db.repos.where('repoId').equals(repo.id).delete();
+      await db.repos.where('repoId').equals(repo.repoId).delete();
     } else {
-      await db.repos.add({
-        repoId: repo.id,
-        fullName: repo.full_name,
-        owner: repo.owner.login,
-        repo: repo.name
-      });
+      await db.repos.add(repo);
     }
-
-    return db.repos.toArray();
   };
 
   return api;

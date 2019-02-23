@@ -188,7 +188,7 @@ header .profile img {
   margin-right: 6px;
   transform: translateY(3px);
   -webkit-transform: translateY(3px);
-  opacity: .2;
+  opacity: .1;
 }
 .subscribe {
   background: none;
@@ -199,8 +199,9 @@ header .profile img {
   color: black;
   font-weight: bold;
 }
-.subscribe:hover svg {
+.repo.selected svg {
   opacity: 1;
+  fill: green;
 }
 
 /* ---------------------------------------- vendor */

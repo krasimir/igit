@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-dom';
 
 import Loading from './Loading';
@@ -12,6 +12,7 @@ import '../process';
 
 export default function App() {
   const [ profile, { initialize } ] = useState('profile', null);
+  const [ repos ] = useState('repos', []);
 
   useEffect(() => {
     initialize();
@@ -24,11 +25,13 @@ export default function App() {
   }
   return (
     <Router>
-      <Header profile={ profile } />
-      <Switch>
-        <Route path='/repos' component={ Repos } />
-        { numOfRepos === 0 && <Redirect to='/repos' /> }
-      </Switch>
+      <Fragment>
+        <Header profile={ profile } />
+        <Switch>
+          <Route path='/repos' component={ Repos } />
+          { repos.length === 0 && <Redirect to='/repos' /> }
+        </Switch>
+      </Fragment>
     </Router>
   );
 };
