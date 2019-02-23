@@ -2,7 +2,7 @@
 import React from 'react';
 
 import Logo from './Logo';
-import VerifyToken from './logic/VerifyToken';
+import VerifyToken from './VerifyToken';
 
 export default function Authorize() {
   return (

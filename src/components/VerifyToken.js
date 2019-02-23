@@ -1,5 +1,5 @@
 /* eslint-disable max-len, camelcase */
-import { useState } from '../../react-process';
+import { useState } from '../react-process';
 import PropTypes from 'prop-types';
 
 function VerifyToken({ children, api }) {
