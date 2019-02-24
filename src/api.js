@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 import db from './db';
-import { NO_TOKEN } from './constants';
-
-const USE_MOCKS = true;
+import { NO_TOKEN, USE_MOCKS } from './constants';
 
 function createAPI() {
   const endpoint = 'https://api.github.com';

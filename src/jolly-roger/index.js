@@ -15,7 +15,6 @@ const store = {
     }
   }
 };
-let normalizedContext = store.context;
 
 function createStateSetter(slice) {
   const setStateMethodName = `set${ slice.charAt(0).toUpperCase() + slice.substr(1) }`;
@@ -30,20 +29,7 @@ function createStateSetter(slice) {
   return setState;
 }
 function toContext(key, func) {
-  if (!store.context[key]) store.context[key] = [];
-  store.context[key].push(func);
-  normalizeContext();
-}
-function normalizeContext() {
-  normalizedContext = Object.keys(store.context).reduce((result, key) => {
-    result[key] = (...args) => {
-      if (store.context[key].length === 1) {
-        return store.context[key][0](...args);
-      }
-      return store.context[key].map(f => f(...args));
-    };
-    return result;
-  }, {});
+  store.context[key] = func;
 }
 
 function useState(slice, initialState) {
@@ -71,7 +57,7 @@ function useReducer(slice, actions) {
   createStateSetter(slice);
   Object.keys(actions).forEach(actionName => {
     toContext(actionName, (payload) => {
-      store.state[slice] = actions[actionName](store.state[slice], payload, normalizedContext);
+      store.state[slice] = actions[actionName](store.state[slice], payload, store.context);
       store.onUpdate(slice);
     });
   });
@@ -80,13 +66,13 @@ function useReducer(slice, actions) {
 function context(effects) {
   Object.keys(effects).forEach(effectName => {
     toContext(effectName, (action) => {
-      return effects[effectName](action, normalizedContext);
+      return effects[effectName](action, store.context);
     });
   });
 }
 
 function useContext() {
-  return normalizedContext;
+  return store.context;
 }
 
 if (DEV) {

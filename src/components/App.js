@@ -5,7 +5,9 @@ import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-d
 import Loading from './Loading';
 import Authorize from './Authorize';
 import Repos from './Repos';
+import Repo from './Repo';
 import Header from './Header';
+import Dashboard from './Dashboard';
 import { NO_TOKEN } from '../constants';
 import roger from '../jolly-roger';
 import '../logic';
@@ -36,6 +38,8 @@ export default function App() {
         <Switch>
           <Route path='/repos' component={ Repos } />
           { repos.length === 0 && <Redirect to='/repos' /> }
+          <Route path='/repo/:id' component={ Repo } />
+          <Route path='/' component={ Dashboard } />
         </Switch>
       </Fragment>
     </Router>

@@ -1,6 +1,7 @@
 import roger from '../jolly-roger';
 
 import api from '../api';
+import './PRs';
 
 roger.context({
   async initialize(action, { setProfile, setRepos }) {
