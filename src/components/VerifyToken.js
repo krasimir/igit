@@ -1,9 +1,10 @@
 /* eslint-disable max-len, camelcase */
-import { useState } from '../react-process';
+import roger from '../jolly-roger';
 import PropTypes from 'prop-types';
 
-function VerifyToken({ children, api }) {
-  const [ { error, verifying }, { verify } ] = useState('verification', { error: null, verifying: false });
+function VerifyToken({ children }) {
+  const { verify } = roger.useContext();
+  const [ { error, verifying } ] = roger.useState('verification', { error: null, verifying: false });
 
   return children(verify, verifying, error);
 }

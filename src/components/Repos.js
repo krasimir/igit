@@ -1,16 +1,18 @@
 /* eslint-disable max-len */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { CHECK } from './Icons';
 import Loading from './Loading';
-import { useState } from '../react-process';
+import roger from '../jolly-roger';
 
 export default function Repos() {
-  const [ repos, { fetchAllRepos, toggleRepo } ] = useState('repos');
+  const { fetchAllRepos, toggleRepo } = roger.useContext();
+  const [ repos, setRepos ] = roger.useState('repos', []);
+  const [ filter, setFilter ] = useState('');
   const error = false;
 
   useEffect(() => {
-    fetchAllRepos();
+    fetchAllRepos().then((result) => setRepos(result));
   }, []);
 
   if (error) {
@@ -32,21 +34,26 @@ export default function Repos() {
         <h1 className='tac'>Your repositories</h1>
         <p className='tac'>Select the repositories that you want to manage.</p>
         <ul className='centered-content mt3'>
+          <li key='filter'>
+            <input type='text' placeholder='Filter' className='mb1' onChange={ (e) => setFilter(e.target.value) }/>
+          </li>
           {
-            repos.map(repo => {
-              const className = `repo${ repo.selected ? ' selected' : ''}`;
+            repos
+              .filter(({ fullName }) => filter === '' || fullName.match(new RegExp(filter, 'gi')))
+              .map(repo => {
+                const className = `repo${ repo.selected ? ' selected' : ''}`;
 
-              return (
-                <li key={ repo.repoId } className={ className }>
-                  <p>
-                    <a className='subscribe' onClick={ () => toggleRepo(repo) }>
-                      <CHECK /> { repo.fullName }
-                    </a>
-                  </p>
-                  <small><a href={ repo.githubURL } target='_blank'>view</a></small>
-                </li>
-              );
-            })
+                return (
+                  <li key={ repo.repoId } className={ className }>
+                    <p>
+                      <a className='subscribe' onClick={ () => toggleRepo(repo) }>
+                        <CHECK /> { repo.fullName }
+                      </a>
+                    </p>
+                    <small><a href={ repo.githubURL } target='_blank'>view</a></small>
+                  </li>
+                );
+              })
           }
         </ul>
     </div>

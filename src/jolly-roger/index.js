@@ -1,9 +1,7 @@
 /* eslint-disable no-use-before-define, max-len */
 import { useState as useStateReact, useEffect as userEffectReact } from 'react';
 
-const log = (...args) => {
-  // console.log(...args);
-};
+const DEV = true;
 
 const store = {
   state: {},
@@ -19,26 +17,19 @@ const store = {
 };
 let normalizedContext = store.context;
 
-function validate(slice, actions, methodName) {
-  if (!slice || typeof slice !== 'string') {
-    throw new Error(`${ methodName } requires a string as a first argument.`);
-  }
-  if (!actions || typeof actions !== 'object') {
-    throw new Error(`${ methodName } requires an object as a second argument.`);
-  }
-}
-function createBuiltInContextMethods(slice) {
+function createStateSetter(slice) {
   const setStateMethodName = `set${ slice.charAt(0).toUpperCase() + slice.substr(1) }`;
-
-  if (store.context[setStateMethodName]) return;
-
-  addToContext(setStateMethodName, (newState) => {
-    log(setStateMethodName, newState);
+  const setState = (newState) => {
     store.state[slice] = newState;
     store.onUpdate(slice);
-  });
+  };
+
+  if (!store.context[setStateMethodName]) {
+    toContext(setStateMethodName, setState);
+  }
+  return setState;
 }
-function addToContext(key, func) {
+function toContext(key, func) {
   if (!store.context[key]) store.context[key] = [];
   store.context[key].push(func);
   normalizeContext();
@@ -46,13 +37,16 @@ function addToContext(key, func) {
 function normalizeContext() {
   normalizedContext = Object.keys(store.context).reduce((result, key) => {
     result[key] = (...args) => {
-      store.context[key].forEach(f => f(...args));
+      if (store.context[key].length === 1) {
+        return store.context[key][0](...args);
+      }
+      return store.context[key].map(f => f(...args));
     };
     return result;
   }, {});
 }
 
-export function useState(slice, initialState) {
+function useState(slice, initialState) {
   if (!slice) {
     throw new Error('useState requires a state slice name that you are going to operate on.');
   }
@@ -60,40 +54,48 @@ export function useState(slice, initialState) {
     store.state[slice] = initialState;
   }
   const [ state, setLocalState ] = useStateReact(store.state[slice]);
+  const setState = createStateSetter(slice);
 
   if (!store.updaters[slice]) store.updaters[slice] = [];
   if (!store.updaters[slice].find(u => u === setLocalState)) {
     store.updaters[slice].push(setLocalState);
   }
 
-  userEffectReact(() => {
-    createBuiltInContextMethods(slice);
-    return () => {
-      store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
-    };
+  userEffectReact(() => () => {
+    store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
   }, []);
-  return [ state, normalizedContext ];
+  return [ state, setState ];
 };
 
-export function useReducer(slice, actions) {
-  validate(slice, actions, 'useReducer');
-  createBuiltInContextMethods(slice);
+function useReducer(slice, actions) {
+  createStateSetter(slice);
   Object.keys(actions).forEach(actionName => {
-    addToContext(actionName, (payload) => {
-      log('reducer', actionName, payload);
+    toContext(actionName, (payload) => {
       store.state[slice] = actions[actionName](store.state[slice], payload, normalizedContext);
       store.onUpdate(slice);
     });
   });
 }
 
-export function useEffect(slice, effects) {
-  validate(slice, effects, 'useEffect');
-  createBuiltInContextMethods(slice);
+function context(effects) {
   Object.keys(effects).forEach(effectName => {
-    addToContext(effectName, (action) => {
-      log('effect', effectName, action);
-      effects[effectName](action, normalizedContext);
+    toContext(effectName, (action) => {
+      return effects[effectName](action, normalizedContext);
     });
   });
 }
+
+function useContext() {
+  return normalizedContext;
+}
+
+if (DEV) {
+  window.__store = store;
+}
+
+export default {
+  useState,
+  useReducer,
+  context,
+  useContext
+};

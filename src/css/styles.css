@@ -98,6 +98,9 @@ li {
 .mt3 {
   margin-top: 3em;
 }
+.mb1 {
+  margin-bottom: 1em;
+}
 
 /* ---------------------------------------- loading */
 .loading {

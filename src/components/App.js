@@ -7,12 +7,13 @@ import Authorize from './Authorize';
 import Repos from './Repos';
 import Header from './Header';
 import { NO_TOKEN } from '../constants';
-import { useState } from '../react-process';
-import '../process';
+import roger from '../jolly-roger';
+import '../logic';
 
 export default function App() {
-  const [ profile, { initialize } ] = useState('profile', null);
-  const [ repos ] = useState('repos', []);
+  const { initialize } = roger.useContext();
+  const [ profile ] = roger.useState('profile', null);
+  const [ repos ] = roger.useState('repos', null);
 
   useEffect(() => {
     initialize();
@@ -23,6 +24,11 @@ export default function App() {
   } else if (profile === NO_TOKEN) {
     return <Authorize />;
   }
+
+  if (repos === null) {
+    return <Loading />;
+  }
+
   return (
     <Router>
       <Fragment>

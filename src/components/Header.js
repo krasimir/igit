@@ -11,6 +11,9 @@ export default function Header({ profile }) {
         <Logo width={ 70 }/>
       </Link>
       <div className='separator' />
+      <Link to='/' className='left'>
+        <span>Dashboard</span>
+      </Link>
       <Link to='/repos' className='left'>
         <span>Repositories</span>
       </Link>

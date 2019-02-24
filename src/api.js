@@ -50,7 +50,16 @@ function createAPI() {
   };
   api.setToken = (t) => (token = t);
   api.verify = async function () {
-    if (USE_MOCKS) return (profile = await requestMock('user.json'));
+    if (USE_MOCKS) {
+      const { name, avatar_url } = await requestMock('user.json');
+
+      db.setProfile(profile = {
+        name,
+        avatar: avatar_url,
+        token
+      });
+      return profile;
+    }
     const { name, avatar_url } = await request('/user');
 
     db.setProfile(profile = {

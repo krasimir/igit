@@ -1,14 +1,12 @@
-import { useEffect, useReducer } from '../react-process';
+import roger from '../jolly-roger';
 
 import api from '../api';
 
-useEffect('profile', {
-  async initialize(action, { setProfile }) {
+roger.context({
+  async initialize(action, { setProfile, setRepos }) {
     setProfile(await api.getProfile());
-  }
-});
-
-useEffect('verification', {
+    setRepos(await api.getLocalRepos());
+  },
   async verify(token, { setVerification, setProfile }) {
     setVerification({ verifying: true, error: null });
 
@@ -18,15 +16,11 @@ useEffect('verification', {
     } catch (error) {
       setVerification({ verifying: false, error });
     }
-  }
-});
-
-useEffect('repos', {
-  async fetchAllRepos(action, { setRepos }) {
+  },
+  async fetchAllRepos() {
     const remoteRepos = await api.fetchRemoteRepos();
     const localRepos = await api.getLocalRepos();
-
-    setRepos(remoteRepos.map(repo => {
+    const repos = remoteRepos.map(repo => {
       const selected = !!localRepos.find(localRepo => localRepo.repoId === repo.id);
       const normalizedRepo = {
         repoId: repo.id,
@@ -38,13 +32,16 @@ useEffect('repos', {
       };
 
       return normalizedRepo;
-    }));
+    });
+
+    return repos;
   },
   toggleRepo(repo) {
     api.toggleRepo(repo);
   }
 });
-useReducer('repos', {
+
+roger.useReducer('repos', {
   toggleRepo(repos, toggledRepo) {
     return repos.map(repo => {
       if (repo.repoId === toggledRepo.repoId) {
