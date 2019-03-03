@@ -3,18 +3,17 @@ import { useState as useStateReact, useEffect as userEffectReact } from 'react';
 
 const DEV = true;
 
-const store = {
+const createStore = () => ({
   state: {},
   updaters: {},
   context: {},
   onUpdate(slice) {
     if (this.updaters[slice]) {
-      this.updaters[slice].forEach(u => {
-        u(this.state[slice]);
-      });
+      this.updaters[slice].forEach(u => u(this.state[slice]));
     }
   }
-};
+});
+var store = createStore();
 
 function createStateSetter(slice) {
   const setStateMethodName = `set${ slice.charAt(0).toUpperCase() + slice.substr(1) }`;
@@ -75,6 +74,18 @@ function useContext() {
   return store.context;
 }
 
+function select(selector) {
+  return (selector || (state => state))(store.state);
+}
+
+function flush() {
+  store = createStore();
+}
+
+function inspect() {
+  return store;
+}
+
 if (DEV) {
   window.__store = store;
 }
@@ -83,5 +94,8 @@ export default {
   useState,
   useReducer,
   context,
-  useContext
+  useContext,
+  select,
+  flush,
+  inspect
 };

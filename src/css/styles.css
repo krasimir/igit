@@ -60,23 +60,8 @@ p {
   text-align: center;
 }
 #app {
-  width: 960px;
   position: relative;
-  margin: 2em auto;
   padding: 1em;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: 0px 0px 31px -7px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 31px -7px rgba(0,0,0,0.75);
-}
-@media all and (max-width: 1000px) {
-  #app {
-    width: 100%;
-    padding: 0 1em;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    margin: 0;
-  }
 }
 .centered-content {
   max-width: 550px;
