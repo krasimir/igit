@@ -275,10 +275,38 @@ header .profile img {
 
 /* ---------------------------------------- view-repo */
 
-.view-repo {
-  padding: 1em;
-}
 .view-repo h1 {
   font-size: 2em;
-  line-height: 2.2em;
+  margin-top: 1em;
+}
+
+/* ---------------------------------------- pr */
+
+.pr {
+  border-top: solid 1px #e2e2e2;
+  padding: 1em 0;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  column-gap: 1em;
+}
+.pr .user a {
+  background: none;
+}
+.pr .user img {
+  width: 60px;
+  border-radius: 30px;
+}
+.pr .branch {
+  background: #dcf7f7;
+  padding: 0.2em 0.4em;
+  border-radius: 2px;
+}
+.pr h3 a {
+  background: none;
+}
+.pr h3 a:hover {
+  background: black;
+}
+.pr h3 a span {
+  opacity: .3;
 }

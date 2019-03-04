@@ -1,6 +1,6 @@
 /* eslint-disable no-sequences */
 import React from 'react';
-import { render, fireEvent } from 'react-testing-library';
+import { render, fireEvent, act } from 'react-testing-library';
 
 import roger from '../index';
 
@@ -97,6 +97,23 @@ describe('Given the Jolly Roger library', () => {
       expect(container.textContent).toEqual('Nothing');
       expect(roger.inspect().updaters['foo'].length).toEqual(0);
       expect(roger.inspect().updaters['visible'].length).toEqual(1);
+    });
+    it('should define a set<Slice> context method', () => {
+      const selector = jest.fn();
+      const A = function () {
+        const [ foo ] = roger.useState('foo', 'hello');
+
+        return <p>{ foo }</p>;
+      };
+      const { container } = render(<A />);
+
+      roger.select(selector);
+      expect(selector).toBeCalledWith({foo: 'hello'});
+
+      act(() => {
+        roger.inspect().context.setFoo('world');
+      });
+      expect(container.textContent).toEqual('world');
     });
   });
 });

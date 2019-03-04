@@ -7,6 +7,7 @@ const createStore = () => ({
   state: {},
   updaters: {},
   context: {},
+  reducers: {},
   onUpdate(slice) {
     if (this.updaters[slice]) {
       this.updaters[slice].forEach(u => u(this.state[slice]));
@@ -23,12 +24,9 @@ function createStateSetter(slice) {
   };
 
   if (!store.context[setStateMethodName]) {
-    toContext(setStateMethodName, setState);
+    store.context[setStateMethodName] = setState;
   }
   return setState;
-}
-function toContext(key, func) {
-  store.context[key] = func;
 }
 
 function useState(slice, initialState) {
@@ -55,18 +53,24 @@ function useState(slice, initialState) {
 function useReducer(slice, actions) {
   createStateSetter(slice);
   Object.keys(actions).forEach(actionName => {
-    toContext(actionName, (payload) => {
+    store.reducers[actionName] = (payload) => {
       store.state[slice] = actions[actionName](store.state[slice], payload, store.context);
       store.onUpdate(slice);
-    });
+    };
+    if (!store.context[actionName]) {
+      store.context[actionName] = (...args) => store.reducers[actionName](...args);
+    }
   });
 }
 
 function context(effects) {
   Object.keys(effects).forEach(effectName => {
-    toContext(effectName, (action) => {
+    store.context[effectName] = (action) => {
+      if (store.reducers[effectName]) {
+        store.reducers[effectName](action);
+      }
       return effects[effectName](action, store.context);
-    });
+    };
   });
 }
 

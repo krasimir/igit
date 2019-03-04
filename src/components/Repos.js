@@ -9,10 +9,21 @@ export default function Repos() {
   const { fetchAllRepos, toggleRepo } = roger.useContext();
   const [ repos, setRepos ] = roger.useState('repos', []);
   const [ filter, setFilter ] = useState('');
+  const [ loading, setLoading ] = useState(false);
   const error = false;
 
   useEffect(() => {
-    fetchAllRepos().then((result) => setRepos(result));
+    setLoading(true);
+    fetchAllRepos().then(
+      result => {
+        setRepos(result);
+        setLoading(false);
+      },
+      error => {
+        console.log(error);
+        setLoading(false);
+      }
+    );
   }, []);
 
   if (error) {
@@ -31,31 +42,38 @@ export default function Repos() {
   }
   return (
     <div className='repos'>
-        <h1 className='tac'>Your repositories</h1>
-        <p className='tac'>Select the repositories that you want to manage.</p>
-        <ul className='centered-content mt3'>
-          <li key='filter'>
-            <input type='text' placeholder='Filter' className='mb1' onChange={ (e) => setFilter(e.target.value) }/>
-          </li>
-          {
-            repos
-              .filter(({ fullName }) => filter === '' || fullName.match(new RegExp(filter, 'gi')))
-              .map(repo => {
-                const className = `repo${ repo.selected ? ' selected' : ''}`;
+      <h1 className='tac'>Your repositories</h1>
+      <p className='tac'>Select the repositories that you want to manage.</p>
+      <ul className='centered-content mt3'>
+        <li key='filter'>
+          <input type='text' placeholder='Filter' className='mb1' onChange={ (e) => setFilter(e.target.value) }/>
+        </li>
+        {
+          repos
+            .filter(({ fullName, selected }) => {
+              return filter === '' || fullName.match(new RegExp(filter, 'gi')) || selected;
+            })
+            .map(repo => {
+              const className = `repo${ repo.selected ? ' selected' : ''}`;
 
-                return (
-                  <li key={ repo.repoId } className={ className }>
-                    <p>
-                      <a className='subscribe' onClick={ () => toggleRepo(repo) }>
-                        <CHECK /> { repo.fullName }
-                      </a>
-                    </p>
-                    <small><a href={ repo.githubURL } target='_blank'>view</a></small>
-                  </li>
-                );
-              })
-          }
-        </ul>
+              return (
+                <li key={ repo.repoId } className={ className }>
+                  <p>
+                    <a className='subscribe' onClick={ () => toggleRepo(repo) }>
+                      <CHECK /> { repo.fullName }
+                    </a>
+                  </p>
+                  <small><a href={ repo.githubURL } target='_blank'>view</a></small>
+                </li>
+              );
+            })
+        }
+      </ul>
+      { loading && (
+        <div className='centered-content tac'>
+          <Loading showLogo={ false } message='Loading your repositories. Please wait.'/>
+        </div>
+      ) }
     </div>
   );
 }

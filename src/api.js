@@ -15,8 +15,8 @@ function createAPI() {
     'Content-Type': 'application/json',
     'Authorization': 'token ' + token
   });
-  const request = async function (endpointPath) {
-    const res = await fetch(endpoint + endpointPath, { headers: getHeaders() });
+  const request = async function (endpointPath, absolute = false) {
+    const res = await fetch((absolute === false ? endpoint : '') + endpointPath, { headers: getHeaders() });
 
     if (!res.ok) {
       throw new Error(res.status + ' ' + res.statusText);
@@ -24,7 +24,7 @@ function createAPI() {
     return res.json();
   };
   const requestMock = async function (file) {
-    const res = await fetch('./mocks/' + file);
+    const res = await fetch('/mocks/' + file);
 
     if (!res.ok) {
       throw new Error(res.status + ' ' + res.statusText);
@@ -73,13 +73,7 @@ function createAPI() {
     let page = 1;
     let repos = [];
     const get = async () => {
-      const res = await fetch(endpoint + '/user/repos?per_page=50&page=' + page, { headers: getHeaders() });
-
-      if (!res.ok) {
-        throw new Error(res.status + ' ' + res.statusText);
-      }
-
-      const data = await res.json();
+      const data = await request('/user/repos?per_page=50&page=' + page);
 
       if (data.length > 0) {
         repos = repos.concat(data);
@@ -96,6 +90,25 @@ function createAPI() {
   };
   api.toggleRepo = function (repo) {
     return db.toggleRepo(repo);
+  };
+  api.normalizeRemotePR = async function (pr) {
+    const commits = await request(pr.commits_url, true);
+    const comments = await request(pr.comments_url, true);
+
+    pr.commits = commits;
+    pr.comments = comments;
+    return pr;
+  };
+  api.fetchRemotePRs = async function (repo) {
+    if (USE_MOCKS) return requestMock('pulls.json');
+
+    let prs = await request(`/repos/${ repo.fullName }/pulls`);
+
+    prs = await Promise.all(prs.map(api.normalizeRemotePR));
+
+    console.log(JSON.stringify(prs, null, 2));
+
+    return prs;
   };
 
   return api;

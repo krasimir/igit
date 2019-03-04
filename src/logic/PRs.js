@@ -1,7 +1,9 @@
 import roger from '../jolly-roger';
 
+import api from '../api';
+
 roger.context({
   async getPRs(repo) {
-    return 'foo'
+    return await api.fetchRemotePRs(repo);
   }
 });

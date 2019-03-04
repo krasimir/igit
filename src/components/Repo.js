@@ -4,24 +4,22 @@ import { Link } from 'react-router-dom';
 
 import roger from '../jolly-roger';
 
+import Loading from './Loading';
+import PR from './PR';
+
 export default function Repo({ match }) {
   const [ repos ] = roger.useState('repos', []);
+  const repo = repos.find(({ repoId }) => repoId === parseInt(match.params.id, 10));
   const { getPRs } = roger.useContext();
   const [ prs, setPRs ] = useState(null);
   const [ error, setError ] = useState(false);
 
   useEffect(() => {
-    getPRs.then(
-      prs => {
-        console.log(prs);
-      },
-      error => {
-        setError(error);
-      }
-    );
+    getPRs(repo).then(setPRs, error => {
+      console.log(error);
+      setError(error);
+    })
   }, []);
-
-  const repo = repos.find(({ repoId }) => repoId === parseInt(match.params.id, 10));
 
   if (!repo) {
     return (
@@ -43,9 +41,21 @@ export default function Repo({ match }) {
     );
   }
 
+  if (prs === null) {
+    return (
+      <div className='view-repo'>
+        <h1 className='tac'>{ repo.fullName }</h1>
+        <Loading showLogo={ false } message={ `Loading pull requests for ${ repo.fullName }.` }/>
+      </div>
+    );
+  }
+
   return (
     <div className='view-repo'>
       <h1 className='tac'>{ repo.fullName }</h1>
+      {
+        prs.map((pr, key) => <PR pr={ pr } key={ key }/>)
+      }
     </div>
   );
 }
