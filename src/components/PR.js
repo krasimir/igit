@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Details from './Details';
 
 const formatBranchLabels = (base, head) => {
   const [ baseRepo ] = base.label.split(':');
@@ -12,23 +13,28 @@ const formatBranchLabels = (base, head) => {
 };
 
 export default function PR({ pr }) {
-  console.log(pr);
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
-
+  const [ details, toggleDetails ] = useState(false);
 
   return (
-    <div className='pr'>
-      <div className='user'>
-        <a href={ pr.user.html_url } target='_blank'>
-          <img src={ pr.user.avatar_url } />
-        </a>
+    <div className={ `pr ${ details ? 'pr-with-details' : ''}` }>
+      <div className='pr-main'>
+        <div className='user'>
+          <a href={ pr.user.html_url } target='_blank'>
+            <img src={ pr.user.avatar_url } />
+          </a>
+        </div>
+        <div>
+          <h3>
+            <a href='javascript:void(0);' onClick={ () => toggleDetails(!details) }>{ pr.title }</a>&nbsp;
+            <a href={ pr.html_url } target='_blank'><span>(#{ pr.number })</span></a>
+          </h3>
+          <small>
+            <span className='branch'>{ base }</span> ← <span className='branch'>{ head }</span>
+          </small>
+        </div>
       </div>
-      <div>
-        <h3><a href={ pr.html_url } target='_blank'>{ pr.title } <span>(#{ pr.number })</span></a></h3>
-        <small>
-          <span className='branch'>{ base }</span> ← <span className='branch'>{ head }</span>
-        </small>
-      </div>
+      { details && <Details pr={ pr }/> }
     </div>
   );
 };

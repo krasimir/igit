@@ -285,6 +285,13 @@ header .profile img {
 .pr {
   border-top: solid 1px #e2e2e2;
   padding: 1em 0;
+}
+.pr-with-details {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  column-gap: 1em;
+}
+.pr-main {
   display: grid;
   grid-template-columns: 60px 1fr;
   column-gap: 1em;
@@ -302,6 +309,7 @@ header .profile img {
   border-radius: 2px;
 }
 .pr h3 a {
+  cursor: pointer;
   background: none;
 }
 .pr h3 a:hover {
@@ -309,4 +317,40 @@ header .profile img {
 }
 .pr h3 a span {
   opacity: .3;
+}
+.pr-details {
+  border-left: solid 1px #e2e2e2;
+  padding-left: 1em;
+}
+.pr-details nav {
+  border-bottom: solid 1px #e2e2e2;
+}
+.pr-details nav a {
+  display: inline-block;
+  background: none;
+  padding: .5em;
+  cursor: pointer;
+  transform: translateY(3px);
+  -webkit-transform: translateY(3px);
+}
+.pr-details nav a:hover {
+  background: #000;
+}
+.pr-details .loading {
+  padding-top: 0;
+}
+.pr-details nav.timeline a:nth-child(1) {
+  border-bottom: solid 2px #000;
+  transform: translateY(1px);
+  -webkit-transform: translateY(1px);
+}
+.pr-details nav.commits a:nth-child(2) {
+  border-bottom: solid 2px #000;
+  transform: translateY(1px);
+  -webkit-transform: translateY(1px);
+}
+.pr-details nav.reviews a:nth-child(3) {
+  border-bottom: solid 2px #000;
+  transform: translateY(1px);
+  -webkit-transform: translateY(1px);
 }

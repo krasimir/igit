@@ -18,7 +18,7 @@ export default function Repo({ match }) {
     getPRs(repo).then(setPRs, error => {
       console.log(error);
       setError(error);
-    })
+    });
   }, []);
 
   if (!repo) {

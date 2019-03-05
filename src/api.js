@@ -91,24 +91,18 @@ function createAPI() {
   api.toggleRepo = function (repo) {
     return db.toggleRepo(repo);
   };
-  api.normalizeRemotePR = async function (pr) {
-    const commits = await request(pr.commits_url, true);
-    const comments = await request(pr.comments_url, true);
+  api.fetchRemotePR = async function (pr) {
+    if (USE_MOCKS) return requestMock('pr.json');
 
-    pr.commits = commits;
-    pr.comments = comments;
+    pr.commits = await request(pr.commits_url, true);
+    pr.reviews = await request(pr.review_comments_url, true);
+
     return pr;
   };
   api.fetchRemotePRs = async function (repo) {
     if (USE_MOCKS) return requestMock('pulls.json');
 
-    let prs = await request(`/repos/${ repo.fullName }/pulls`);
-
-    prs = await Promise.all(prs.map(api.normalizeRemotePR));
-
-    console.log(JSON.stringify(prs, null, 2));
-
-    return prs;
+    return await request(`/repos/${ repo.fullName }/pulls`);
   };
 
   return api;
