@@ -30,7 +30,9 @@ export default function PR({ pr }) {
             <a href={ pr.html_url } target='_blank'><span>(#{ pr.number })</span></a>
           </h3>
           <small>
-            <span className='branch'>{ base }</span> ← <span className='branch'>{ head }</span>
+            <span className='branch'>{ base }</span>
+            { details ? <div>↑</div> : ' ← ' }
+            <span className='branch'>{ head }</span>
           </small>
         </div>
       </div>

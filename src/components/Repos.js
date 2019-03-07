@@ -59,8 +59,9 @@ export default function Repos() {
               return (
                 <li key={ repo.repoId } className={ className }>
                   <p>
+                    <CHECK />
                     <a className='subscribe' onClick={ () => toggleRepo(repo) }>
-                      <CHECK /> { repo.fullName }
+                      { repo.fullName }
                     </a>
                   </p>
                   <small><a href={ repo.githubURL } target='_blank'>view</a></small>

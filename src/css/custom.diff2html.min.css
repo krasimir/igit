@@ -1,0 +1,23 @@
+.d2h-file-wrapper {
+  border: none;
+  border-radius: 0;
+}
+.d2h-file-header {
+  height: auto;
+  padding: .5em 0;
+  background: none;
+  border-bottom: solid 1px #e2e2e2;
+  font-size: .8em;
+  color: #999;
+}
+.d2h-file-name-wrapper {
+  font-family: inherit;
+}
+.d2h-file-name {
+  font-size: .9em;
+}
+.d2h-tag {
+  border: none;
+  transform: translateY(1px);
+  -webkit-transform: translateY(1px);
+}

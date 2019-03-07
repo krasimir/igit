@@ -97,6 +97,8 @@ function createAPI() {
     pr.commits = await request(pr.commits_url, true);
     pr.reviews = await request(pr.review_comments_url, true);
 
+    // console.log(JSON.stringify(pr, null, 2));
+
     return pr;
   };
   api.fetchRemotePRs = async function (repo) {
