@@ -1,9 +1,9 @@
 /* eslint-disable max-len, react/prop-types */
 import React from 'react';
 
-export const CHECK = (size) => <svg
-  width={ size }
-  height={ size }
+export const CHECK = ({ size }) => <svg
+  width={ size || 24 }
+  height={ size || 24 }
   viewBox='0 0 24 24'
   fill='none'
   stroke='currentColor'
@@ -46,3 +46,11 @@ className='icon'
 </svg>;
 
 export const CORNER_DOWN_RIGHT = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><polyline points='15 10 20 15 15 20'/><path d='M4 4v7a4 4 0 0 0 4 4h12' /></svg>;
+
+export const CHEVRON_RIGHT = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><polyline points='9 18 15 12 9 6'/></svg>;
+
+export const CHEVRON_DOWN = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><polyline points='6 9 12 15 18 9'/></svg>;
+
+export const EYE = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3' /></svg>;
+
+export const PULL_REQUEST = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><circle cx='18' cy='18' r='3'/><circle cx='6' cy='6' r='3'/><path d='M13 6h3a2 2 0 0 1 2 2v7'/><line x1='6' y1='9' x2='6' y2='21'/></svg>;

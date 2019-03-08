@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-d
 
 import Loading from './Loading';
 import Authorize from './Authorize';
-import Repos from './Repos';
+import Settings from './Settings';
 import Repo from './Repo';
 import Header from './Header';
 import Dashboard from './Dashboard';
@@ -36,8 +36,8 @@ export default function App() {
       <Fragment>
         <Header profile={ profile } />
         <Switch>
-          <Route path='/repos' component={ Repos } />
-          { repos.length === 0 && <Redirect to='/repos' /> }
+          <Route path='/settings' component={ Settings } />
+          { repos.length === 0 && <Redirect to='/settings' /> }
           <Route path='/repo/:id' component={ Repo } />
           <Route path='/' component={ Dashboard } />
         </Switch>

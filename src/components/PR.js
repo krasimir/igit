@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Details from './Details';
+import marked from 'marked';
+
+import roger from '../jolly-roger';
+
+import Loading from './Loading';
+import Timeline from './Timeline';
 
 const formatBranchLabels = (base, head) => {
   const [ baseRepo ] = base.label.split(':');
@@ -12,31 +17,74 @@ const formatBranchLabels = (base, head) => {
   return [ base.label, head.label ];
 };
 
-export default function PR({ pr }) {
-  const [ base, head ] = formatBranchLabels(pr.base, pr.head);
-  const [ details, toggleDetails ] = useState(false);
+export default function PR({ pr: rawPR }) {
+  const { getPR } = roger.useContext();
+  const [ pr, setPR ] = useState(null);
+  const [ error, setError ] = useState(false);
+  const [ tab, setTab ] = useState('timeline');
 
-  return (
-    <div className={ `pr ${ details ? 'pr-with-details' : ''}` }>
-      <div className='pr-main'>
-        <div className='user'>
-          <a href={ pr.user.html_url } target='_blank'>
-            <img src={ pr.user.avatar_url } />
-          </a>
-        </div>
-        <div>
-          <h3>
-            <a href='javascript:void(0);' onClick={ () => toggleDetails(!details) }>{ pr.title }</a>&nbsp;
-            <a href={ pr.html_url } target='_blank'><span>(#{ pr.number })</span></a>
-          </h3>
-          <small>
-            <span className='branch'>{ base }</span>
-            { details ? <div>↑</div> : ' ← ' }
-            <span className='branch'>{ head }</span>
-          </small>
+  useEffect(() => {
+    setPR(null);
+    getPR(rawPR).then(setPR, error => {
+      console.log(error);
+      setError(error);
+    });
+  }, [rawPR]);
+
+  if (error) {
+    return (
+      <div className='pr-details'>
+        <div className='pr-card tac'>
+          Ops! There is an error fetching the pull request.<br />Wait a bit and refresh the page.
         </div>
       </div>
-      { details && <Details pr={ pr }/> }
+    );
+  }
+
+  if (pr === null) {
+    return (
+      <div className='pr-details'>
+        <div className='pr-card'>
+          <Loading showLogo={ false } message={ `Loading pull request "${ rawPR.title }".` }/>
+        </div>
+      </div>
+    );
+  }
+
+  let content;
+  const [ base, head ] = formatBranchLabels(pr.base, pr.head);
+
+  if (tab === 'timeline') {
+    content = <Timeline pr={ pr } />;
+  }
+  console.log(pr);
+
+  return (
+    <div className='pr-details'>
+      <div className='pr-card'>
+        <div className='media'>
+          <a href={ pr.user.html_url } target='_blank'>
+            <img src={ pr.user.avatar_url } className='avatar'/>
+          </a>
+          <div>
+            <h2>
+              { pr.title }&nbsp;
+              <a href={ pr.html_url } target='_blank'><span>(#{ pr.number })</span></a>
+            </h2>
+            <small>
+              <span className='branch'>{ base }</span> ← <span className='branch'>{ head }</span>
+            </small>
+          </div>
+        </div>
+      </div>
+      <div className='pr-card-light markdown'>
+        <div dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
+      </div>
+      <nav className={ tab }>
+        <a href='javascript:void(0);' onClick={ () => setTab('timeline') }>Timeline</a>
+        <a href='javascript:void(0);' onClick={ () => setTab('commits') }>Files</a>
+      </nav>
+      { content }
     </div>
   );
 };

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { CHECK } from './Icons';
 import Loading from './Loading';
@@ -41,35 +42,31 @@ export default function Repos() {
     );
   }
   return (
-    <div className='repos'>
-      <h1 className='tac'>Your repositories</h1>
-      <p className='tac'>Select the repositories that you want to manage.</p>
-      <ul className='centered-content mt3'>
-        <li key='filter'>
+    <div className='settings'>
+      <h2 className='tac mb1 mt2'>/ settings</h2>
+      <p className='tac'>Select the repositories that you want to manage.<br />Once you are done go back to the <Link to='/'>repos page</Link>.</p>
+      <div className='centered-content mt3'>
+        <div key='filter'>
           <input type='text' placeholder='Filter' className='mb1' onChange={ (e) => setFilter(e.target.value) }/>
-        </li>
+        </div>
         {
           repos
             .filter(({ fullName, selected }) => {
               return filter === '' || fullName.match(new RegExp(filter, 'gi')) || selected;
             })
             .map(repo => {
-              const className = `repo${ repo.selected ? ' selected' : ''}`;
+              const className = `list-link ${ repo.selected ? ' selected' : 'list-link'}`;
 
               return (
-                <li key={ repo.repoId } className={ className }>
-                  <p>
-                    <CHECK />
-                    <a className='subscribe' onClick={ () => toggleRepo(repo) }>
-                      { repo.fullName }
-                    </a>
-                  </p>
-                  <small><a href={ repo.githubURL } target='_blank'>view</a></small>
-                </li>
+                <a className={ className } key={ repo.repoId } onClick={ () => toggleRepo(repo) }>
+                  <CHECK />
+                  { repo.fullName }
+                  <small className='right'><a href={ repo.githubURL } target='_blank'>view</a></small>
+                </a>
               );
             })
         }
-      </ul>
+      </div>
       { loading && (
         <div className='centered-content tac'>
           <Loading showLogo={ false } message='Loading your repositories. Please wait.'/>
