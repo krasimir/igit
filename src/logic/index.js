@@ -25,10 +25,9 @@ roger.context({
       const selected = !!localRepos.find(localRepo => localRepo.repoId === repo.id);
       const normalizedRepo = {
         repoId: repo.id,
-        fullName: repo.full_name,
-        owner: repo.owner.login,
-        repo: repo.name,
-        githubURL: repo.html_url,
+        nameWithOwner: repo.nameWithOwner,
+        name: repo.name,
+        homepageUrl: repo.homepageUrl,
         selected
       };
 

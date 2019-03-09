@@ -18,8 +18,8 @@ export default function Authorize() {
           return (
             <div className='authorize centered-content'>
               <Logo />
-              <h1 className='tac'>Authorization required</h1>
-              <p className='tac'>GitHorn connects to GitHub via API token.<br />Grab one <a href='https://github.com/settings/tokens' target='_blank'>here</a>, paste it below and hit <em>Enter</em> key.<br /><small>While defining the scopes select the <em>repo</em> checkbox. Otherwise some of the requests that the app is doing will probably fail.</small></p>
+              <h1 className='tac mb1'>Authorization required</h1>
+              <p className='tac'>GitHorn connects to GitHub via API token.<br />Grab one <a href='https://github.com/settings/tokens' target='_blank'>here</a>, paste it below and hit <em>Enter</em> key.<br /><small>While defining the scopes select <em>repo</em>, <em>read:org</em>, <em>read:repo_hook</em> and <em>read:user</em> checkbox. Otherwise some of the requests that the app is doing will probably fail.</small></p>
               { !verifying && error && <p className='error'>Verification failed! Make sure that you have a valid access token and try again.</p> }
               {
                 verifying ?

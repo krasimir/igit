@@ -51,17 +51,15 @@ export default function Repos() {
         </div>
         {
           repos
-            .filter(({ fullName, selected }) => {
-              return filter === '' || fullName.match(new RegExp(filter, 'gi')) || selected;
+            .filter(({ nameWithOwner, selected }) => {
+              return filter === '' || nameWithOwner.match(new RegExp(filter, 'gi')) || selected;
             })
             .map(repo => {
               const className = `list-link ${ repo.selected ? ' selected' : 'list-link'}`;
 
               return (
                 <a className={ className } key={ repo.repoId } onClick={ () => toggleRepo(repo) }>
-                  <CHECK />
-                  { repo.fullName }
-                  <small className='right'><a href={ repo.githubURL } target='_blank'>view</a></small>
+                  <CHECK /> { repo.nameWithOwner }
                 </a>
               );
             })

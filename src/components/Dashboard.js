@@ -23,7 +23,7 @@ export default function Dashboard() {
       {
         selectedRepos.map(repo => (
           <Link to={ `/repo/${ repo.repoId }` } className='list-link' key={ repo.repoId }>
-            { repo.fullName }
+            { repo.nameWithOwner }
           </Link>
         ))
       }
