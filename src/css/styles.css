@@ -100,6 +100,9 @@ hr {
 .mb2 {
   margin-bottom: 2em;
 }
+.ml2 {
+  margin-left: 2em;
+}
 .mt3 {
   margin-top: 3em;
 }
@@ -158,7 +161,7 @@ hr {
   -webkit-transform: translateY(6px);
   opacity: .1;
 }
-h2 svg, .commit .commit-message svg {
+svg {
   transform: translateY(3px);
   -webkit-transform: translateY(3px);
   margin: 0 .2em;
@@ -226,7 +229,7 @@ header a span {
 header .profile img {
   width: 32px;
   height: 32px;
-  border-radius: 16px;
+  border-radius: 67% 33% 35% 65% / 38% 30% 70% 62%;
 }
 
 /* ---------------------------------------- settings */
@@ -341,20 +344,26 @@ header .profile img {
 
 .media {
   display: grid;
-  grid-template-columns: 60px 1fr;
+  grid-template-columns: 60px calc(100% - 60px - 1em);
   column-gap: 1em;
-}
-.media.small {
-  grid-template-columns: 26px 1fr;
-  column-gap: .5em;
 }
 .avatar {
   width: 60px;
-  border-radius: 30px;
+  border-radius: 67% 33% 35% 65% / 38% 30% 70% 62%;
+}
+.media.small {
+  grid-template-columns: 26px calc(100% - 26px - 1em);
+  column-gap: .5em;
 }
 .media.small .avatar, .avatar.small {
   width: 26px;
-  border-radius: 13px;
+}
+.media.medium {
+  grid-template-columns: 32px calc(100% - 32px - 1em);
+  column-gap: .5em;
+}
+.media.medium .avatar, .avatar.medium {
+  width: 32px;
 }
 
 /* ---------------------------------------- pr-card */
@@ -418,19 +427,54 @@ header .profile img {
   transform: translateY(1px);
   -webkit-transform: translateY(1px);
 }
-.commit, .comment {
+.commit {
   padding: .5em;
   line-height: 1.6em;
   border-bottom: solid 1px #e2e2e2;
+  max-width: 750px;
 }
-.commit .commit-message {
-  padding-left: .5em;
-}
-.comment p {
-  max-width: 650px;
+.comment {
+  max-width: 750px;
+  padding: .5em 2em 2em 2em;
+  border: solid 1px #e2e2e2;
+  border-radius: 4px;
+  margin: 1em 0;
 }
 .comment .diff {
   width: 100%;
+}
+.comment .reply {
+  border-left: solid 2px #e2e2e2;
+  margin-left: 1.8em;
+  padding-left: 1em;
+  margin-top: 1em;
+}
+.review {
+  max-width: 750px;
+  padding: 2em 0
+}
+.review svg {
+  transform: translateY(-7px);
+  -webkit-transform: translateY(-7px);
+  margin-left: 1em;
+}
+.CHANGES_REQUESTED svg {
+  stroke: red;
+}
+.APPROVED svg {
+  stroke: green;
+}
+.review .markdown {
+  margin: 1em auto 0 auto;
+  max-width: 70%;
+  padding: 1em;
+  border-radius: 4px;
+}
+.CHANGES_REQUESTED .markdown {
+  background: #fddcdc;
+}
+.APPROVED .markdown {
+  background: #dcffdc;
 }
 
 /* ---------------------------------------- markdown */
@@ -439,4 +483,18 @@ header .profile img {
 }
 .markdown a {
   color: inherit;
+}
+.markdown ul, .markdown ol {
+  list-style: disc;
+}
+
+/* ---------------------------------------- third-party */
+.d2h-file-diff {
+  height: 225px;
+  position: relative;
+}
+.d2h-code-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }

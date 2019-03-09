@@ -76,7 +76,7 @@ export default function Repo({ match }) {
             ))
           }
         </div>
-        { selectedPR && <PR pr={ selectedPR } /> }
+        { selectedPR && <PR repo={ repo }pr={ selectedPR } /> }
       </div>
     </div>
   );

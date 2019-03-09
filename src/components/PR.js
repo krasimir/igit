@@ -17,7 +17,7 @@ const formatBranchLabels = (base, head) => {
   return [ base.label, head.label ];
 };
 
-export default function PR({ pr: rawPR }) {
+export default function PR({ repo, pr: rawPR }) {
   const { getPR } = roger.useContext();
   const [ pr, setPR ] = useState(null);
   const [ error, setError ] = useState(false);
@@ -25,7 +25,7 @@ export default function PR({ pr: rawPR }) {
 
   useEffect(() => {
     setPR(null);
-    getPR(rawPR).then(setPR, error => {
+    getPR({ repo, pr: rawPR }).then(setPR, error => {
       console.log(error);
       setError(error);
     });
@@ -90,5 +90,6 @@ export default function PR({ pr: rawPR }) {
 };
 
 PR.propTypes = {
-  pr: PropTypes.object.isRequired
+  pr: PropTypes.object.isRequired,
+  repo: PropTypes.object.isRequired
 };

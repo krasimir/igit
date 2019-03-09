@@ -6,7 +6,7 @@ roger.context({
   async getPRs(repo) {
     return await api.fetchRemotePRs(repo);
   },
-  async getPR(pr) {
-    return await api.fetchRemotePR(pr);
+  async getPR({ repo, pr }) {
+    return await api.fetchRemotePR(repo, pr);
   }
 });

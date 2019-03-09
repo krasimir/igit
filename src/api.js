@@ -91,11 +91,13 @@ function createAPI() {
   api.toggleRepo = function (repo) {
     return db.toggleRepo(repo);
   };
-  api.fetchRemotePR = async function (pr) {
+  api.fetchRemotePR = async function (repo, pr) {
+    // if (USE_MOCKS) return requestMock('pr_rejected.json');
     if (USE_MOCKS) return requestMock('pr.json');
 
-    pr.commits = await request(pr.commits_url, true);
-    pr.reviews = await request(pr.review_comments_url, true);
+    pr.githorn_commits = await request(pr.commits_url, true);
+    pr.githorn_reviews_comments = await request(pr.review_comments_url, true);
+    pr.githorn_reviews = await request(`/repos/${ repo.owner }/${ repo.repo }/pulls/${ pr.number }/reviews`);
 
     // console.log(JSON.stringify(pr, null, 2));
 
