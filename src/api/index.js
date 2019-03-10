@@ -1,6 +1,8 @@
 /* eslint-disable camelcase, max-len */
-import db from './db';
-import { NO_TOKEN, USE_MOCKS } from './constants';
+import db from '../db';
+import { NO_TOKEN, USE_MOCKS } from '../constants';
+import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS } from './graphql';
+import { createOrganization, createProfile, createRepo } from './models';
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
@@ -47,6 +49,7 @@ function createAPI() {
 
   /* ---------------- methods ---------------- */
 
+  api.setToken = (t) => (token = t);
   api.getProfile = async () => {
     if (profile === null) {
       const fromDB = await db.getProfile();
@@ -59,25 +62,17 @@ function createAPI() {
     }
     return profile;
   };
-  api.setToken = (t) => (token = t);
   api.verify = async function () {
     if (USE_MOCKS) {
-      const { name, avatar_url } = await requestMock('user.json');
+      const profile = await requestMock('profile.json');
 
-      db.setProfile(profile = {
-        name,
-        avatar: avatar_url,
-        token
-      });
+      db.setProfile(profile);
       return profile;
     }
-    const { name, avatar_url } = await request('/user');
+    const data = await request('/user');
 
-    db.setProfile(profile = {
-      name,
-      avatar: avatar_url,
-      token
-    });
+    db.setProfile(profile = createProfile(data, token));
+    // console.log(JSON.stringify(profile, null, 2));
     return profile;
   };
   // api.fetchRemoteRepos = async function () {
@@ -98,33 +93,23 @@ function createAPI() {
 
   //   return get();
   // };
-  api.fetchRemoteRepos = async function () {
-    if (USE_MOCKS) return requestMock('user.repos.json');
+  api.fetchOrganizations = async function () {
+    if (USE_MOCKS) return requestMock('orgs.json');
+
+    const { data } = await requestGraphQL(QUERY_GET_ORGANIZATIONS());
+
+    return data.viewer.organizations.nodes.map(createOrganization);
+  };
+  api.fetchRemoteRepos = function (query) {
+    if (USE_MOCKS) return requestMock('remote.repos.json');
 
     let perPage = 50;
     let cursor;
     let repos = [];
     const get = async () => {
 
-      const { data } = await requestGraphQL(`
-      query {
-        search(query: "org:trialreach", type: REPOSITORY, first: ${ perPage }${ cursor ? `, after: ${ cursor }` : ''}) {
-          repositoryCount,
-          edges {
-            cursor,
-            node {
-              ... on Repository {
-                name,
-                id,
-                nameWithOwner,
-                homepageUrl,
-                isPrivate
-              }
-            }
-          }
-        }
-      }
-      `);
+      const q = QUERY_GET_REPOS_OF_ORG(query, perPage, cursor);
+      const { data } = await requestGraphQL(q);
 
       repos = repos.concat(data.search.edges);
 
@@ -132,7 +117,7 @@ function createAPI() {
         cursor = repos[repos.length - 1].cursor.replace('==', '');
         return await get();
       }
-      return repos.map(({ node }) => node);
+      return repos.map(({ node }) => createRepo(node));
     };
 
     return get();

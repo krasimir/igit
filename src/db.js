@@ -6,8 +6,8 @@ function createDb() {
   const db = new Dexie('GitHorn');
 
   db.version(1).stores({
-    profile: '++id, token, name, avatar',
-    repos: '++id, repoId, owner, repo, fullName, githubURL'
+    profile: '++id, token, name, avatar, login',
+    repos: '++id, name, repoId, nameWithOwner, isPrivate, url, selected, owner'
   });
 
   api.getProfile = async function () {

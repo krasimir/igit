@@ -18,20 +18,23 @@ roger.context({
       setVerification({ verifying: false, error });
     }
   },
-  async fetchAllRepos() {
-    const remoteRepos = await api.fetchRemoteRepos();
+  async fetchOrganizations() {
+    return api.fetchOrganizations();
+  },
+  async fetchAllRepos(query) {
+    const remoteRepos = await api.fetchRemoteRepos(query);
     const localRepos = await api.getLocalRepos();
-    const repos = remoteRepos.map(repo => {
-      const selected = !!localRepos.find(localRepo => localRepo.repoId === repo.id);
-      const normalizedRepo = {
-        repoId: repo.id,
-        nameWithOwner: repo.nameWithOwner,
-        name: repo.name,
-        homepageUrl: repo.homepageUrl,
-        selected
-      };
+    let repos = [];
 
-      return normalizedRepo;
+    repos = repos.concat(localRepos);
+    remoteRepos.forEach(remoteRepo => {
+      const found = repos.find(r => r.repoId === remoteRepo.repoId);
+
+      if (found) {
+        found.selected = true;
+      } else {
+        repos.push(remoteRepo);
+      }
     });
 
     return repos;

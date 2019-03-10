@@ -30,6 +30,9 @@ input[type="text"] {
   outline: none;
   border-radius: 4px;
 }
+input[type="text"]:disabled {
+  opacity: .5;
+}
 a.default-link {
   background: none;
   text-decoration: underline;
@@ -242,6 +245,15 @@ header .profile img {
 }
 .settings .selected svg {
   opacity: 1;
+}
+.settings .search-criteria label {
+  display: grid;
+  grid-template-columns: 35px 1fr;
+}
+.settings .search-criteria input {
+  font-size: 2em;
+  transform: translateY(4px);
+  -webkit-transform: translateY(4px);
 }
 
 /* ---------------------------------------- vendor */
