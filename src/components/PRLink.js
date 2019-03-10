@@ -6,8 +6,8 @@ export default function PR({ pr, toggleDetails, selected }) {
     <button
       onClick={ () => toggleDetails(pr) }
       className={ selected ? 'list-link pr-link selected' : 'list-link pr-link' }>
-      <img src={ pr.user.avatar_url } className='avatar small right'/>
-      { pr.title }&nbsp;<a href={ pr.html_url } target='_blank'><span>(#{ pr.number })</span></a>
+      <img src={ pr.authorAvatar } className='avatar small right'/>
+      { pr.title }&nbsp;<a href={ pr.url } target='_blank'><span>(#{ pr.number })</span></a>
     </button>
   );
 };

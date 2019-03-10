@@ -1,7 +1,6 @@
 import roger from '../jolly-roger';
 
 import api from '../api';
-import './PRs';
 
 roger.context({
   async initialize(action, { setProfile, setRepos }) {
@@ -41,6 +40,12 @@ roger.context({
   },
   toggleRepo(repo) {
     api.toggleRepo(repo);
+  },
+  async getPRs(repo) {
+    return await api.fetchRemotePRs(repo);
+  },
+  async getPR({ repo, pr }) {
+    return await api.fetchRemotePR(repo, pr);
   }
 });
 

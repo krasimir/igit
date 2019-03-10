@@ -10,7 +10,7 @@ import PR from './PR';
 
 export default function Repo({ match }) {
   const [ repos ] = roger.useState('repos', []);
-  const repo = repos.find(({ repoId }) => repoId === parseInt(match.params.id, 10));
+  const repo = repos.find(({ repoId }) => repoId === match.params.id);
   const { getPRs } = roger.useContext();
   const [ prs, setPRs ] = useState(null);
   const [ selectedPR, setSelectedPR ] = useState(null);
@@ -37,7 +37,7 @@ export default function Repo({ match }) {
     return (
       <div className='view-repo'>
         <p className='tac mt2'>
-          Ops! There is an error fetching the pull requests of { repo.fullName }. Wait a bit and refresh the page.
+          Ops! There is an error fetching the pull requests at { repo.name }. Wait a bit and refresh the page.
         </p>
       </div>
     );
@@ -46,8 +46,8 @@ export default function Repo({ match }) {
   if (prs === null) {
     return (
       <div className='view-repo'>
-        <h2 className='tac mt2'>{ repo.fullName }</h2>
-        <Loading showLogo={ false } message={ `Loading pull requests for ${ repo.fullName }.` }/>
+        <h2 className='tac mt2'>/ { repo.nameWithOwner }</h2>
+        <Loading showLogo={ false } message={ `Fetching pull requests at ${ repo.name }.` }/>
       </div>
     );
   }
@@ -56,9 +56,9 @@ export default function Repo({ match }) {
     return (
       <div className='view-repo'>
         <h2 className='tac mb1 mt2'>
-          <Link to='/'>/ repos</Link> / { repo.fullName.split('/')[1] } / pull requests
+          <Link to='/'>/ repos</Link> / { repo.name } / pull requests
         </h2>
-        <p className='tac mt2'>No pull requests in { repo.fullName } repository.</p>
+        <p className='tac mt2'>No pull requests at { repo.name } repository.</p>
       </div>
     );
   }
@@ -66,7 +66,7 @@ export default function Repo({ match }) {
   return (
     <div className={ selectedPR ? 'view-repo open-pr' : 'view-repo' }>
       <h2 className='tac mb1 mt2'>
-        <Link to='/'>/ repos</Link> / { repo.fullName.split('/')[1] } / pull requests
+        <Link to='/'>/ repos</Link> / { repo.name } / pull requests
       </h2>
       <div className='repo-content'>
         <div className='prs'>
@@ -76,7 +76,7 @@ export default function Repo({ match }) {
             ))
           }
         </div>
-        { selectedPR && <PR repo={ repo }pr={ selectedPR } /> }
+        { selectedPR && <PR repo={ repo } pr={ selectedPR } /> }
       </div>
     </div>
   );

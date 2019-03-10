@@ -1,8 +1,8 @@
-/* eslint-disable camelcase, max-len */
+/* eslint-disable camelcase, max-len, no-sequences */
 import db from '../db';
 import { NO_TOKEN, USE_MOCKS } from '../constants';
-import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS } from './graphql';
-import { createOrganization, createProfile, createRepo } from './models';
+import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS } from './graphql';
+import { createOrganization, createProfile, createRepo, createPR } from './models';
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
@@ -75,24 +75,6 @@ function createAPI() {
     // console.log(JSON.stringify(profile, null, 2));
     return profile;
   };
-  // api.fetchRemoteRepos = async function () {
-  //   if (USE_MOCKS) return requestMock('user.repos.json');
-
-  //   let page = 1;
-  //   let repos = [];
-  //   const get = async () => {
-  //     const data = await request('/user/repos?per_page=50&page=' + page);
-
-  //     if (data.length > 0) {
-  //       repos = repos.concat(data);
-  //       page += 1;
-  //       return await get();
-  //     }
-  //     return repos;
-  //   };
-
-  //   return get();
-  // };
   api.fetchOrganizations = async function () {
     if (USE_MOCKS) return requestMock('orgs.json');
 
@@ -128,6 +110,29 @@ function createAPI() {
   api.toggleRepo = function (repo) {
     return db.toggleRepo(repo);
   };
+  api.fetchRemotePRs = async function (repo) {
+    if (USE_MOCKS) return requestMock('prs.json');
+
+    let perPage = 10;
+    let cursor;
+    let prs = [];
+    const get = async () => {
+
+      const q = QUERY_GET_PRS(repo.name, repo.owner, perPage, cursor);
+      const { data } = await requestGraphQL(q);
+      const pullRequests = data.search.edges[0].node.pullRequests;
+
+      prs = prs.concat(pullRequests.edges);
+
+      if (pullRequests.totalCount > prs.length) {
+        cursor = prs[prs.length - 1].cursor.replace('==', '');
+        return get();
+      }
+      return prs.map(({ node }) => createPR(node));
+    };
+
+    return get();
+  };
   api.fetchRemotePR = async function (repo, pr) {
     // if (USE_MOCKS) return requestMock('pr_rejected.json');
     if (USE_MOCKS) return requestMock('pr.json');
@@ -139,11 +144,6 @@ function createAPI() {
     // console.log(JSON.stringify(pr, null, 2));
 
     return pr;
-  };
-  api.fetchRemotePRs = async function (repo) {
-    if (USE_MOCKS) return requestMock('pulls.json');
-
-    return await request(`/repos/${ repo.fullName }/pulls`);
   };
 
   return api;

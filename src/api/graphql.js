@@ -33,3 +33,32 @@ export const QUERY_GET_ORGANIZATIONS = () => `
     }
   }
 `;
+
+export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `
+  query {
+    search(query: "${ name } in:name user:${ owner }", type: REPOSITORY, first: 1) {
+      edges {
+        node {
+          ... on Repository {
+            pullRequests(states: OPEN, first: ${ perPage }${ cursor ? `, after: ${ cursor }` : ''}) {
+              totalCount,
+              edges {
+                cursor,
+                node {
+                  id,
+                  title,
+                  number,
+                  url,
+                  author {
+                    login,
+                    avatarUrl
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
