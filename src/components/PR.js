@@ -51,13 +51,14 @@ export default function PR({ repo, pr: rawPR }) {
     );
   }
 
+  console.log(pr);
+
   let content;
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
 
   if (tab === 'timeline') {
     content = <Timeline pr={ pr } />;
   }
-  console.log(pr);
 
   return (
     <div className='pr-details'>

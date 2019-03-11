@@ -5,6 +5,7 @@ export default function createPR(node) {
     authorLogin: node.author.login,
     authorAvatar: node.author.avatarUrl,
     number: node.number,
-    url: node.url
+    url: node.url,
+    headRefName: node.headRefName
   };
 }

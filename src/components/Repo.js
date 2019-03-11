@@ -63,6 +63,8 @@ export default function Repo({ match }) {
     );
   }
 
+  // console.log(JSON.stringify(prs, null, 2));
+
   return (
     <div className={ selectedPR ? 'view-repo open-pr' : 'view-repo' }>
       <h2 className='tac mb1 mt2'>

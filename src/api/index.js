@@ -1,8 +1,8 @@
 /* eslint-disable camelcase, max-len, no-sequences */
 import db from '../db';
 import { NO_TOKEN, USE_MOCKS } from '../constants';
-import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS } from './graphql';
-import { createOrganization, createProfile, createRepo, createPR } from './models';
+import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS, QUERY_PR } from './graphql';
+import { createOrganization, createProfile, createRepo, createPR, createPRDetails } from './models';
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
@@ -135,15 +135,12 @@ function createAPI() {
   };
   api.fetchRemotePR = async function (repo, pr) {
     // if (USE_MOCKS) return requestMock('pr_rejected.json');
-    if (USE_MOCKS) return requestMock('pr.json');
+    // if (USE_MOCKS) return requestMock('pr.json');
 
-    pr.githorn_commits = await request(pr.commits_url, true);
-    pr.githorn_reviews_comments = await request(pr.review_comments_url, true);
-    pr.githorn_reviews = await request(`/repos/${ repo.owner }/${ repo.repo }/pulls/${ pr.number }/reviews`);
+    const q = QUERY_PR(repo.name, repo.owner, pr.number);
+    const { data } = await requestGraphQL(q);
 
-    // console.log(JSON.stringify(pr, null, 2));
-
-    return pr;
+    return createPRDetails(data);
   };
 
   return api;
