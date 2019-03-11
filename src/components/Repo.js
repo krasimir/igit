@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import roger from '../jolly-roger';
 
 import Loading from './Loading';
-import PRLink from './PRLink';
 import PR from './PR';
 
 export default function Repo({ match }) {
@@ -13,7 +12,6 @@ export default function Repo({ match }) {
   const repo = repos.find(({ repoId }) => repoId === match.params.id);
   const { getPRs } = roger.useContext();
   const [ prs, setPRs ] = useState(null);
-  const [ selectedPR, setSelectedPR ] = useState(null);
   const [ error, setError ] = useState(false);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ export default function Repo({ match }) {
     );
   }
 
-  // console.log(JSON.stringify(prs, null, 2));
+  const selectedPR = prs.find(({ id }) => id === match.params.prId);
 
   return (
     <div className={ selectedPR ? 'view-repo open-pr' : 'view-repo' }>
@@ -74,7 +72,13 @@ export default function Repo({ match }) {
         <div className='prs'>
           {
             prs.map((pr, key) => (
-              <PRLink pr={ pr } key={ key } toggleDetails={ setSelectedPR } selected={ selectedPR === pr }/>
+              <Link
+                to={ `/repo/${ match.params.id }/${ pr.id }` }
+                key={ pr.id }
+                className={ selectedPR === pr ? 'list-link pr-link selected' : 'list-link pr-link' }>
+                <img src={ pr.authorAvatar } className='avatar small right'/>
+                { pr.title }&nbsp;(#{ pr.number })
+              </Link>
             ))
           }
         </div>

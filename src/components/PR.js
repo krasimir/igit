@@ -8,13 +8,10 @@ import Loading from './Loading';
 import Timeline from './Timeline';
 
 const formatBranchLabels = (base, head) => {
-  const [ baseRepo ] = base.label.split(':');
-  const [ headRepo ] = head.label.split(':');
-
-  if (baseRepo === headRepo) {
+  if (base.owner === head.owner) {
     return [ base.ref, head.ref ];
   }
-  return [ base.label, head.label ];
+  return [ base.owner + ':' + base.ref, head.owner + ':' + head.ref ];
 };
 
 export default function PR({ repo, pr: rawPR }) {
@@ -51,26 +48,27 @@ export default function PR({ repo, pr: rawPR }) {
     );
   }
 
+  // console.log(JSON.stringify(pr, null, 2));
   console.log(pr);
 
   let content;
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
 
   if (tab === 'timeline') {
-    content = <Timeline pr={ pr } />;
+    // content = <Timeline pr={ pr } />;
   }
 
   return (
     <div className='pr-details'>
       <div className='pr-card'>
         <div className='media'>
-          <a href={ pr.user.html_url } target='_blank'>
-            <img src={ pr.user.avatar_url } className='avatar'/>
+          <a href={ pr.author.url } target='_blank'>
+            <img src={ pr.author.avatar } className='avatar'/>
           </a>
           <div>
             <h2>
               { pr.title }&nbsp;
-              <a href={ pr.html_url } target='_blank'><span>(#{ pr.number })</span></a>
+              <a href={ pr.url } target='_blank'><span>(#{ pr.number })</span></a>
             </h2>
             <small>
               <span className='branch'>{ base }</span> ← <span className='branch'>{ head }</span>

@@ -105,7 +105,10 @@ export const QUERY_PR = (name, owner, prNumber) => `
                         oid,
                         author {
                             name,
-                            avatarUrl
+                            avatarUrl,
+                            user {
+                              login
+                            }
                         },
                         message,
                         additions,
@@ -119,7 +122,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                             login
                         },
                         currentTitle,
-                        previousTitle
+                        previousTitle,
+                        createdAt
                     },
                     ... on CrossReferencedEvent {
                         actor {
@@ -164,14 +168,6 @@ export const QUERY_PR = (name, owner, prNumber) => `
                             id
                         }
                     },
-                    ... on PullRequestReviewThread {
-                        id,
-                        isResolved,
-                        resolvedBy {
-                            avatarUrl,
-                            name
-                        }
-                    },
                     ... on IssueComment {
                         author {
                             avatarUrl,
@@ -197,6 +193,7 @@ export const QUERY_PR = (name, owner, prNumber) => `
                             avatarUrl,
                             login
                         },
+                        createdAt,
                         subject {
                             ... on Issue {
                                 title,

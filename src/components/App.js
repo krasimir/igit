@@ -38,6 +38,7 @@ export default function App() {
         <Switch>
           <Route path='/settings' component={ Settings } />
           { repos.length === 0 && <Redirect to='/settings' /> }
+          <Route path='/repo/:id/:prId' component={ Repo } />
           <Route path='/repo/:id' component={ Repo } />
           <Route path='/' component={ Dashboard } />
         </Switch>
