@@ -3,21 +3,24 @@ import PropTypes from 'prop-types';
 
 import { formatDate } from '../../utils';
 
-export default function Date({ entry }) {
-  if (entry.date && entry.html_url) {
+export default function Date({ event, className }) {
+  const cls = typeof className !== 'undefined' ? className : 'opa5';
+
+  if (event.url) {
     return (
-      <small className='opa5'>
-        <a href={ entry.html_url } target='_blank'>{ formatDate(entry.date) }</a>
+      <small className={ cls }>
+        <a href={ event.url } target='_blank'>{ formatDate(event.date) }</a>
       </small>
     );
   }
   return (
-    <small className='opa5'>
-      { formatDate(entry.date) }
+    <small className={ cls }>
+      { formatDate(event.date) }
     </small>
   );
 }
 
 Date.propTypes = {
-  entry: PropTypes.object.isRequired
+  event: PropTypes.object.isRequired,
+  className: PropTypes.string
 };

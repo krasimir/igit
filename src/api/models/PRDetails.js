@@ -25,6 +25,8 @@ function normalizeTimelineEvent({ node }) {
   switch (node.__typename) {
     case 'Commit':
       return {
+        oid: node.oid,
+        url: node.url,
         type: node.__typename,
         author: normalizeUser(node.author),
         message: node.message,
@@ -96,7 +98,9 @@ function normalizeReviewThread({ node }) {
     author: normalizeUser(commentNode.author),
     body: commentNode.body,
     date: new Date(commentNode.publishedAt),
-    diffHunk: commentNode.diffHunk
+    diffHunk: commentNode.diffHunk,
+    path: commentNode.path,
+    outdated: commentNode.outdated
   }));
 
   return {
@@ -129,6 +133,10 @@ export default function createPRDetails(data) {
   o.additions = pr.additions;
   o.deletions = pr.deletions;
   o.mergeable = pr.mergeable;
+  o.closed = pr.closed;
+  o.closedAt = new Date(pr.closedAt);
+  o.merged = pr.merged;
+  o.mergedAt = new Date(pr.mergedAt);
   o.body = pr.body;
   o.events = [];
 

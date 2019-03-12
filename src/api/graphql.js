@@ -94,6 +94,10 @@ export const QUERY_PR = (name, owner, prNumber) => `
         additions,
         deletions,
         mergeable,
+        merged,
+        mergedAt,
+        closed,
+        closedAt,
         body,
         timeline(first:100) {
             totalCount,
@@ -218,6 +222,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                         edges {
                             node {
                                 publishedAt,
+                                path,
+                                outdated,
                                 author {
                                     login,
                                     avatarUrl

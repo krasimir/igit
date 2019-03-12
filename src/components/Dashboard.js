@@ -22,7 +22,7 @@ export default function Dashboard() {
       <h2 className='tac mb1'>/ repos</h2>
       {
         selectedRepos.map(repo => (
-          <Link to={ `/repo/${ repo.repoId }` } className='list-link' key={ repo.repoId }>
+          <Link to={ `/repo/${ repo.owner }/${ repo.name }` } className='list-link' key={ repo.repoId }>
             { repo.nameWithOwner }
           </Link>
         ))

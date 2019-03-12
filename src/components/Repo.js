@@ -9,7 +9,8 @@ import PR from './PR';
 
 export default function Repo({ match }) {
   const [ repos ] = roger.useState('repos', []);
-  const repo = repos.find(({ repoId }) => repoId === match.params.id);
+  const { owner, name, prNumber } = match.params;
+  const repo = repos.find(({ owner: repoOwner, name: repoName }) => owner === repoOwner && name === repoName);
   const { getPRs } = roger.useContext();
   const [ prs, setPRs ] = useState(null);
   const [ error, setError ] = useState(false);
@@ -61,10 +62,10 @@ export default function Repo({ match }) {
     );
   }
 
-  const selectedPR = prs.find(({ id }) => id === match.params.prId);
+  const selectedPR = prs.find(({ number }) => number.toString() === prNumber);
 
   return (
-    <div className={ selectedPR ? 'view-repo open-pr' : 'view-repo' }>
+    <div className={ prNumber ? 'view-repo open-pr' : 'view-repo' }>
       <h2 className='tac mb1 mt2'>
         <Link to='/'>/ repos</Link> / { repo.name } / pull requests
       </h2>
@@ -73,7 +74,7 @@ export default function Repo({ match }) {
           {
             prs.map((pr, key) => (
               <Link
-                to={ `/repo/${ match.params.id }/${ pr.id }` }
+                to={ `/repo/${ owner }/${ name }/${ pr.number }` }
                 key={ pr.id }
                 className={ selectedPR === pr ? 'list-link pr-link selected' : 'list-link pr-link' }>
                 <img src={ pr.authorAvatar } className='avatar small right'/>
@@ -82,7 +83,7 @@ export default function Repo({ match }) {
             ))
           }
         </div>
-        { selectedPR && <PR repo={ repo } pr={ selectedPR } /> }
+        { prNumber && <PR repo={ repo } prNumber={ prNumber } url={ match.url }/> }
       </div>
     </div>
   );

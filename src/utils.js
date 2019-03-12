@@ -20,7 +20,3 @@ export function formatDate(str, noTime = false) {
   return day + ' ' + monthNames[date.getMonth()] + ' ' + year +
     (noTime ? '' : ', ' + fcn(date.getHours()) + ':' + fcn(date.getMinutes()));
 }
-
-export function sortByDate(a, b) {
-  return new Date(a.date) - new Date(b.date);
-}

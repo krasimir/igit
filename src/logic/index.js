@@ -44,8 +44,8 @@ roger.context({
   async getPRs(repo) {
     return await api.fetchRemotePRs(repo);
   },
-  async getPR({ repo, pr }) {
-    return await api.fetchRemotePR(repo, pr);
+  async getPR({ repo, prNumber }) {
+    return await api.fetchRemotePR(repo, prNumber);
   }
 });
 

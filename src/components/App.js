@@ -8,7 +8,7 @@ import Settings from './Settings';
 import Repo from './Repo';
 import Header from './Header';
 import Dashboard from './Dashboard';
-import { NO_TOKEN } from '../constants';
+import { BASE_PATH, NO_TOKEN } from '../constants';
 import roger from '../jolly-roger';
 import '../logic';
 
@@ -32,14 +32,14 @@ export default function App() {
   }
 
   return (
-    <Router>
+    <Router basename={ BASE_PATH }>
       <Fragment>
         <Header profile={ profile } />
         <Switch>
           <Route path='/settings' component={ Settings } />
           { repos.length === 0 && <Redirect to='/settings' /> }
-          <Route path='/repo/:id/:prId' component={ Repo } />
-          <Route path='/repo/:id' component={ Repo } />
+          <Route path='/repo/:owner/:name/:prNumber' component={ Repo } />
+          <Route path='/repo/:owner/:name/' component={ Repo } />
           <Route path='/' component={ Dashboard } />
         </Switch>
       </Fragment>

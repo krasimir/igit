@@ -22,6 +22,9 @@ a:hover {
   background: #000;
   color: #fff;
 }
+a.no-hover:hover {
+  background: none;
+}
 input[type="text"] {
   width: 100%;
   padding: .8em 1em;
@@ -63,6 +66,9 @@ p {
 .tac {
   text-align: center;
 }
+.tal {
+  text-align: left;
+}
 #app {
   position: relative;
   padding: 1em;
@@ -71,6 +77,13 @@ p {
   max-width: 550px;
   margin: 0 auto;
 }
+.block {
+  display: block;
+}
+.iblock {
+  display: inline-block;
+}
+
 /* ---------------------------------------- generic */
 
 h1, h2, h3, h4, h5 {
@@ -93,6 +106,9 @@ hr {
 }
 .mt1 {
   margin-top: 1em;
+}
+.mt05 {
+  margin-top: .5em;
 }
 .mb1 {
   margin-bottom: 1em;
@@ -133,6 +149,9 @@ hr {
 }
 .opa5 {
   opacity: .5;
+}
+.lh0 {
+  line-height: 0;
 }
 .list-link {
   padding: 1em;
@@ -421,7 +440,7 @@ header .profile img {
 .pr-details .loading {
   padding-top: 0;
 }
-.pr-details nav.timeline a:nth-child(1) {
+.pr-details nav a.selected {
   border-bottom: solid 2px #000;
   transform: translateY(1px);
   -webkit-transform: translateY(1px);
@@ -449,9 +468,6 @@ header .profile img {
   border-radius: 4px;
   margin: 1em 0;
 }
-.comment .diff {
-  width: 100%;
-}
 .comment .reply {
   border-left: solid 2px #e2e2e2;
   margin-left: 1.8em;
@@ -460,12 +476,12 @@ header .profile img {
 }
 .review {
   max-width: 750px;
-  padding: 2em 0
+  padding: 1em 0;
+  border-bottom: solid 1px #e2e2e2;
 }
-.review svg {
-  transform: translateY(-7px);
-  -webkit-transform: translateY(-7px);
-  margin-left: 1em;
+.review-content {
+  max-width: 400px;
+  margin: 0.5em auto 0 auto;
 }
 .CHANGES_REQUESTED svg {
   stroke: red;
@@ -473,17 +489,48 @@ header .profile img {
 .APPROVED svg {
   stroke: green;
 }
-.review .markdown {
-  margin: 1em auto 0 auto;
-  max-width: 70%;
-  padding: 1em;
+.code-diff {
+  width: 100%;
+}
+
+/* ---------------------------------------- pr-status */
+
+.pr-status {
+  font-size: .8em;
+  padding: .2em .4em;
   border-radius: 4px;
+  border: solid 1px #e2e2e2;
 }
-.CHANGES_REQUESTED .markdown {
-  background: #fddcdc;
+.pr-status-merged {
+  font-size: .8em;
+  background: #329ecc;
+  color: white;
+  border: none;
 }
-.APPROVED .markdown {
-  background: #dcffdc;
+.pr-status-closed {
+  font-size: .8em;
+  background: #e2e2e2;
+  border: none;
+}
+
+/* ---------------------------------------- diff */
+
+.diff {
+  display: inline-block;
+  margin-left: .5em;
+  font-size: .8em;
+}
+.diff:hover {
+  opacity: 1;
+}
+.diff-add {
+  color: green;
+  display: inline-block;
+  margin-right: .2em;
+}
+.diff-delete {
+  color: red;
+  display: inline-block;
 }
 
 /* ---------------------------------------- markdown */
