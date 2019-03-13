@@ -119,6 +119,9 @@ hr {
 .mb2 {
   margin-bottom: 2em;
 }
+.ml1 {
+  margin-left: 1em;
+}
 .ml2 {
   margin-left: 2em;
 }
@@ -130,6 +133,14 @@ hr {
 }
 .mb05 {
   margin-bottom: .5em;
+}
+.mx05 {
+  margin-left: .5em;
+  margin-right: .5em;
+}
+.mx1 {
+  margin-left: 1em;
+  margin-right: 1em;
 }
 .pl05 {
   padding-left: .5em;
@@ -424,6 +435,10 @@ header .profile img {
 }
 
 /* ---------------------------------------- pr details*/
+.pr-details {
+  max-width: 750px;
+  padding-bottom: 2em;
+}
 .pr-details nav {
   border-bottom: solid 1px #e2e2e2;
   margin-bottom: 1em;
@@ -459,10 +474,8 @@ header .profile img {
   padding: .5em;
   line-height: 1.6em;
   border-bottom: solid 1px #e2e2e2;
-  max-width: 750px;
 }
 .comment {
-  max-width: 750px;
   padding: .5em 2em 2em 2em;
   border: solid 1px #e2e2e2;
   border-radius: 4px;
@@ -473,15 +486,6 @@ header .profile img {
   margin-left: 1.8em;
   padding-left: 1em;
   margin-top: 1em;
-}
-.review {
-  max-width: 750px;
-  padding: 1em 0;
-  border-bottom: solid 1px #e2e2e2;
-}
-.review-content {
-  max-width: 400px;
-  margin: 0.5em auto 0 auto;
 }
 .CHANGES_REQUESTED svg {
   stroke: red;
@@ -496,7 +500,7 @@ header .profile img {
 /* ---------------------------------------- pr-status */
 
 .pr-status {
-  font-size: .8em;
+  font-size: .6em;
   padding: .2em .4em;
   border-radius: 4px;
   border: solid 1px #e2e2e2;
@@ -511,6 +515,15 @@ header .profile img {
   font-size: .8em;
   background: #e2e2e2;
   border: none;
+}
+
+/* ---------------------------------------- diff */
+
+.timeline {
+  font-size: .9em;
+}
+.timeline > div + div {
+  margin-top: .4em;
 }
 
 /* ---------------------------------------- diff */
@@ -539,6 +552,10 @@ header .profile img {
 }
 .markdown a {
   color: inherit;
+}
+.markdown a:hover {
+  color: white;
+  text-decoration: none;
 }
 .markdown ul, .markdown ol {
   list-style: disc;

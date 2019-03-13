@@ -144,7 +144,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                                 title,
                                 url
                             }
-                        }
+                        },
+                        url
                     },
                     ... on PullRequestReview {
                         id,
@@ -154,7 +155,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                         },
                         body,
                         submittedAt,
-                        state
+                        state,
+                        url
                     },
                     ... on PullRequestReviewComment {
                         pullRequestReview {
@@ -170,7 +172,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                         diffHunk,
                         replyTo {
                             id
-                        }
+                        },
+                        url
                     },
                     ... on IssueComment {
                         author {
@@ -178,7 +181,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                             login
                         },
                         body,
-                        publishedAt
+                        publishedAt,
+                        url
                     },
                     ... on MergedEvent {
                         actor {
@@ -190,7 +194,8 @@ export const QUERY_PR = (name, owner, prNumber) => `
                             commitUrl
                         }
                         mergeRefName,
-                        createdAt
+                        createdAt,
+                        url
                     }
                     ... on ReferencedEvent {
                        actor {
@@ -223,7 +228,10 @@ export const QUERY_PR = (name, owner, prNumber) => `
                             node {
                                 publishedAt,
                                 path,
+                                position,
+                                originalPosition,
                                 outdated,
+                                url,
                                 author {
                                     login,
                                     avatarUrl

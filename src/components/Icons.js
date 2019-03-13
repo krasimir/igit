@@ -15,9 +15,9 @@ export const CHECK = ({ size }) => <svg
     <polyline points='20 6 9 17 4 12' />
 </svg>;
 
-export const GIT_COMMIT = () => <svg
-width='24'
-height='24'
+export const GIT_COMMIT = ({ size }) => <svg
+width={ size || 24 }
+height={ size || 24 }
 viewBox='0 0 24 24'
 fill='none'
 stroke='currentColor'
@@ -58,3 +58,7 @@ export const PULL_REQUEST = ({ size }) => <svg width={ size || 24 } height={ siz
 export const CHECK_CIRCLE = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg>;
 
 export const STORM = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9'/><polyline points='13 11 9 17 15 17 11 23'/></svg>;
+
+export const EDIT = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M12 20h9' /><path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/></svg>;
+
+export const GIT_MERGE = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='18' r='3'/><circle cx='6' cy='6' r='3'/><path d='M6 21V9a9 9 0 0 0 9 9'/></svg>;

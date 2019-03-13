@@ -17,6 +17,6 @@ export function formatDate(str, noTime = false) {
   var day = date.getDate();
   var year = date.getFullYear();
 
-  return day + ' ' + monthNames[date.getMonth()] + ' ' + year +
+  return fcn(day) + ' ' + monthNames[date.getMonth()] + ' ' + year +
     (noTime ? '' : ', ' + fcn(date.getHours()) + ':' + fcn(date.getMinutes()));
 }

@@ -38,14 +38,17 @@ function normalizeTimelineEvent({ node }) {
       return {
         type: node.__typename,
         author: normalizeUser(node.actor),
-        date: new Date(node.createdAt)
+        date: new Date(node.createdAt),
+        currentTitle: node.currentTitle,
+        previousTitle: node.previousTitle
       };
     case 'CrossReferencedEvent':
       return {
         type: node.__typename,
         author: normalizeUser(node.actor),
         date: new Date(node.referencedAt),
-        target: node.target
+        target: node.target,
+        url: node.url
       };
     case 'PullRequestReview':
       return {
@@ -53,6 +56,7 @@ function normalizeTimelineEvent({ node }) {
         author: normalizeUser(node.author),
         body: node.body,
         state: node.state,
+        url: node.url,
         date: new Date(node.submittedAt)
       };
     case 'PullRequestReviewComment':
@@ -64,6 +68,7 @@ function normalizeTimelineEvent({ node }) {
         outdated: node.outdated,
         diffHunk: node.diffHunk,
         replyTo: node.replyTo.id,
+        url: node.url,
         date: new Date(node.publishedAt)
       };
     case 'IssueComment':
@@ -71,7 +76,8 @@ function normalizeTimelineEvent({ node }) {
         type: node.__typename,
         author: normalizeUser(node.author),
         body: node.body,
-        date: new Date(node.publishedAt)
+        date: new Date(node.publishedAt),
+        url: node.url
       };
     case 'MergedEvent':
       return {
@@ -79,14 +85,15 @@ function normalizeTimelineEvent({ node }) {
         author: normalizeUser(node.actor),
         commit: node.commit,
         ref: node.mergeRefName,
-        date: new Date(node.createdAt)
+        date: new Date(node.createdAt),
+        url: node.url
       };
     case 'ReferencedEvent':
       return {
         type: node.__typename,
         author: normalizeUser(node.actor),
         date: new Date(node.createdAt),
-        subject: node.subject
+        target: node.subject
       };
   }
 
@@ -100,6 +107,8 @@ function normalizeReviewThread({ node }) {
     date: new Date(commentNode.publishedAt),
     diffHunk: commentNode.diffHunk,
     path: commentNode.path,
+    position: commentNode.position === null ? commentNode.originalPosition : commentNode.position,
+    url: commentNode.url,
     outdated: commentNode.outdated
   }));
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
@@ -7,6 +8,7 @@ import roger from '../jolly-roger';
 
 import Loading from './Loading';
 import Timeline from './Timeline';
+import Summary from './Summary';
 import Diff from './utils/Diff';
 import { formatDate } from '../utils';
 
@@ -18,11 +20,11 @@ const formatBranchLabels = (base, head) => {
 };
 const formatPRStatus = (pr) => {
   if (pr.merged) {
-    return <span className='pr-status pr-status-merged'>merged on { formatDate(pr.mergedAt) }</span>;
+    return <span className='pr-status pr-status-merged'>merged / { formatDate(pr.mergedAt) }</span>;
   } else if (pr.closed) {
-    return <span className='pr-status pr-status-closed'>closed on { formatDate(pr.closedAt) }</span>;
+    return <span className='pr-status pr-status-closed'>closed / { formatDate(pr.closedAt) }</span>;
   }
-  return <span className='pr-status'>open on { formatDate(pr.createdAt) }</span>;
+  return <span className='pr-status'>open / { formatDate(pr.createdAt) }</span>;
 };
 
 export default function PR({ repo, prNumber, url }) {
@@ -58,7 +60,7 @@ export default function PR({ repo, prNumber, url }) {
     );
   }
 
-  // console.log(JSON.stringify(pr, null, 2));
+  console.log(JSON.stringify(pr, null, 2));
   console.log(pr);
 
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
@@ -73,22 +75,33 @@ export default function PR({ repo, prNumber, url }) {
           <div>
             <h2>
               { pr.title }&nbsp;
-              <a href={ pr.url } target='_blank'><span>(#{ pr.number })</span></a>
+              <a href={ pr.url } target='_blank'><span>(#{ pr.number })</span></a>&nbsp;
+              <small className='opa5'>{ formatPRStatus(pr) }</small>
             </h2>
-            <small>
-              { formatPRStatus(pr) }
-              <Diff data={ { additions: pr.additions, deletions: pr.deletions } } />
-              <hr />
-              <span className='branch'>{ base }</span> ← <span className='branch'>{ head }</span>
+            <small className='block mt1'>
+              <span className='branch'>{ base }</span> ← <span className='branch'>{ head } <Diff data={ { additions: pr.additions, deletions: pr.deletions } } /></span>
             </small>
           </div>
         </div>
+        <hr />
+        <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
       </div>
       <Switch>
+        <Route path={ url + '/timeline' } render={ () => (
+          <React.Fragment>
+            <nav>
+              <Link to={ url }>Summary</Link>
+              <Link to={ url + '/timeline' } className='selected'>Timeline</Link>
+              <Link to={ url + '/files' }>Files</Link>
+            </nav>
+            <Timeline pr={ pr } />
+          </React.Fragment>
+        ) }/>
         <Route path={ url + '/files' } render={ () => (
           <React.Fragment>
             <nav>
               <Link to={ url }>Summary</Link>
+              <Link to={ url + '/timeline' }>Timeline</Link>
               <Link to={ url + '/files' } className='selected'>Files</Link>
             </nav>
           </React.Fragment>
@@ -97,12 +110,10 @@ export default function PR({ repo, prNumber, url }) {
           <React.Fragment>
             <nav>
               <Link to={ url } className='selected'>Summary</Link>
+              <Link to={ url + '/timeline' }>Timeline</Link>
               <Link to={ url + '/files' }>Files</Link>
             </nav>
-            <div className='pr-card-light markdown'>
-              <div dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
-            </div>
-            <Timeline pr={ pr } />
+            <Summary pr={ pr } />
           </React.Fragment>
         ) }/>
       </Switch>
