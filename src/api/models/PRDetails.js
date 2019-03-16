@@ -109,7 +109,8 @@ function normalizeReviewThread({ node }) {
     path: commentNode.path,
     position: commentNode.position === null ? commentNode.originalPosition : commentNode.position,
     url: commentNode.url,
-    outdated: commentNode.outdated
+    outdated: commentNode.outdated,
+    commit: commentNode.commit
   }));
 
   return {

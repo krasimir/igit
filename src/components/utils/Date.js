@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { formatDate } from '../../utils';
+import { formatDate, formatDateShort } from '../../utils';
 
 export default function Date({ event, className }) {
   const cls = typeof className !== 'undefined' ? className : 'opa5';
@@ -9,13 +9,13 @@ export default function Date({ event, className }) {
   if (event.url) {
     return (
       <small className={ cls }>
-        <a href={ event.url } target='_blank'>{ formatDate(event.date) }</a>
+        <a href={ event.url } target='_blank' title={ formatDate(event.date) }>{ formatDateShort(event.date) }</a>
       </small>
     );
   }
   return (
     <small className={ cls }>
-      { formatDate(event.date) }
+      { formatDateShort(event.date) }
     </small>
   );
 }

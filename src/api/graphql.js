@@ -237,7 +237,11 @@ export const QUERY_PR = (name, owner, prNumber) => `
                                     avatarUrl
                                 },
                                 body,
-                                diffHunk
+                                diffHunk,
+                                commit {
+                                  oid,
+                                  url
+                                }
                             }
                         }
                     }

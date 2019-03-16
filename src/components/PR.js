@@ -60,7 +60,7 @@ export default function PR({ repo, prNumber, url }) {
     );
   }
 
-  console.log(JSON.stringify(pr, null, 2));
+  // console.log(JSON.stringify(pr, null, 2));
   console.log(pr);
 
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
@@ -76,7 +76,7 @@ export default function PR({ repo, prNumber, url }) {
             <h2>
               { pr.title }&nbsp;
               <a href={ pr.url } target='_blank'><span>(#{ pr.number })</span></a>&nbsp;
-              <small className='opa5'>{ formatPRStatus(pr) }</small>
+              <small>{ formatPRStatus(pr) }</small>
             </h2>
             <small className='block mt1'>
               <span className='branch'>{ base }</span> ← <span className='branch'>{ head } <Diff data={ { additions: pr.additions, deletions: pr.deletions } } /></span>

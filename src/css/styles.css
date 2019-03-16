@@ -104,6 +104,9 @@ hr {
   border-bottom: solid 1px #e2e2e2;
   margin: 1em 0;
 }
+.m0 {
+  margin: 0;
+}
 .mt1 {
   margin-top: 1em;
 }
@@ -124,6 +127,9 @@ hr {
 }
 .ml2 {
   margin-left: 2em;
+}
+.ml3 {
+  margin-left: 3em;
 }
 .mt3 {
   margin-top: 3em;
@@ -198,6 +204,9 @@ svg {
   transform: translateY(3px);
   -webkit-transform: translateY(3px);
   margin: 0 .2em;
+}
+.rel {
+  position: relative;
 }
 
 /* ---------------------------------------- loading */
@@ -428,6 +437,24 @@ header .profile img {
 
 /* ---------------------------------------- branch */
 
+.view-more {
+  display: inline-block;
+  border: none;
+  border-radius: 2px;
+  background: #e2e2e2;
+  font-size: .8em;
+  margin: 0 .3em;
+  outline: none;
+  cursor: pointer;
+  line-height: 1em;
+}
+.view-more:hover {
+  background: #999;
+  color: white;
+}
+
+/* ---------------------------------------- branch */
+
 .branch {
   background: #dcf7f7;
   padding: 0.2em 0.4em;
@@ -517,13 +544,20 @@ header .profile img {
   border: none;
 }
 
-/* ---------------------------------------- diff */
+/* ---------------------------------------- timeline */
 
 .timeline {
   font-size: .9em;
 }
 .timeline > div + div {
   margin-top: .4em;
+}
+.timeline-thread-comment .markdown {
+  border-bottom: solid 1px #e2e2e2;
+  padding-bottom: .3em;
+  border-radius: 4px;
+  font-size: .9em;
+  opacity: .8;
 }
 
 /* ---------------------------------------- diff */
@@ -570,4 +604,7 @@ header .profile img {
   position: absolute;
   bottom: 0;
   left: 0;
+}
+.timeline-thread-comment .d2h-file-wrapper {
+  margin-bottom: .5em;
 }

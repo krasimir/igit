@@ -1,28 +1,10 @@
 import React from 'react';
 import marked from 'marked';
-import diff2html from 'diff2html';
 
 import { CORNER_DOWN_RIGHT, CHEVRON_RIGHT, CHECK_CIRCLE, STORM, MESSAGE } from './Icons';
 import Date from './utils/Date';
 import Diff from './utils/Diff';
-
-function formatReviewDiff(comment) {
-  const formatter = diff2html.Diff2Html;
-  const html = formatter.getPrettyHtml(
-    [
-      `diff --git ${ comment.path } ${ comment.path }`,
-      `${ comment.path }\n${ comment.diffHunk }`
-    ].join('\n'),
-    {
-      inputFormat: 'diff',
-      showFiles: false,
-      matching: 'none',
-      outputFormat: 'line-by-line'
-    }
-  );
-
-  return html;
-}
+import ReviewDiff from './utils/ReviewDiff';
 
 export default function Summary({ pr }) {
   return pr.events.map((event, key) => {
@@ -79,8 +61,7 @@ export default function Summary({ pr }) {
             {
               event.comments.map((comment, i) => (
                 <React.Fragment key={ i }>
-                  { i === 0 &&
-                    <div className='code-diff' dangerouslySetInnerHTML={ { __html: formatReviewDiff(comment) } } /> }
+                  { i === 0 && <ReviewDiff data={ comment }/> }
                   <div className='media small'>
                     <img src={ comment.author.avatar } className='avatar' />
                     <div>
