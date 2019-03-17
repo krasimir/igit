@@ -11,15 +11,15 @@ import RenamedTitleEvent from './RenamedTitleEvent';
 import Reference from './Reference';
 
 const components = {
-  // Commit,
-  // PullRequestReview,
-  // PullRequestReviewComment: Comment,
-  // IssueComment: Comment,
-  // MergedEvent,
+  Commit,
+  PullRequestReview,
+  PullRequestReviewComment: Comment,
+  IssueComment: Comment,
+  MergedEvent,
   PullRequestReviewThread,
-  // RenamedTitleEvent,
-  // CrossReferencedEvent: Reference,
-  // ReferencedEvent: Reference
+  RenamedTitleEvent,
+  CrossReferencedEvent: Reference,
+  ReferencedEvent: Reference
 };
 
 export default function Timeline({ pr }) {
@@ -29,7 +29,6 @@ export default function Timeline({ pr }) {
     if (Component) {
       return <Component event={ event } key={ key } />;
     }
-    return null;
     return <div key={ key }>{ event.type }</div>;
   });
 

@@ -8,7 +8,7 @@ import trim from '../utils/trim';
 export default function Reference({ event }) {
   return (
     <div className='media small'>
-      <img src={ event.author.avatar } className='avatar'/>
+      <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event } />&nbsp;
         <MESSAGE size={ 18 }/>

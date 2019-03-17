@@ -21,7 +21,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, totalComments
     return (
       <div className='rel timeline-thread-comment'>
         <div className='media small'>
-          <img src={ comment.author.avatar } className='avatar'/>
+          <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
           <div>
             <Date event={ comment } />&nbsp;
             <MESSAGE size={ 18 }/>
@@ -46,7 +46,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, totalComments
   return isBodyVisible ? (
     <div className='timeline-thread-comment ml2'>
       <div className='media small'>
-        <img src={ comment.author.avatar } className='avatar'/>
+        <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
         <Date event={ comment } />
       </div>
       <div
@@ -64,7 +64,7 @@ ThreadItem.propTypes = {
 };
 
 export default function PullRequestReviewThread({ event }) {
-  let [ isBodyVisible, bodyVisibility ] = useState(true);
+  let [ isBodyVisible, bodyVisibility ] = useState(false);
 
   return event.comments.map((comment, i) => {
     return (

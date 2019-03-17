@@ -51,13 +51,13 @@ export default function Repo({ match }) {
     );
   }
 
-  if (prs.length === 0) {
+  if (prs.length === 0 && !prNumber) {
     return (
       <div className='view-repo'>
         <h2 className='tac mb1 mt2'>
           <Link to='/'>/ repos</Link> / { repo.name } / pull requests
         </h2>
-        <p className='tac mt2'>No pull requests at { repo.name } repository.</p>
+        <p className='tac mt2'>No open pull requests at { repo.name } repository.</p>
       </div>
     );
   }

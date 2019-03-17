@@ -576,6 +576,15 @@ header .profile img {
 .timeline-thread-comment .markdown pre {
   background: white;
 }
+.timeline-review-COMMENTED {
+  background: #dcf7f7 !important;
+}
+.timeline-review-APPROVED {
+  background: #e6ffed !important;
+}
+.timeline-review-CHANGES_REQUESTED {
+  background: #ffeef0 !important;
+}
 
 /* ---------------------------------------- diff */
 

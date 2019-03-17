@@ -8,7 +8,6 @@ import roger from '../jolly-roger';
 
 import Loading from './Loading';
 import Timeline from './Timeline';
-import Summary from './Summary';
 import Diff from './utils/Diff';
 import { formatDate } from '../utils';
 
@@ -60,7 +59,7 @@ export default function PR({ repo, prNumber, url }) {
     );
   }
 
-  console.log(JSON.stringify(pr, null, 2));
+  // console.log(JSON.stringify(pr, null, 2));
   console.log(pr);
 
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
@@ -70,7 +69,7 @@ export default function PR({ repo, prNumber, url }) {
       <div className='pr-card'>
         <div className='media'>
           <a href={ pr.author.url } target='_blank' className='no-hover'>
-            <img src={ pr.author.avatar } className='avatar'/>
+            <img src={ pr.author.avatar } className='avatar' title={ pr.author.login }/>
           </a>
           <div>
             <h2>
@@ -87,33 +86,21 @@ export default function PR({ repo, prNumber, url }) {
         <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
       </div>
       <Switch>
-        <Route path={ url + '/timeline' } render={ () => (
-          <React.Fragment>
-            <nav>
-              <Link to={ url }>Summary</Link>
-              <Link to={ url + '/timeline' } className='selected'>Timeline</Link>
-              <Link to={ url + '/files' }>Files</Link>
-            </nav>
-            <Timeline pr={ pr } />
-          </React.Fragment>
-        ) }/>
         <Route path={ url + '/files' } render={ () => (
           <React.Fragment>
             <nav>
-              <Link to={ url }>Summary</Link>
-              <Link to={ url + '/timeline' }>Timeline</Link>
+              <Link to={ url }>Timeline</Link>
               <Link to={ url + '/files' } className='selected'>Files</Link>
             </nav>
           </React.Fragment>
         ) }/>
-        <Route path={ url } render={ () => (
+        <Route path={ url + '/' } render={ () => (
           <React.Fragment>
             <nav>
-              <Link to={ url } className='selected'>Summary</Link>
-              <Link to={ url + '/timeline' }>Timeline</Link>
+              <Link to={ url } className='selected'>Timeline</Link>
               <Link to={ url + '/files' }>Files</Link>
             </nav>
-            <Summary pr={ pr } />
+            <Timeline pr={ pr } />
           </React.Fragment>
         ) }/>
       </Switch>

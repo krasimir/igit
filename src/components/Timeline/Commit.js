@@ -9,7 +9,7 @@ import trim from '../utils/trim';
 export default function Commit({ event }) {
   return (
     <div className='media small'>
-      <img src={ event.author.avatar } className='avatar'/>
+      <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event }/>&nbsp;
         <span className='iblock'>
