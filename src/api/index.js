@@ -134,7 +134,8 @@ function createAPI() {
     return get();
   };
   api.fetchRemotePR = async function (repo, prNumber) {
-    if (USE_MOCKS) return requestMock('pr.json');
+    // if (USE_MOCKS) return requestMock('pr.json');
+    if (USE_MOCKS) return requestMock('pr2.json');
 
     const q = QUERY_PR(repo.name, repo.owner, prNumber);
     const { data } = await requestGraphQL(q);

@@ -60,7 +60,7 @@ export default function PR({ repo, prNumber, url }) {
     );
   }
 
-  // console.log(JSON.stringify(pr, null, 2));
+  console.log(JSON.stringify(pr, null, 2));
   console.log(pr);
 
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
