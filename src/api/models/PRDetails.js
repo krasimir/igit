@@ -121,10 +121,11 @@ function normalizeReviewThread({ node }) {
   };
 }
 
-export default function createPRDetails(data) {
+export default function createPRDetails(data, diff) {
   const o = {};
   const pr = data.repository.pullRequest;
 
+  o.diff = diff;
   o.number = pr.number;
   o.title = pr.title;
   o.base = {

@@ -36,6 +36,13 @@ input[type="text"] {
 input[type="text"]:disabled {
   opacity: .5;
 }
+pre, code, .markdown pre code {
+  white-space: pre-wrap !important;
+  white-space: -moz-pre-wrap !important;
+  white-space: -pre-wrap !important;
+  white-space: -o-pre-wrap !important;
+  word-wrap: break-word !important;
+}
 a.default-link {
   background: none;
   text-decoration: underline;
@@ -219,6 +226,15 @@ svg {
 }
 .rel {
   position: relative;
+}
+
+/* ---------------------------------------- tag */
+.tag {
+  border: solid 1px #999;
+  border-radius: 2px;
+  padding: 2px 4px;
+  font-size: .7em;
+  margin: 0 2px;
 }
 
 /* ---------------------------------------- loading */
@@ -585,6 +601,17 @@ header .profile img {
 .timeline-review-CHANGES_REQUESTED {
   background: #ffeef0 !important;
 }
+.timeline .filter input {
+  font-size: 2em;
+  transform: translateY(-1px);
+  -webkit-transform: translateY(-1px);
+}
+.timeline .filter label {
+  display: inline-block;
+}
+.timeline .filter label + label {
+  margin-left: 1em;
+}
 
 /* ---------------------------------------- diff */
 
@@ -618,12 +645,6 @@ header .profile img {
   padding: .2em .5em;
   color: #5d5d5d;
 }
-.hunk .tag {
-  border: solid 1px #999;
-  border-radius: 2px;
-  padding: 2px 4px;
-  font-size: .7em;
-}
 .hunk .header .filenames {
   display: inline-block;
   transform: translateY(2px);
@@ -641,11 +662,10 @@ header .profile img {
 }
 .hunk .lines-wrapper > div {
   display: grid;
-  grid-template-columns: 20px 1fr;
+  grid-template-columns: 25px 1fr;
   font-size: .9em;
   color: #696969;
   padding: 0 .7em;
-  height: 30px;
 }
 .hunk .lines-wrapper > div.normal {
   background: white;
@@ -702,6 +722,8 @@ header .profile img {
   font-family: inherit;
   font-size: .8em;
   line-height: inherit;
+  margin-bottom: .5em;
+  color: #808080;
 }
 
 /* ---------------------------------------- third-party */

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase, max-len, no-sequences */
-import db from '../db';
+import db from './db';
 import { NO_TOKEN, USE_MOCKS } from '../constants';
 import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS, QUERY_PR } from './graphql';
 import { createOrganization, createProfile, createRepo, createPR, createPRDetails } from './models';
@@ -18,13 +18,24 @@ function createAPI() {
     'Content-Type': 'application/json',
     'Authorization': 'token ' + token
   });
-  const request = async function (endpointPath, absolute = false) {
-    const res = await fetch((absolute === false ? endpoint : '') + endpointPath, { headers: getHeaders() });
+  const request = async function (endpointPath, absolute = false, additionalHeaders = {}) {
+    const res = await fetch(
+      (absolute === false ? endpoint : '') + endpointPath,
+      {
+        headers: {
+          ...getHeaders(),
+          ...additionalHeaders
+        }
+      }
+    );
 
     if (!res.ok) {
       throw new Error(res.status + ' ' + res.statusText);
     }
-    return res.json();
+    if (res.headers.get('Content-Type').indexOf('application/json') >= 0) {
+      return res.json();
+    }
+    return res.text();
   };
   const requestGraphQL = async function (query) {
     const res = await fetch(endpointGraphQL, {
@@ -134,13 +145,18 @@ function createAPI() {
     return get();
   };
   api.fetchRemotePR = async function (repo, prNumber) {
-    // if (USE_MOCKS) return requestMock('pr.json');
-    if (USE_MOCKS) return requestMock('pr2.json');
+    if (USE_MOCKS) return requestMock('pr.json');
+    // if (USE_MOCKS) return requestMock('pr2.json');
 
     const q = QUERY_PR(repo.name, repo.owner, prNumber);
     const { data } = await requestGraphQL(q);
+    const diff = await request(
+      `/repos/${ repo.owner }/${ repo.name }/pulls/${ prNumber }`,
+      false,
+      { 'Accept': 'application/vnd.github.v3.diff' }
+    );
 
-    return createPRDetails(data);
+    return createPRDetails(data, diff);
   };
 
   return api;

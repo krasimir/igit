@@ -8,6 +8,7 @@ import roger from '../jolly-roger';
 
 import Loading from './Loading';
 import Timeline from './Timeline';
+import Files from './Files';
 import Diff from './utils/Diff';
 import { formatDate } from '../utils';
 
@@ -92,6 +93,7 @@ export default function PR({ repo, prNumber, url }) {
               <Link to={ url }>Timeline</Link>
               <Link to={ url + '/files' } className='selected'>Files</Link>
             </nav>
+            <Files pr={ pr } repo={ repo }/>
           </React.Fragment>
         ) }/>
         <Route path={ url + '/' } render={ () => (
@@ -100,7 +102,7 @@ export default function PR({ repo, prNumber, url }) {
               <Link to={ url } className='selected'>Timeline</Link>
               <Link to={ url + '/files' }>Files</Link>
             </nav>
-            <Timeline pr={ pr } />
+            <Timeline pr={ pr } repo={ repo }/>
           </React.Fragment>
         ) }/>
       </Switch>

@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 
+import ls from '../../api/localStorage';
 import Commit from './Commit';
 import PullRequestReview from './PullRequestReview';
 import Comment from './Comment';
@@ -21,24 +22,75 @@ const components = {
   CrossReferencedEvent: Reference,
   ReferencedEvent: Reference
 };
+const COMMITS_TYPES = ['Commit', 'MergedEvent'];
+const COMMENTS_TYPES = ['PullRequestReviewComment', 'IssueComment', 'PullRequestReviewThread'];
+const TIMELINE_FILTER = 'TIMELINE_FILTER';
 
-export default function Timeline({ pr }) {
-  const events = pr.events.map((event, key) => {
-    const Component = components[event.type];
+const isFiltering = (filter, compareTo) => !!filter.find(f => compareTo.indexOf(f) >= 0);
+const filterReducer = function (state, { arr }) {
+  let newState;
 
-    if (Component) {
-      return <Component event={ event } key={ key } />;
-    }
-    return <div key={ key }>{ event.type }</div>;
-  });
+  if (isFiltering(state, arr)) {
+    newState = state.filter(f => arr.indexOf(f) < 0);
+  } else {
+    newState = state.concat(arr);
+  }
+
+  ls.set(TIMELINE_FILTER, newState);
+  return newState;
+};
+const FilterOption = function ({ filter, dispatch, label, arr }) {
+  return (
+    <label>
+      <input
+        type='checkbox'
+        checked={ isFiltering(filter, arr) }
+        onChange={ () => dispatch({ arr }) } />{ label }
+    </label>
+  );
+};
+
+export default function Timeline({ pr, repo }) {
+  const [ filter, dispatch ] = useReducer(
+    filterReducer,
+    ls.get(TIMELINE_FILTER, [])
+  );
+  const events = pr.events
+    .filter(event => {
+      if (filter.length === 0) return true;
+      return filter.indexOf(event.type) >= 0;
+    })
+    .map((event, key) => {
+      const Component = components[event.type];
+
+      if (Component) {
+        return <Component event={ event } key={ key } repo={ repo }/>;
+      }
+      return <div key={ key }>{ event.type }</div>;
+    });
 
   return (
     <div className='timeline'>
+      <section className='filter mb1'>
+        <FilterOption
+          filter={ filter }
+          dispatch={ dispatch }
+          label='Only commits'
+          arr={ COMMITS_TYPES }
+          />
+        <FilterOption
+          filter={ filter }
+          dispatch={ dispatch }
+          label='Only comments'
+          arr={ COMMENTS_TYPES }
+          />
+      </section>
       { events }
     </div>
   );
 };
 
 Timeline.propTypes = {
-  pr: PropTypes.object.isRequired
+  pr: PropTypes.object.isRequired,
+  repo: PropTypes.object.isRequired
 };

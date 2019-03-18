@@ -18,13 +18,17 @@ ${ diff }
 
   return diffStr;
 }
-function getHunkFiles(a, b) {
+export function getHunkFiles(a, b) {
   if (a === b) {
+    return a;
+  } else if (a === '/dev/null') {
+    return b;
+  } else if (b === '/dev/null') {
     return a;
   }
   return a + ' → ' + b;
 }
-function getDiffItemType(type) {
+export function getDiffItemType(type) {
   switch (type) {
     case 'add': return 'A';
     case 'delete': return 'D';
@@ -35,8 +39,8 @@ function getDiffItemType(type) {
   return '';
 }
 
-export default function ReviewDiff({ data, className, shrinkBottom }) {
-  const { diffHunk, path } = data;
+export default function ReviewDiff({ data, className, shrinkBottom, repoURL }) {
+  const { diffHunk, path, commit } = data;
   const [ isShrinkingEnabled, useShrinking ] = useState(true);
 
   try {
@@ -48,18 +52,20 @@ export default function ReviewDiff({ data, className, shrinkBottom }) {
         return total;
       }, 0);
       const shrinking = shrinkBottom && totalLinesOfCode > shrinkBottom;
+      let filenames = getHunkFiles(diffItem.oldPath, diffItem.newPath);
 
       if (shrinking && isShrinkingEnabled) {
         totalLinesOfCode = shrinkBottom;
+      }
+      if (commit && path) {
+        filenames = <a href={ `${ repoURL }/blob/${ commit.oid }/${ path }` } target='_blank'>{ filenames }</a>;
       }
 
       return (
         <div className={ `hunk ${ className }` } key={ key }>
           <div className='header'>
             <span className='tag'>{ getDiffItemType(diffItem.type) }</span>&nbsp;
-            <span className='filenames'>
-              { getHunkFiles(diffItem.oldPath, diffItem.newPath) }
-            </span>
+            <span className='filenames'>{ filenames }</span>
           </div>
           <div className='lines' style={ { height: `${ HUNK_LINE_HEIGHT * totalLinesOfCode }px` } }>
             <div className='lines-wrapper'>
@@ -91,6 +97,7 @@ export default function ReviewDiff({ data, className, shrinkBottom }) {
 
 ReviewDiff.propTypes = {
   data: PropTypes.object.isRequired,
+  repoURL: PropTypes.string.isRequired,
   shrinkBottom: PropTypes.number,
   className: PropTypes.string
 };
