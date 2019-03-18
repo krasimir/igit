@@ -84,7 +84,7 @@ export default function PR({ repo, prNumber, url }) {
           </div>
         </div>
         <hr />
-        <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
+        {/* <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } /> */}
       </div>
       <Switch>
         <Route path={ url + '/files' } render={ () => (

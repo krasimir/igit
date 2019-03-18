@@ -601,15 +601,28 @@ header .profile img {
 .timeline-review-CHANGES_REQUESTED {
   background: #ffeef0 !important;
 }
-.timeline .filter input {
+
+/* ---------------------------------------- files */
+
+.files {
+  font-size: .9em;
+  line-height: 1.4em;
+}
+.hunk-files + .hunk-files {
+  margin-top: .2em;
+}
+
+/* ---------------------------------------- filter */
+
+.filter input {
   font-size: 2em;
   transform: translateY(-1px);
   -webkit-transform: translateY(-1px);
 }
-.timeline .filter label {
+.filter label {
   display: inline-block;
 }
-.timeline .filter label + label {
+.filter label + label {
   margin-left: 1em;
 }
 
@@ -650,15 +663,34 @@ header .profile img {
   transform: translateY(2px);
   -webkit-transform: translateY(2px);
 }
+.hunk .header button {
+  border: none;
+  outline: none;
+  border: solid 1px #e2e2e2;
+  background: none;
+  cursor: pointer;
+  border-radius: 2px;
+  transform: translateY(3px);
+  -webkit-transform: translateY(3px);
+}
+.hunk .header button:hover {
+  background: white;
+}
 .hunk .lines {
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
 }
+.files .lines {
+  overflow-y: auto;
+}
 .hunk .lines-wrapper {
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+.files .lines-wrapper {
+  position: relative;
 }
 .hunk .lines-wrapper > div {
   display: grid;

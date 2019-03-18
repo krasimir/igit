@@ -121,11 +121,10 @@ function normalizeReviewThread({ node }) {
   };
 }
 
-export default function createPRDetails(data, diff) {
+export default function createPRDetails(data) {
   const o = {};
   const pr = data.repository.pullRequest;
 
-  o.diff = diff;
   o.number = pr.number;
   o.title = pr.title;
   o.base = {
@@ -154,14 +153,13 @@ export default function createPRDetails(data, diff) {
   o.events = o.events.concat(
     pr.timeline.edges
       .map(normalizeTimelineEvent)
-      .filter(event => event)
-  );
-
-  o.events = o.events.concat(
+      .filter(event => event),
     pr.reviewThreads.edges.map(normalizeReviewThread)
   );
 
-  o.events.sort((a, b) => (a.date - b.date));
+  o.events.sort((a, b) => {
+    return a.date - b.date;
+  });
 
   return o;
 }

@@ -55,7 +55,10 @@ function createAPI() {
     if (!res.ok) {
       throw new Error(res.status + ' ' + res.statusText);
     }
-    return res.json();
+    if (res.headers.get('Content-Type').indexOf('application/json') >= 0) {
+      return res.json();
+    }
+    return res.text();
   };
 
   /* ---------------- methods ---------------- */
@@ -150,13 +153,17 @@ function createAPI() {
 
     const q = QUERY_PR(repo.name, repo.owner, prNumber);
     const { data } = await requestGraphQL(q);
-    const diff = await request(
+
+    return createPRDetails(data);
+  };
+  api.fetchPRFiles = function (repo, prNumber) {
+    if (USE_MOCKS) return requestMock('diff');
+
+    return request(
       `/repos/${ repo.owner }/${ repo.name }/pulls/${ prNumber }`,
       false,
       { 'Accept': 'application/vnd.github.v3.diff' }
     );
-
-    return createPRDetails(data, diff);
   };
 
   return api;

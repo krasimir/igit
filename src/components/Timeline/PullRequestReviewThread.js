@@ -21,10 +21,12 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL }) {
   if (isTheFirstOne) {
     return (
       <div className='rel timeline-thread-comment'>
+        { isBodyVisible &&
+          <ReviewDiff data={ comment } className='mb05' shrinkBottom={ 12 } repoURL={ repoURL }/> }
         <div className='media small'>
           <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
           <div>
-            <Date event={ comment } />&nbsp;
+            <Date event={ event.comments[totalComments - 1] } />&nbsp;
             <MESSAGE size={ 18 }/>
             <small>{ str }</small>
             <button className='view-more' onClick={ () => bodyVisibility(!isBodyVisible) }>
@@ -32,15 +34,12 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL }) {
             </button>
             { event.isResolved && <span className='tag'>resolved</span> }
             { comment.outdated && <span className='tag'>outdated</span> }
+            { isBodyVisible && (
+                <div
+                  className='markdown'
+                  dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
+            ) }
           </div>
-          { isBodyVisible && (
-            <div style={ { gridColumn: '1/3' } }>
-              <ReviewDiff data={ comment } className='mb05 mt05' shrinkBottom={ 12 } repoURL={ repoURL }/>
-              <div
-                className='markdown'
-                dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
-            </div>
-          ) }
         </div>
       </div>
     );
