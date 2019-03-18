@@ -61,5 +61,5 @@ typings/
 .next
 _assets
 .vscode
-dist/mocks/*.json
+dist/mocks/*
 .DS_Store
