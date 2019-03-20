@@ -71,7 +71,7 @@ export default function Repos() {
   return (
     <div className='settings'>
       <h2 className='tac mb2 mt2'>Hey, { profile.name }</h2>
-      <p className='tac'>Use the form below to select the repositories that you are interested in.<br />Once you are done go back to the <Link to='/'>repos page</Link>.</p>
+      <p className='tac'>Use the form below to select the repositories that you are interested in.<br />Once you are done go back to the <Link to='/'>home page</Link>.</p>
       <div className='centered-content mt2'>
         <div className='search-criteria mb1'>
           {

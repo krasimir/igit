@@ -1,10 +1,8 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
 import { Link, Switch, Route } from 'react-router-dom';
-
-import roger from '../jolly-roger';
 
 import Loading from './Loading';
 import Timeline from './Timeline';
@@ -26,44 +24,24 @@ const formatPRStatus = (pr) => {
   }
   return <span className='pr-status'>open / { formatDate(pr.createdAt) }</span>;
 };
+const normalizeURL = url => {
+  return url.replace(/\/files$/, '');
+};
 
-export default function PR({ repo, prNumber, url }) {
-  const { getPR } = roger.useContext();
-  const [ pr, setPR ] = useState(null);
-  const [ error, setError ] = useState(false);
-
-  useEffect(() => {
-    setPR(null);
-    getPR({ repo, prNumber }).then(setPR, error => {
-      console.log(error);
-      setError(error);
-    });
-  }, [prNumber]);
-
-  if (error) {
-    return (
-      <div className='pr-details'>
-        <div className='pr-card tac'>
-          Ops! There is an error fetching the pull request.<br />Wait a bit and refresh the page.
-        </div>
-      </div>
-    );
-  }
-
-  if (pr === null) {
+export default function PR({ url, pr, repo }) {
+  if (!pr) {
     return (
       <div className='pr-details'>
         <div className='pr-card'>
-          <Loading showLogo={ false } message='Loading the pull request details.'/>
+          <Loading showLogo={ false } message='Loading...'/>
         </div>
       </div>
     );
   }
 
-  // console.log(JSON.stringify(pr, null, 2));
-  console.log(pr);
-
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
+
+  url = normalizeURL(url);
 
   return (
     <div className='pr-details'>
@@ -84,7 +62,7 @@ export default function PR({ repo, prNumber, url }) {
           </div>
         </div>
         <hr />
-        {/* <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } /> */}
+        <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
       </div>
       <Switch>
         <Route path={ url + '/files' } render={ () => (
@@ -111,7 +89,7 @@ export default function PR({ repo, prNumber, url }) {
 };
 
 PR.propTypes = {
-  prNumber: PropTypes.string.isRequired,
-  repo: PropTypes.object.isRequired,
-  url: PropTypes.string.isRequired
+  url: PropTypes.string,
+  pr: PropTypes.object,
+  repo: PropTypes.object
 };

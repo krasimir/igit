@@ -41,14 +41,34 @@ roger.context({
   toggleRepo(repo) {
     api.toggleRepo(repo);
   },
-  async getPRs(repo) {
-    return await api.fetchRemotePRs(repo);
-  },
-  async getPR({ repo, prNumber }) {
-    return await api.fetchRemotePR(repo, prNumber);
-  },
   async getPRFiles({ repo, prNumber }) {
     return await api.fetchPRFiles(repo, prNumber);
+  },
+  async fetchData(repos) {
+    const result = [];
+
+    while (repos.length !== 0) {
+      const repo = repos.shift();
+      const prs = await api.fetchRemotePRs(repo);
+      const resultPRs = [];
+
+      while (prs.length !== 0) {
+        const pr = prs.shift();
+        const prData = await api.fetchRemotePR(repo, pr.number);
+
+        resultPRs.push({
+          ...pr,
+          data: prData
+        });
+      }
+
+      result.push({
+        ...repo,
+        prs: resultPRs
+      });
+    }
+
+    return result;
   }
 });
 

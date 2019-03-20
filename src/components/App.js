@@ -5,12 +5,11 @@ import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-d
 import Loading from './Loading';
 import Authorize from './Authorize';
 import Settings from './Settings';
-import Repo from './Repo';
 import Header from './Header';
-import Dashboard from './Dashboard';
 import { BASE_PATH, NO_TOKEN } from '../constants';
 import roger from '../jolly-roger';
 import '../logic';
+import Repos from './Repos';
 
 export default function App() {
   const { initialize } = roger.useContext();
@@ -38,9 +37,10 @@ export default function App() {
         <Switch>
           <Route path='/settings' component={ Settings } />
           { repos.length === 0 && <Redirect to='/settings' /> }
-          <Route path='/repo/:owner/:name/:prNumber' component={ Repo } />
-          <Route path='/repo/:owner/:name/' component={ Repo } />
-          <Route path='/' component={ Dashboard } />
+          <Route path='/repo/:owner/:name/:prNumber/files' component={ Repos } />
+          <Route path='/repo/:owner/:name/:prNumber' component={ Repos } />
+          <Route path='/repo/:owner/:name' component={ Repos } />
+          <Route path='/' component={ Repos } />
         </Switch>
       </Fragment>
     </Router>
