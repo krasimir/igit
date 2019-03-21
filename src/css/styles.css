@@ -2,6 +2,41 @@
 
 .layout {
   padding-top: 1em;
+  display: grid;
+  grid-template-columns: 260px calc(800px - 1em);
+  column-gap: 1em;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+@media all and (max-width: 1130px) {
+  .layout {
+    grid-template-columns: 30% calc(70% - 1em);
+    max-width: none;
+  }
+}
+@media all and (max-width: 900px) {
+  .layout {
+    display: block;
+  }
+  .layout aside {
+    margin-bottom: 2em;
+  }
+}
+.layout aside {
+  font-size: .8em;
+  line-height: 1.6em;
+}
+.prs {
+  border-left: solid 1px #e2e2e2;
+  margin-left: 12px;
+}
+.prs .list-link + .list-link {
+  border-top: solid 1px #e2e2e2;
+}
+.layout .media.small .avatar, .layout .avatar.small {
+  width: 18px;
+  transform: translateY(3px);
+  -webkit-transform: translateY(3px);
 }
 
 /* ---------------------------------------- tag */
@@ -25,6 +60,10 @@
 .loading img {
   display: block;
   margin: 0 auto 1em auto;
+}
+.loading-animation {
+  transform: translateY(-11px);
+  -webkit-transform: translateY(-11px);
 }
 
 /* ---------------------------------------- authorize */
@@ -74,13 +113,6 @@ header .profile img {
   width: 32px;
   height: 32px;
   border-radius: 67% 33% 35% 65% / 38% 30% 70% 62%;
-}
-
-/* ---------------------------------------- settings */
-
-.prs {
-  border-left: solid 1px #e2e2e2;
-  margin-left: 16px;
 }
 
 /* ---------------------------------------- settings */

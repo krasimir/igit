@@ -121,15 +121,16 @@ function normalizeReviewThread({ node }) {
   };
 }
 
-export default function createPRDetails(data) {
+export default function createPRDetails(pr, baseRepoOwner) {
   const o = {};
-  const pr = data.repository.pullRequest;
 
+  o.id = pr.id;
   o.number = pr.number;
   o.title = pr.title;
+  o.url = pr.url;
   o.base = {
     ref: pr.baseRefName,
-    owner: data.repository.owner.login
+    owner: baseRepoOwner
   };
   o.head = {
     ref: pr.headRefName,

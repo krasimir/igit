@@ -23,3 +23,7 @@ Loading.defaultProps = {
   message: 'Loading. Please wait.',
   showLogo: true
 };
+
+export function LoadingAnimation() {
+  return <div className='lds-ellipsis loading-animation ml1'><div></div><div></div><div></div><div></div></div>;
+}

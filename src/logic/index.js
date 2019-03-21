@@ -44,31 +44,13 @@ roger.context({
   async getPRFiles({ repo, prNumber }) {
     return await api.fetchPRFiles(repo, prNumber);
   },
-  async fetchData(repos) {
-    const result = [];
-
-    while (repos.length !== 0) {
-      const repo = repos.shift();
+  async fetchData(repos, { registerPRs }) {
+    for (let i = 0; i < repos.length; i++) {
+      const repo = repos[i];
       const prs = await api.fetchRemotePRs(repo);
-      const resultPRs = [];
 
-      while (prs.length !== 0) {
-        const pr = prs.shift();
-        const prData = await api.fetchRemotePR(repo, pr.number);
-
-        resultPRs.push({
-          ...pr,
-          data: prData
-        });
-      }
-
-      result.push({
-        ...repo,
-        prs: resultPRs
-      });
+      registerPRs({ repo, prs });
     }
-
-    return result;
   }
 });
 
@@ -79,6 +61,14 @@ roger.useReducer('repos', {
         repo.selected = !repo.selected;
       }
       return repo;
+    });
+  },
+  registerPRs(repos, { repo, prs }) {
+    return repos.map(r => {
+      if (r.repoId === repo.repoId) {
+        r.prs = prs;
+      }
+      return r;
     });
   }
 });

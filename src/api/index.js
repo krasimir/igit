@@ -1,8 +1,8 @@
 /* eslint-disable camelcase, max-len, no-sequences */
 import db from './db';
 import { NO_TOKEN, USE_MOCKS } from '../constants';
-import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS, QUERY_PR } from './graphql';
-import { createOrganization, createProfile, createRepo, createPR, createPRDetails } from './models';
+import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS } from './graphql';
+import { createOrganization, createProfile, createRepo, createPRDetails } from './models';
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
@@ -134,27 +134,18 @@ function createAPI() {
 
       const q = QUERY_GET_PRS(repo.name, repo.owner, perPage, cursor);
       const { data } = await requestGraphQL(q);
-      const pullRequests = data.search.edges[0].node.pullRequests;
+      const repoData = data.search.edges[0].node;
 
-      prs = prs.concat(pullRequests.edges);
+      prs = prs.concat(repoData.pullRequests.edges);
 
-      if (pullRequests.totalCount > prs.length) {
+      if (repoData.pullRequests.totalCount > prs.length) {
         cursor = prs[prs.length - 1].cursor.replace('==', '');
         return get();
       }
-      return prs.map(({ node }) => createPR(node));
+      return prs.map(({ node }) => createPRDetails(node, repoData.owner.login));
     };
 
     return get();
-  };
-  api.fetchRemotePR = async function (repo, prNumber) {
-    if (USE_MOCKS) return requestMock('pr.json');
-    // if (USE_MOCKS) return requestMock('pr2.json');
-
-    const q = QUERY_PR(repo.name, repo.owner, prNumber);
-    const { data } = await requestGraphQL(q);
-
-    return createPRDetails(data);
   };
   api.fetchPRFiles = function (repo, prNumber) {
     if (USE_MOCKS) return requestMock('diff');

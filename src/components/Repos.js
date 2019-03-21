@@ -13,7 +13,6 @@ export default function Repos({ match }) {
   const { owner, name, prNumber } = match.params;
   const [ repos ] = roger.useState('repos', []);
   const subscribedRepos = repos.filter(repo => repo.selected);
-  const [ reposWithData, setData ] = useState(subscribedRepos);
   const [ error, setError ] = useState(null);
 
   if (subscribedRepos.length === 0) {
@@ -29,7 +28,7 @@ export default function Repos({ match }) {
 
   useEffect(() => {
     fetchData(subscribedRepos).then(
-      setData,
+      () => {},
       error => {
         console.error(error);
         setError(error);
@@ -37,8 +36,9 @@ export default function Repos({ match }) {
     );
   }, []);
 
-  const repo = reposWithData
-    .find(({ owner: repoOwner, name: repoName }) => owner === repoOwner && name === repoName);
+  const repo = repos.find(
+    ({ owner: repoOwner, name: repoName }) => owner === repoOwner && name === repoName
+  );
   let pr;
 
   if (repo && repo.prs && repo.prs.length > 0) {
@@ -49,13 +49,14 @@ export default function Repos({ match }) {
     <div className='layout'>
       <aside>
         {
-          reposWithData.map(repo => {
+          repos.map(repo => {
             const expanded = repo.owner === owner && repo.name === name;
+            const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
 
             return (
               <div key={ repo.repoId }>
-                <Link to={ `/repo/${ repo.owner }/${ repo.name }` } className='list-link'>
-                  { expanded ? <CHEVRON_DOWN size={ 26 }/> : <CHEVRON_RIGHT size={ 26 }/> }
+                <Link to={ linkUrl } className='list-link'>
+                  { expanded ? <CHEVRON_DOWN size={ 18 }/> : <CHEVRON_RIGHT size={ 18 }/> }
                   { repo.nameWithOwner }
                 </Link>
                 { expanded && <PRs { ...match.params } prs={ repo.prs }/> }
@@ -65,7 +66,11 @@ export default function Repos({ match }) {
         }
       </aside>
       <section>
-        { pr && <PR pr={ pr.data } url={ match.url } repo={ repo } /> }
+        { pr ?
+          <PR pr={ pr } url={ match.url } repo={ repo } /> :
+          <div className='pr-card-light opa5'>
+            <p className='tac m0'>…</p>
+          </div> }
       </section>
     </div>
   );

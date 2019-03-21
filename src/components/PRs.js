@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { LoadingAnimation } from './Loading';
 
 export default function PRs({ prs, owner, name, prNumber }) {
   if (!prs || prs.length === 0) {
-    return null;
+    return (
+      <div>
+        <LoadingAnimation /> Loading, please wait ...
+      </div>
+    );
   }
 
   const selectedPR = prs.find(({ number }) => number.toString() === prNumber);
@@ -17,8 +22,8 @@ export default function PRs({ prs, owner, name, prNumber }) {
             <Link
               to={ `/repo/${ owner }/${ name }/${ pr.number }` }
               key={ pr.id }
-              className={ selectedPR === pr ? 'list-link selected' : 'list-link' }>
-              <img src={ pr.authorAvatar } className='avatar small'/>
+              className={ selectedPR === pr ? 'list-link selected py05' : 'list-link py05' }>
+              <img src={ pr.author.avatar } className='avatar small'/>
               { pr.title }&nbsp;(#{ pr.number })
             </Link>
           ))

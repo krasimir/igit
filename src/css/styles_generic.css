@@ -121,7 +121,7 @@ hr {
   margin: 1em 0;
 }
 .m0 {
-  margin: 0;
+  margin: 0 !important;
 }
 .mt1 {
   margin-top: 1em;
@@ -169,6 +169,14 @@ hr {
 }
 .pl1 {
   padding-left: 1em;
+}
+.py1 {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.py05 {
+  padding-top: .5em;
+  padding-bottom: .5em;
 }
 .icon {
   transform: translateY(4px);
