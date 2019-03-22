@@ -7,7 +7,7 @@ import Date from '../utils/Date';
 import { MESSAGE } from '../Icons';
 import ReviewDiff from '../utils/ReviewDiff';
 
-function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL }) {
+function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context }) {
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
   let comment = event.comments[index];
@@ -18,7 +18,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL }) {
   }
   str += comment.position ? ':' + comment.position : '';
 
-  if (isTheFirstOne) {
+  if (isTheFirstOne && context === 'timeline') {
     return (
       <div className='rel timeline-thread-comment'>
         { isBodyVisible &&
@@ -45,14 +45,14 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL }) {
     );
   }
 
-  return isBodyVisible ? (
-    <div className='timeline-thread-comment ml2'>
+  return isBodyVisible || context === 'files' ? (
+    <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'm03' }` }>
       <div className='media small'>
         <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
         <Date event={ comment } />
       </div>
       <div
-        className='markdown timeline-thread-comment mt05'
+        className='markdown mt05'
         dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
     </div>
   ) : null;
@@ -62,10 +62,11 @@ ThreadItem.propTypes = {
   index: PropTypes.number.isRequired,
   isBodyVisible: PropTypes.bool.isRequired,
   bodyVisibility: PropTypes.func.isRequired,
-  repoURL: PropTypes.string.isRequired
+  repoURL: PropTypes.string.isRequired,
+  context: PropTypes.string.isRequired
 };
 
-export default function PullRequestReviewThread({ event, repo }) {
+export default function PullRequestReviewThread({ event, repo, context }) {
   let [ isBodyVisible, bodyVisibility ] = useState(false);
 
   return event.comments.map((comment, i) => {
@@ -76,7 +77,8 @@ export default function PullRequestReviewThread({ event, repo }) {
         key={ i }
         isBodyVisible={ isBodyVisible }
         bodyVisibility={ bodyVisibility }
-        repoURL={ repo.url }/>
+        repoURL={ repo.url }
+        context={ context }/>
     );
   });
 };
@@ -84,4 +86,7 @@ export default function PullRequestReviewThread({ event, repo }) {
 PullRequestReviewThread.propTypes = {
   event: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired
+};
+PullRequestReviewThread.defaultProps = {
+  context: 'timeline'
 };

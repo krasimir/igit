@@ -99,6 +99,11 @@ p {
 .bb2 {
   border-bottom: solid 2px #e2e2e2;
 }
+.cf::before, .cf::after {
+  content: " ";
+  clear: both;
+  display: table;
+}
 
 /* ---------------------------------------- generic */
 
@@ -164,11 +169,18 @@ hr {
   margin-left: 1em;
   margin-right: 1em;
 }
+.m03 {
+  margin: .3em;
+}
 .pl05 {
   padding-left: .5em;
 }
 .pl1 {
   padding-left: 1em;
+}
+.px1 {
+  padding-left: 1em;
+  padding-right: 1em;
 }
 .py1 {
   padding-top: 1em;

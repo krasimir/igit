@@ -7,6 +7,14 @@
   column-gap: 1em;
   max-width: 1060px;
   margin: 0 auto;
+  transform: translateX(-140px);
+  -webkit-transform: translateX(-140px);
+}
+@media all and (max-width: 1350px) {
+  .layout {
+    transform: none;
+    -webkit-transform: none;
+  }
 }
 @media all and (max-width: 1130px) {
   .layout {
@@ -33,10 +41,37 @@
 .prs .list-link + .list-link {
   border-top: solid 1px #e2e2e2;
 }
-.layout .media.small .avatar, .layout .avatar.small {
-  width: 18px;
-  transform: translateY(3px);
-  -webkit-transform: translateY(3px);
+
+/* ---------------------------------------- button */
+
+button.brand {
+  display: inline-block;
+  padding: .5em 1em;
+  font-size: 1em;
+  font-family: inherit;
+  border-top: solid 1px #e2e2e2;
+  border-left: solid 1px #e2e2e2;
+  border-right: solid 2px #e2e2e2;
+  border-bottom: solid 2px #e2e2e2;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button.brand:hover {
+  background: #e2e2e2;
+  border-right: solid 2px #999;
+  border-bottom: solid 2px #999;
+}
+button.brand + .brand {
+  margin-left: .5em;
+}
+button.brand.cta {
+  background: #e6ffed;
+}
+button.brand.cta:hover {
+  background: #80de9a;
+}
+button.brand.cancel {
+  color: #808080;
 }
 
 /* ---------------------------------------- tag */
@@ -217,6 +252,11 @@ header .profile img {
 .media.medium .avatar, .avatar.medium {
   width: 32px;
 }
+.media.tiny .avatar, .avatar.tiny {
+  width: 18px;
+  transform: translateY(3px);
+  -webkit-transform: translateY(3px);
+}
 
 /* ---------------------------------------- pr-card */
 
@@ -382,6 +422,9 @@ header .profile img {
 .hunk-files + .hunk-files {
   margin-top: .2em;
 }
+.hunk-chunk-start {
+  border-top: solid 1px #e2e2e2;
+}
 
 /* ---------------------------------------- filter */
 
@@ -429,23 +472,16 @@ header .profile img {
   padding: .2em .5em;
   color: #5d5d5d;
 }
-.hunk .header .filenames {
-  display: inline-block;
-  transform: translateY(2px);
-  -webkit-transform: translateY(2px);
-}
 .hunk .header button {
   border: none;
   outline: none;
-  border: solid 1px #e2e2e2;
   background: none;
   cursor: pointer;
-  border-radius: 2px;
-  transform: translateY(3px);
-  -webkit-transform: translateY(3px);
+  font-weight: bold;
 }
 .hunk .header button:hover {
-  background: white;
+  background: black;
+  color: white;
 }
 .hunk .lines {
   overflow-x: auto;
@@ -463,20 +499,20 @@ header .profile img {
 .files .lines-wrapper {
   position: relative;
 }
-.hunk .lines-wrapper > div {
+.hunk .lines-wrapper .hunk-chunk {
   display: grid;
   grid-template-columns: 25px 1fr;
   font-size: .9em;
   color: #696969;
   padding: 0 .7em;
 }
-.hunk .lines-wrapper > div.normal {
+.hunk .lines-wrapper .hunk-chunk.normal {
   background: white;
 }
-.hunk .lines-wrapper > div.delete {
+.hunk .lines-wrapper .hunk-chunk.delete {
   background: #ffeef0;
 }
-.hunk .lines-wrapper > div.insert {
+.hunk .lines-wrapper .hunk-chunk.insert {
   background: #e6ffed;
 }
 .hunk pre {
@@ -501,6 +537,13 @@ header .profile img {
 }
 .hunk .expand-all-lines button:hover {
   color: black;
+}
+.hunk .lines-wrapper .timeline-thread-comment {
+  padding: .5em;
+  background: #f9f9f9;
+  border-radius: 4px;
+  border-left: solid 2px #e2e2e2;
+  border-bottom: solid 2px #e2e2e2;
 }
 
 /* ---------------------------------------- markdown */
@@ -527,6 +570,31 @@ header .profile img {
   line-height: inherit;
   margin-bottom: .5em;
   color: #808080;
+}
+
+/* ---------------------------------------- postman */
+
+.postman textarea {
+  width: 100%;
+  border: none;
+  height: 32px;
+  padding: .5em;
+  font-family: inherit;
+  font-size: .9em;
+  border: solid 1px #e2e2e2;
+  border-radius: 4px;
+  resize: none;
+  overflow: hidden;
+}
+.postman textarea:focus {
+  outline: none !important;
+  border: 1px solid #999;
+}
+.postman textarea.type {
+  min-height: 140px;
+  height: auto;
+  resize: vertical;
+  overflow: auto;
 }
 
 /* ---------------------------------------- third-party */

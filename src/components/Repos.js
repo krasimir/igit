@@ -69,7 +69,7 @@ export default function Repos({ match }) {
         { pr ?
           <PR pr={ pr } url={ match.url } repo={ repo } /> :
           <div className='pr-card-light opa5'>
-            <p className='tac m0'>…</p>
+            <p className='tac m0'>¯\_(ツ)_/¯</p>
           </div> }
       </section>
     </div>

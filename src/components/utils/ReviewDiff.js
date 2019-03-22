@@ -73,7 +73,7 @@ export default function ReviewDiff({ data, className, shrinkBottom, repoURL }) {
                 diffItem.hunks.map((hunk, i) => {
                   return hunk.changes.map((change, j) => {
                     return (
-                      <div key={ `${ i }_${ j }` } className={ change.type }>
+                      <div key={ `${ i }_${ j }` } className={ `hunk-chunk ${ change.type }` }>
                         <small className='opa5'>{ change.newLineNumber || change.lineNumber }</small>
                         <pre>{ change.content }</pre>
                       </div>

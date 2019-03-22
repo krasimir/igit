@@ -49,6 +49,8 @@ roger.context({
       const repo = repos[i];
       const prs = await api.fetchRemotePRs(repo);
 
+      // console.log(repo.name, JSON.stringify(prs, null, 2));
+
       registerPRs({ repo, prs });
     }
   }

@@ -10,7 +10,10 @@ import MergedEvent from './MergedEvent';
 import PullRequestReviewThread from './PullRequestReviewThread';
 import RenamedTitleEvent from './RenamedTitleEvent';
 import Reference from './Reference';
+import Postman from '../Postman';
 
+const COMMITS_TYPES = ['Commit', 'MergedEvent'];
+const COMMENTS_TYPES = ['PullRequestReviewComment', 'IssueComment', 'PullRequestReviewThread'];
 const components = {
   Commit,
   PullRequestReview,
@@ -22,8 +25,6 @@ const components = {
   CrossReferencedEvent: Reference,
   ReferencedEvent: Reference
 };
-const COMMITS_TYPES = ['Commit', 'MergedEvent'];
-const COMMENTS_TYPES = ['PullRequestReviewComment', 'IssueComment', 'PullRequestReviewThread'];
 const TIMELINE_FILTER = 'TIMELINE_FILTER';
 
 const isFiltering = (filter, compareTo) => !!filter.find(f => compareTo.indexOf(f) >= 0);
@@ -86,6 +87,7 @@ export default function Timeline({ pr, repo }) {
           />
       </section>
       { events }
+      <Postman />
     </div>
   );
 };

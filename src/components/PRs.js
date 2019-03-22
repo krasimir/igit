@@ -23,7 +23,7 @@ export default function PRs({ prs, owner, name, prNumber }) {
               to={ `/repo/${ owner }/${ name }/${ pr.number }` }
               key={ pr.id }
               className={ selectedPR === pr ? 'list-link selected py05' : 'list-link py05' }>
-              <img src={ pr.author.avatar } className='avatar small'/>
+              <img src={ pr.author.avatar } className='avatar tiny'/>
               { pr.title }&nbsp;(#{ pr.number })
             </Link>
           ))
