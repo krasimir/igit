@@ -286,3 +286,13 @@ export const MUTATION_EDIT_COMMENT = (id, body) => `
     }
   }
 `;
+
+export const MUTATION_DELETE_COMMENT = (id) => `
+  mutation {
+    deleteIssueComment(input: {
+      id: "${ id }"
+    }) {
+      clientMutationId
+    }
+  }
+`;

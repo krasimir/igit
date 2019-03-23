@@ -66,6 +66,10 @@ roger.context({
     const event = await api.editComment(id, body);
 
     replaceEventInPR({ repo, pr, event });
+  },
+  async deleteComment({ repo, pr, id }, { deleteEventFromPR }) {
+    await api.deleteComment(id);
+    deleteEventFromPR({ repo, pr, id });
   }
 });
 
@@ -110,6 +114,18 @@ roger.useReducer('repos', {
             }
             return e;
           });
+        }
+      }
+      return r;
+    });
+  },
+  deleteEventFromPR(repos, { repo, pr, id }) {
+    return repos.map(r => {
+      if (r.repoId === repo.repoId) {
+        const p = r.prs.find(({ id }) => id === pr.id);
+
+        if (p) {
+          p.events = p.events.filter(e => e.id !== id);
         }
       }
       return r;

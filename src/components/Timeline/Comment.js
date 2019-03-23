@@ -24,7 +24,7 @@ export default function Comment({ event, repo, pr }) {
         </button> }
         { allowEdit && <button className='card-tag-button' onClick={ () => edit(!isEditing) }>
           edit
-        </button>}
+        </button> }
         { (isBodyVisible && !isEditing) && <div
           className='markdown'
           dangerouslySetInnerHTML={ { __html: marked(event.body) } } /> }

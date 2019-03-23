@@ -8,11 +8,19 @@ export default function Postman({ repo, pr, context, value, className, onSave })
   const [ profile ] = roger.useState('profile');
   const [ text, type ] = useState(value ? value.text : null);
   const [ submitted, submit ] = useState(false);
+  const [ deleteSure, areYouSure ] = useState(false);
   const {
     addComment,
-    editComment
+    editComment,
+    deleteComment
   } = roger.useContext();
   const isEditing = !!value;
+
+  const reset = () => {
+    submit(false);
+    areYouSure(false);
+    type(value ? value.text : null);
+  };
 
   // console.log(pr);
 
@@ -23,12 +31,11 @@ export default function Postman({ repo, pr, context, value, className, onSave })
         case 'IssueComment':
           if (isEditing) {
             await editComment({ repo, pr, id: value.id, body: text });
-            submit(false);
+            reset();
             onSave(text);
           } else {
             await addComment({ repo, pr, body: text });
-            type(null);
-            submit(false);
+            reset();
             onSave(text);
           }
           break;
@@ -36,6 +43,10 @@ export default function Postman({ repo, pr, context, value, className, onSave })
           console.error(`Postman does not support ${ context } context yet.`);
       }
     }
+  };
+  const del = async function () {
+    submit(true);
+    await deleteComment({ repo, pr, id: value.id });
   };
 
   return (
@@ -50,6 +61,15 @@ export default function Postman({ repo, pr, context, value, className, onSave })
           disabled={ submitted }
           onChange={ e => type(e.target.value) } />
       </div>
+      { (isEditing && !submitted) && <div className='left mt05 ml2'>
+        <button className='light' onClick={ () => {
+          if (!deleteSure) {
+            areYouSure(true);
+          } else {
+            del();
+          }
+        } }>{ !deleteSure ? 'Delete' : 'Are you sure?' }</button>
+      </div> }
       { (text !== null && !submitted) && <div className='right mt05'>
         <button className='brand cancel' onClick={ () => type(null) }>Cancel</button>
         <button className='brand cta' onClick={ comment }>Comment</button>

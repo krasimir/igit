@@ -78,6 +78,28 @@ button.brand:disabled {
   opacity: .5;
   cursor: default;
 }
+button.brand.delete {
+  background: #ffeef0;
+}
+button.brand.delete:hover:enabled {
+  background: #80de9a;
+}
+button.light {
+  border: none;
+  background: none;;
+  padding: .5em 1em;
+  font-size: 1em;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  border: solid 1px #e2e2e2;
+  color: #999;
+}
+button.light:hover:enabled {
+  background: black;
+  color: white;
+  border: solid 1px black;
+}
 
 /* ---------------------------------------- tag */
 .tag {
