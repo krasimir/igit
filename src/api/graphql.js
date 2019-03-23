@@ -84,6 +84,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                       __typename
                       ... on Commit {
                         oid
+                        id
                         author {
                           name
                           avatarUrl
@@ -98,6 +99,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         committedDate
                       }
                       ... on RenamedTitleEvent {
+                        id
                         actor {
                           avatarUrl
                           login
@@ -107,6 +109,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         createdAt
                       }
                       ... on CrossReferencedEvent {
+                        id,
                         actor {
                           avatarUrl
                           login
@@ -136,6 +139,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         url
                       }
                       ... on PullRequestReviewComment {
+                        id
                         pullRequestReview {
                           id
                         }
@@ -153,6 +157,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         url
                       }
                       ... on IssueComment {
+                        id
                         author {
                           avatarUrl
                           login
@@ -162,6 +167,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         url
                       }
                       ... on MergedEvent {
+                        id
                         actor {
                           avatarUrl
                           login
@@ -175,6 +181,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         url
                       }
                       ... on ReferencedEvent {
+                        id
                         actor {
                           avatarUrl
                           login
@@ -198,11 +205,13 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                   totalCount
                   edges {
                     node {
+                      id
                       isResolved
                       comments(first: 50) {
                         totalCount
                         edges {
                           node {
+                            id
                             publishedAt
                             path
                             position
@@ -233,3 +242,47 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
     }
   }
 }`;
+
+export const MUTATION_ADD_COMMENT = (subjectId, body) => `
+  mutation {
+    addComment(input: {
+      subjectId: "${ subjectId }",
+      body: "${ body }"
+    }) {
+      commentEdge {
+        node {
+          __typename
+          id
+          author {
+            avatarUrl
+            login
+          }
+          body
+          publishedAt
+          url
+        }
+      }
+    }
+  }
+`;
+
+export const MUTATION_EDIT_COMMENT = (id, body) => `
+  mutation {
+    updateIssueComment(input: {
+      id: "${ id }",
+      body: "${ body }"
+    }) {
+      issueComment {
+        __typename
+        id
+        author {
+          avatarUrl
+          login
+        }
+        body
+        publishedAt
+        url
+      }
+    }
+  }
+`;

@@ -1,8 +1,20 @@
 /* eslint-disable camelcase, max-len, no-sequences */
 import db from './db';
 import { NO_TOKEN, USE_MOCKS } from '../constants';
-import { QUERY_GET_REPOS_OF_ORG, QUERY_GET_ORGANIZATIONS, QUERY_GET_PRS } from './graphql';
-import { createOrganization, createProfile, createRepo, createPRDetails } from './models';
+import {
+  QUERY_GET_REPOS_OF_ORG,
+  QUERY_GET_ORGANIZATIONS,
+  QUERY_GET_PRS,
+  MUTATION_ADD_COMMENT,
+  MUTATION_EDIT_COMMENT
+} from './graphql';
+import {
+  createOrganization,
+  createProfile,
+  createRepo,
+  createPRDetails,
+  normalizeTimelineEvent
+} from './models';
 
 function createAPI() {
   const endpoint = 'https://api.github.com';
@@ -37,9 +49,9 @@ function createAPI() {
     }
     return res.text();
   };
-  const requestGraphQL = async function (query) {
+  const requestGraphQL = async function (query, customHeaders = {}) {
     const res = await fetch(endpointGraphQL, {
-      headers: getHeaders(),
+      headers: Object.assign({}, getHeaders(), customHeaders),
       method: 'POST',
       body: JSON.stringify({ query })
     });
@@ -125,7 +137,7 @@ function createAPI() {
     return db.toggleRepo(repo);
   };
   api.fetchRemotePRs = async function (repo) {
-    if (USE_MOCKS) return requestMock('prs.json');
+    if (USE_MOCKS) return requestMock(USE_MOCKS + '/prs.json');
 
     let perPage = 10;
     let cursor;
@@ -148,13 +160,29 @@ function createAPI() {
     return get();
   };
   api.fetchPRFiles = function (repo, prNumber) {
-    if (USE_MOCKS) return requestMock('diff');
+    if (USE_MOCKS) return requestMock(USE_MOCKS + '/diff');
 
     return request(
       `/repos/${ repo.owner }/${ repo.name }/pulls/${ prNumber }`,
       false,
       { 'Accept': 'application/vnd.github.v3.diff' }
     );
+  };
+  api.addComment = async function (subjectId, body) {
+    if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
+
+    const q = MUTATION_ADD_COMMENT(subjectId, body);
+    const { data } = await requestGraphQL(q);
+
+    return normalizeTimelineEvent(data.addComment.commentEdge);
+  };
+  api.editComment = async function (id, body) {
+    // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
+
+    const q = MUTATION_EDIT_COMMENT(id, body);
+    const { data } = await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
+
+    return normalizeTimelineEvent({ node: data.updateIssueComment.issueComment });
   };
 
   return api;

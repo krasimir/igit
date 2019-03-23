@@ -89,12 +89,12 @@ export default function Files({ pr, repo, className }) {
     return (
       <div className={ `hunk hunk-files ${ className ? className : '' }` } key={ key }>
         <div className='header'>
-          <span className='tag'>{ getDiffItemType(diffItem.type) }</span>&nbsp;
+          <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
           <button onClick={ () => expand({ path }) }>{ path }</button>
           { (threads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && <span>({ threads.length })</span>}
           { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
         </div>
-        { isExpanded && <div className='lines'>
+        { isExpanded && <div className='lines mt05'>
           <div className='lines-wrapper'>
             {
               diffItem.hunks.map((hunk, i) => {

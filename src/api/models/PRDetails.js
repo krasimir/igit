@@ -21,11 +21,12 @@ function normalizeUser(data) {
   return user;
 }
 
-function normalizeTimelineEvent({ node }) {
+export function normalizeTimelineEvent({ node }) {
   switch (node.__typename) {
     case 'Commit':
       return {
         oid: node.oid,
+        id: node.id,
         url: node.url,
         type: node.__typename,
         author: normalizeUser(node.author),
@@ -36,6 +37,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'RenamedTitleEvent':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.actor),
         date: new Date(node.createdAt),
@@ -44,6 +46,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'CrossReferencedEvent':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.actor),
         date: new Date(node.referencedAt),
@@ -52,6 +55,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'PullRequestReview':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.author),
         body: node.body,
@@ -61,6 +65,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'PullRequestReviewComment':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.author),
         pullRequestReviewId: node.pullRequestReview.id,
@@ -73,6 +78,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'IssueComment':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.author),
         body: node.body,
@@ -81,6 +87,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'MergedEvent':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.actor),
         commit: node.commit,
@@ -90,6 +97,7 @@ function normalizeTimelineEvent({ node }) {
       };
     case 'ReferencedEvent':
       return {
+        id: node.id,
         type: node.__typename,
         author: normalizeUser(node.actor),
         date: new Date(node.createdAt),
@@ -102,6 +110,7 @@ function normalizeTimelineEvent({ node }) {
 
 function normalizeReviewThread({ node }) {
   const comments = node.comments.edges.map(({ node: commentNode }) => ({
+    id: commentNode.id,
     author: normalizeUser(commentNode.author),
     body: commentNode.body,
     date: new Date(commentNode.publishedAt),

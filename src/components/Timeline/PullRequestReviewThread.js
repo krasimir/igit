@@ -29,7 +29,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             <Date event={ event.comments[totalComments - 1] } />&nbsp;
             <MESSAGE size={ 18 }/>
             <small>{ str }</small>
-            <button className='view-more' onClick={ () => bodyVisibility(!isBodyVisible) }>
+            <button className='card-tag-button' onClick={ () => bodyVisibility(!isBodyVisible) }>
               { totalComments > 1 ? <span>···<small> ({ totalComments })</small></span> : '···' }
             </button>
             { event.isResolved && <span className='tag'>resolved</span> }
@@ -46,7 +46,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
   }
 
   return isBodyVisible || context === 'files' ? (
-    <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'm03' }` }>
+    <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 ml2' }` }>
       <div className='media small'>
         <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
         <Date event={ comment } />

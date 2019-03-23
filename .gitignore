@@ -62,4 +62,5 @@ typings/
 _assets
 .vscode
 dist/mocks/*
+dist/mocks/**/*
 .DS_Store

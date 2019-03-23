@@ -24,7 +24,7 @@ export default function PullRequestReview({ event }) {
         <Date event={ event } />&nbsp;
         <StateIcon size={ 18 }/>
         { event.state.toLowerCase().replace('_', ' ') }
-        { event.body !== '' && <button className='view-more' onClick={ () => bodyVisibility(!isBodyVisible) }>
+        { event.body !== '' && <button className='card-tag-button' onClick={ () => bodyVisibility(!isBodyVisible) }>
           ···
         </button>}
         { isBodyVisible && <div
