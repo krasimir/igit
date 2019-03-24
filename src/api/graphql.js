@@ -147,6 +147,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                           avatarUrl
                           login
                         }
+                        path
                         body
                         outdated
                         publishedAt
@@ -228,6 +229,9 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                               oid
                               url
                             }
+                            replyTo {
+                              id
+                            }
                           }
                         }
                       }
@@ -290,6 +294,46 @@ export const MUTATION_EDIT_COMMENT = (id, body) => `
 export const MUTATION_DELETE_COMMENT = (id) => `
   mutation {
     deleteIssueComment(input: {
+      id: "${ id }"
+    }) {
+      clientMutationId
+    }
+  }
+`;
+
+export const MUTATION_PR_THREAD_COMMENT = (id, body) => `
+  mutation {
+    updatePullRequestReviewComment(input: {
+      pullRequestReviewCommentId: "${ id }",
+      body: "${ body }"
+    }) {
+      pullRequestReviewComment {
+        __typename
+        id
+        pullRequestReview {
+          id
+        }
+        author {
+          avatarUrl
+          login
+        }
+        path
+        body
+        outdated
+        publishedAt
+        diffHunk
+        replyTo {
+          id
+        }
+        url
+      }
+    }
+  }
+`;
+
+export const MUTATION_DELETE_PR_THREAD_COMMENT = (id) => `
+  mutation {
+    deletePullRequestReviewComment(input: {
       id: "${ id }"
     }) {
       clientMutationId

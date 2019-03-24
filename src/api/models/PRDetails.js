@@ -72,9 +72,10 @@ export function normalizeTimelineEvent({ node }) {
         body: node.body,
         outdated: node.outdated,
         diffHunk: node.diffHunk,
-        replyTo: node.replyTo.id,
+        replyTo: node.replyTo ? node.replyTo.id : null,
         url: node.url,
-        date: new Date(node.publishedAt)
+        date: new Date(node.publishedAt),
+        path: node.path
       };
     case 'IssueComment':
       return {
@@ -119,7 +120,8 @@ function normalizeReviewThread({ node }) {
     position: commentNode.position === null ? commentNode.originalPosition : commentNode.position,
     url: commentNode.url,
     outdated: commentNode.outdated,
-    commit: commentNode.commit
+    commit: commentNode.commit,
+    replyTo: commentNode.replyTo ? commentNode.replyTo.id : null
   }));
 
   return {

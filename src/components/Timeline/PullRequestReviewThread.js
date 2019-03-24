@@ -6,11 +6,17 @@ import marked from 'marked';
 import Date from '../utils/Date';
 import { MESSAGE } from '../Icons';
 import ReviewDiff from '../utils/ReviewDiff';
+import roger from '../../jolly-roger';
+import Postman from '../Postman';
 
-function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context }) {
+function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr }) {
+  const [ profile ] = roger.useState('profile');
+  const { postman } = roger.useContext();
+  const [ isEditing, edit ] = useState(false);
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
   let comment = event.comments[index];
+  const allowEdit = comment.author.login === profile.login;
   let str = comment.path;
 
   if (str.length > 60) {
@@ -32,13 +38,22 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             <button className='card-tag-button' onClick={ () => bodyVisibility(!isBodyVisible) }>
               { totalComments > 1 ? <span>···<small> ({ totalComments })</small></span> : '···' }
             </button>
+            { (isBodyVisible && allowEdit) &&
+              <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
             { event.isResolved && <span className='tag'>resolved</span> }
             { comment.outdated && <span className='tag'>outdated</span> }
-            { isBodyVisible && (
+            { (isBodyVisible && !isEditing) && (
                 <div
                   className='markdown'
                   dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
             ) }
+            { isEditing &&
+              <Postman
+                className='mt05'
+                handler={ postman({ repo, pr }).PullRequestReviewThread }
+                value={ { text: comment.body, id: comment.id } }
+                onSave={ () => edit(false) }
+                onCancel={ () => edit(false) } /> }
           </div>
         </div>
       </div>
@@ -49,11 +64,21 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
     <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 ml2' }` }>
       <div className='media small'>
         <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
-        <Date event={ comment } />
+        <div>
+          <Date event={ comment } />
+          { allowEdit && <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
+        </div>
       </div>
-      <div
+      { !isEditing && <div
         className='markdown mt05'
-        dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
+        dangerouslySetInnerHTML={ { __html: marked(comment.body) } } /> }
+      { isEditing &&
+        <Postman
+          className='mt05'
+          handler={ postman({ repo, pr }).PullRequestReviewThread }
+          value={ { text: comment.body, id: comment.id } }
+          onSave={ () => edit(false) }
+          onCancel={ () => edit(false) } /> }
     </div>
   ) : null;
 }
@@ -63,29 +88,48 @@ ThreadItem.propTypes = {
   isBodyVisible: PropTypes.bool.isRequired,
   bodyVisibility: PropTypes.func.isRequired,
   repoURL: PropTypes.string.isRequired,
-  context: PropTypes.string.isRequired
+  context: PropTypes.string.isRequired,
+  repo: PropTypes.object.isRequired,
+  pr: PropTypes.object.isRequired
 };
 
-export default function PullRequestReviewThread({ event, repo, context }) {
+export default function PullRequestReviewThread({ event, repo, pr, context }) {
   let [ isBodyVisible, bodyVisibility ] = useState(false);
 
-  return event.comments.map((comment, i) => {
+  const comments = event.comments.map((comment, i) => {
     return (
       <ThreadItem
         event={ event }
         index={ i }
-        key={ i }
+        key={ comment.id }
         isBodyVisible={ isBodyVisible }
         bodyVisibility={ bodyVisibility }
         repoURL={ repo.url }
-        context={ context }/>
+        context={ context }
+        repo={ repo }
+        pr={ pr }/>
     );
   });
+
+  return (
+    <React.Fragment>
+      { comments }
+      {/* { isBodyVisible &&
+        <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 ml2' }` }>
+          <Postman
+            context={ event.type }
+            repo={ repo }
+            pr={ pr } />
+        </div> } */}
+    </React.Fragment>
+  );
 };
 
 PullRequestReviewThread.propTypes = {
   event: PropTypes.object.isRequired,
-  repo: PropTypes.object.isRequired
+  repo: PropTypes.object.isRequired,
+  pr: PropTypes.object.isRequired,
+  context: PropTypes.string.isRequired
 };
 PullRequestReviewThread.defaultProps = {
   context: 'timeline'

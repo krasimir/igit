@@ -69,8 +69,6 @@ export default function Files({ pr, repo, className }) {
       comments[0].outdated === false
   ));
 
-  console.log(events);
-
   const files = parsedDiff.map((diffItem, key) => {
     let path = getHunkFiles(diffItem.oldPath, diffItem.newPath);
     let viewFileUrl, totalDiffLines = -1;
@@ -103,8 +101,10 @@ export default function Files({ pr, repo, className }) {
 
                   totalDiffLines += 1;
                   if (threads.length > 0) {
+                    console.log(threads, threads[0].comments[0].position, totalDiffLines + i);
                     lineThread = threads.find(({ comments }) => comments[0].position - 1 === totalDiffLines + i);
                   }
+
                   return (
                     <React.Fragment key={ `${ i }_${ j }` }>
                       <div className={ `hunk-chunk ${ j === 0 ? 'hunk-chunk-start' : ''} ${ change.type}` }>
@@ -112,7 +112,7 @@ export default function Files({ pr, repo, className }) {
                         <pre>{ change.content }</pre>
                       </div>
                       { (lineThread && isFiltering(filter, SHOW_COMMENTS)) &&
-                        <PullRequestReviewThread event={ lineThread } repo={ repo } context='files' />}
+                        <PullRequestReviewThread event={ lineThread } pr={ pr } repo={ repo } context='files' />}
                     </React.Fragment>
                   );
                 });

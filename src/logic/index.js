@@ -2,6 +2,7 @@ import roger from '../jolly-roger';
 
 import api from '../api';
 import { PRINT_PRS } from '../constants';
+import './postman';
 
 roger.context({
   async initialize(action, { setProfile, setRepos }) {
@@ -56,20 +57,6 @@ roger.context({
 
       registerPRs({ repo, prs });
     }
-  },
-  async addComment({ repo, pr, body }, { addEventToPR }) {
-    const event = await api.addComment(pr.id, body);
-
-    addEventToPR({ repo, pr, event });
-  },
-  async editComment({ repo, pr, id, body }, { replaceEventInPR }) {
-    const event = await api.editComment(id, body);
-
-    replaceEventInPR({ repo, pr, event });
-  },
-  async deleteComment({ repo, pr, id }, { deleteEventFromPR }) {
-    await api.deleteComment(id);
-    deleteEventFromPR({ repo, pr, id });
   }
 });
 
@@ -126,6 +113,45 @@ roger.useReducer('repos', {
 
         if (p) {
           p.events = p.events.filter(e => e.id !== id);
+        }
+      }
+      return r;
+    });
+  },
+  replacePRReviewComment(repos, { repo, pr, comment }) {
+    return repos.map(r => {
+      if (r.repoId === repo.repoId) {
+        const p = r.prs.find(({ id }) => id === pr.id);
+
+        if (p) {
+          p.events = p.events.map(e => {
+            if (e.comments && e.comments.length > 0) {
+              e.comments = e.comments.map(c => {
+                if (c.id === comment.id) {
+                  return comment;
+                }
+                return c;
+              });
+            }
+            return e;
+          });
+        }
+      }
+      return r;
+    });
+  },
+  deletePRReviewComment(repos, { repo, pr, id }) {
+    return repos.map(r => {
+      if (r.repoId === repo.repoId) {
+        const p = r.prs.find(({ id: prId }) => prId === pr.id);
+
+        if (p) {
+          p.events = p.events.map(e => {
+            if (e.comments && e.comments.length > 0) {
+              e.comments = e.comments.filter(c => c.id !== id);
+            }
+            return e;
+          });
         }
       }
       return r;

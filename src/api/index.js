@@ -7,7 +7,9 @@ import {
   QUERY_GET_PRS,
   MUTATION_ADD_COMMENT,
   MUTATION_EDIT_COMMENT,
-  MUTATION_DELETE_COMMENT
+  MUTATION_DELETE_COMMENT,
+  MUTATION_PR_THREAD_COMMENT,
+  MUTATION_DELETE_PR_THREAD_COMMENT
 } from './graphql';
 import {
   createOrganization,
@@ -170,7 +172,7 @@ function createAPI() {
     );
   };
   api.addComment = async function (subjectId, body) {
-    if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
+    // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
 
     const q = MUTATION_ADD_COMMENT(subjectId, body);
     const { data } = await requestGraphQL(q);
@@ -178,7 +180,7 @@ function createAPI() {
     return normalizeTimelineEvent(data.addComment.commentEdge);
   };
   api.editComment = async function (id, body) {
-    if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
+    // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
 
     const q = MUTATION_EDIT_COMMENT(id, body);
     const { data } = await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
@@ -187,6 +189,19 @@ function createAPI() {
   };
   api.deleteComment = async function (id) {
     const q = MUTATION_DELETE_COMMENT(id);
+
+    await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
+  };
+  api.editPRThreadComment = async function (id, body) {
+    // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
+
+    const q = MUTATION_PR_THREAD_COMMENT(id, body);
+    const { data } = await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
+
+    return normalizeTimelineEvent({ node: data.updatePullRequestReviewComment.pullRequestReviewComment });
+  };
+  api.deletePRThreadComment = async function (id) {
+    const q = MUTATION_DELETE_PR_THREAD_COMMENT(id);
 
     await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
   };

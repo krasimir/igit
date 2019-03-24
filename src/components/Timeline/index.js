@@ -11,6 +11,7 @@ import PullRequestReviewThread from './PullRequestReviewThread';
 import RenamedTitleEvent from './RenamedTitleEvent';
 import Reference from './Reference';
 import Postman from '../Postman';
+import roger from '../../jolly-roger';
 
 const COMMITS_TYPES = ['Commit', 'MergedEvent'];
 const COMMENTS_TYPES = ['PullRequestReviewComment', 'IssueComment', 'PullRequestReviewThread'];
@@ -52,10 +53,8 @@ const FilterOption = function ({ filter, dispatch, label, arr }) {
 };
 
 export default function Timeline({ pr, repo }) {
-  const [ filter, dispatch ] = useReducer(
-    filterReducer,
-    ls.get(TIMELINE_FILTER, [])
-  );
+  const [ filter, dispatch ] = useReducer(filterReducer, ls.get(TIMELINE_FILTER, []));
+  const { postman } = roger.useContext();
   const events = pr.events
     .filter(event => {
       if (filter.length === 0) return true;
@@ -87,7 +86,7 @@ export default function Timeline({ pr, repo }) {
           />
       </section>
       { events }
-      <Postman repo={ repo } pr={ pr } context='IssueComment' />
+      <Postman handler={ postman({ repo, pr }).newTimelineComment } resetOnSave/>
     </div>
   );
 };

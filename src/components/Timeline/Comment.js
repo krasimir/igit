@@ -11,6 +11,7 @@ export default function Comment({ event, repo, pr }) {
   const [ isBodyVisible, bodyVisibility ] = useState(false);
   const [ isEditing, edit ] = useState(false);
   const [ profile ] = roger.useState('profile');
+  const { postman } = roger.useContext();
   const allowEdit = event.author.login === profile.login && isBodyVisible;
 
   return (
@@ -30,12 +31,11 @@ export default function Comment({ event, repo, pr }) {
           dangerouslySetInnerHTML={ { __html: marked(event.body) } } /> }
         { isEditing &&
           <Postman
+            handler={ postman({ repo, pr })[event.type] }
             className='mt05'
-            context={ event.type }
-            repo={ repo }
-            pr={ pr }
             value={ { text: event.body, id: event.id } }
-            onSave={ () => edit(false) }/> }
+            onCancel={ () => edit(false) }
+            onSave={ () => edit(false) } /> }
       </div>
     </div>
   );
