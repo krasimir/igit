@@ -9,8 +9,10 @@ roger.context({
       addEventToPR,
       replaceEventInPR,
       deleteEventFromPR,
+      addPRReviewComment,
       replacePRReviewComment,
-      deletePRReviewComment }
+      deletePRReviewComment
+    }
   ) {
     return {
       newTimelineComment: {
@@ -33,9 +35,6 @@ roger.context({
         }
       },
       PullRequestReviewThread: {
-        async add(text) {
-          console.log('not implemented');
-        },
         async edit(id, text) {
           const comment = await api.editPRThreadComment(id, text);
 
@@ -46,6 +45,40 @@ roger.context({
 
           deletePRReviewComment({ repo, pr, id });
         }
+      },
+      newPullRequestReviewThread(topComment) {
+        const pendingReview = pr.events.filter(({ type, state }) => {
+          return type === 'PullRequestReview' && state === 'PENDING';
+        }).shift();
+
+        if (pendingReview) {
+          return {
+            async addToReview(text) {
+              const comment = await api.newPullRequestReviewComment(
+                pendingReview.id,
+                topComment.id,
+                topComment.path,
+                topComment.position,
+                text
+              );
+
+              addPRReviewComment({ repo, pr, topComment, comment });
+            }
+          };
+        }
+        return {
+          async add(text) {
+            const comment = await api.newPullRequestReviewThread(
+              topComment.pullRequestReviewId,
+              topComment.id,
+              topComment.path,
+              topComment.position,
+              text
+            );
+
+            addPRReviewComment({ repo, pr, topComment, comment });
+          }
+        };
       }
     };
   }

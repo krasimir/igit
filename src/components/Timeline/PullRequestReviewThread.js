@@ -15,16 +15,17 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
   const [ isEditing, edit ] = useState(false);
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
-  let comment = event.comments[index];
+  const comment = event.comments[index];
   const allowEdit = comment.author.login === profile.login;
+  const review = pr.events.find(({ id }) => id === comment.pullRequestReviewId);
   let str = comment.path;
 
   if (str.length > 60) {
     str = '...' + str.substr(str.length - 60, str.length);
   }
   str += comment.position ? ':' + comment.position : '';
-
   if (isTheFirstOne && context === 'timeline') {
+
     return (
       <div className='rel timeline-thread-comment'>
         { isBodyVisible &&
@@ -42,6 +43,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
               <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
             { event.isResolved && <span className='tag'>resolved</span> }
             { comment.outdated && <span className='tag'>outdated</span> }
+            { review && review.state === 'PENDING' && <span className='tag'>pending</span> }
             { (isBodyVisible && !isEditing) && (
                 <div
                   className='markdown'
@@ -67,6 +69,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
         <div>
           <Date event={ comment } />
           { allowEdit && <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
+          { review && review.state === 'PENDING' && <span className='tag'>pending</span> }
         </div>
       </div>
       { !isEditing && <div
@@ -95,6 +98,7 @@ ThreadItem.propTypes = {
 
 export default function PullRequestReviewThread({ event, repo, pr, context }) {
   let [ isBodyVisible, bodyVisibility ] = useState(false);
+  const { postman } = roger.useContext();
 
   const comments = event.comments.map((comment, i) => {
     return (
@@ -114,13 +118,12 @@ export default function PullRequestReviewThread({ event, repo, pr, context }) {
   return (
     <React.Fragment>
       { comments }
-      {/* { isBodyVisible &&
+      { isBodyVisible &&
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 ml2' }` }>
           <Postman
-            context={ event.type }
-            repo={ repo }
-            pr={ pr } />
-        </div> } */}
+            resetOnSave
+            handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) }/>
+        </div> }
     </React.Fragment>
   );
 };

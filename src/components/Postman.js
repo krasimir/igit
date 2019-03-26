@@ -17,9 +17,9 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
     areYouSure(false);
     type(value ? value.text : null);
   };
-  const comment = async () => {
+  const comment = async (method = 'add') => {
     submit(true);
-    isEditing ? await handler.edit(value.id, text) : await handler.add(text);
+    isEditing ? await handler.edit(value.id, text) : await handler[method](text);
     resetOnSave ? reset() : submit(false);
     onSave(text);
   };
@@ -48,7 +48,10 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
       </div> }
       { (text !== null && !submitted) && <div className='right mt05'>
         <button className='brand cancel' onClick={ () => (reset(), onCancel()) }>Cancel</button>
-        <button className='brand cta' onClick={ comment }>Comment</button>
+        { (handler.add || handler.edit) && <button className='brand cta' onClick={ comment }>Comment</button> }
+        <button className='brand cta' onClick={ () => comment('addToReview') }>
+          { handler.addToReview ? 'Add review comment' : 'Start review' }
+        </button>
       </div> }
       { submitted && <div className='right mt05'><LoadingAnimation /></div> }
     </div>

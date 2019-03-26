@@ -9,7 +9,8 @@ import {
   MUTATION_EDIT_COMMENT,
   MUTATION_DELETE_COMMENT,
   MUTATION_PR_THREAD_COMMENT,
-  MUTATION_DELETE_PR_THREAD_COMMENT
+  MUTATION_DELETE_PR_THREAD_COMMENT,
+  MUTATION_ADD_PR_THREAD_COMMENT
 } from './graphql';
 import {
   createOrganization,
@@ -62,7 +63,13 @@ function createAPI() {
     if (!res.ok) {
       throw new Error(res.status + ' ' + res.statusText);
     }
-    return res.json();
+    const resultData = await res.json();
+
+    if (resultData.errors) {
+      console.error(resultData.errors);
+      throw new Error(resultData.errors.map(({ message }) => message));
+    }
+    return resultData;
   };
   const requestMock = async function (file) {
     const res = await fetch('/mocks/' + file);
@@ -191,6 +198,12 @@ function createAPI() {
     const q = MUTATION_DELETE_COMMENT(id);
 
     await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
+  };
+  api.newPullRequestReviewComment = async function (pullRequestReviewId, inReplyTo, path, position, body) {
+    const q = MUTATION_ADD_PR_THREAD_COMMENT(pullRequestReviewId, inReplyTo, path, position, body);
+    const { data } = await requestGraphQL(q);
+
+    return normalizeTimelineEvent({ node: data.addPullRequestReviewComment.comment });
   };
   api.editPRThreadComment = async function (id, body) {
     // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');

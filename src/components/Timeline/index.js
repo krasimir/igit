@@ -64,7 +64,7 @@ export default function Timeline({ pr, repo }) {
       const Component = components[event.type];
 
       if (Component) {
-        return <Component event={ event } key={ key } pr={ pr } repo={ repo }/>;
+        return <Component event={ event } key={ event.id + '_' + key } pr={ pr } repo={ repo }/>;
       }
       return <div key={ key }>{ event.type }</div>;
     });

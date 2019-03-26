@@ -118,6 +118,23 @@ roger.useReducer('repos', {
       return r;
     });
   },
+  addPRReviewComment(repos, { repo, pr, topComment, comment }) {
+    return repos.map(r => {
+      if (r.repoId === repo.repoId) {
+        const p = r.prs.find(({ id }) => id === pr.id);
+
+        if (p) {
+          p.events = p.events.map(e => {
+            if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
+              e.comments.push(comment);
+            }
+            return e;
+          });
+        }
+      }
+      return r;
+    });
+  },
   replacePRReviewComment(repos, { repo, pr, comment }) {
     return repos.map(r => {
       if (r.repoId === repo.repoId) {

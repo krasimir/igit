@@ -134,6 +134,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                           login
                         }
                         body
+                        createdAt
                         submittedAt
                         state
                         url
@@ -151,6 +152,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         body
                         outdated
                         publishedAt
+                        createdAt
                         diffHunk
                         replyTo {
                           id
@@ -165,6 +167,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                         }
                         body
                         publishedAt
+                        createdAt
                         url
                       }
                       ... on MergedEvent {
@@ -214,6 +217,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                           node {
                             id
                             publishedAt
+                            createdAt
                             path
                             position
                             originalPosition
@@ -230,6 +234,12 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                               url
                             }
                             replyTo {
+                              id
+                            }
+                            pullRequest {
+                              id
+                            }
+                            pullRequestReview {
                               id
                             }
                           }
@@ -263,6 +273,7 @@ export const MUTATION_ADD_COMMENT = (subjectId, body) => `
           }
           body
           publishedAt
+          createdAt
           url
         }
       }
@@ -285,6 +296,7 @@ export const MUTATION_EDIT_COMMENT = (id, body) => `
         }
         body
         publishedAt
+        createdAt
         url
       }
     }
@@ -321,6 +333,7 @@ export const MUTATION_PR_THREAD_COMMENT = (id, body) => `
         body
         outdated
         publishedAt
+        createdAt
         diffHunk
         replyTo {
           id
@@ -337,6 +350,49 @@ export const MUTATION_DELETE_PR_THREAD_COMMENT = (id) => `
       id: "${ id }"
     }) {
       clientMutationId
+    }
+  }
+`;
+
+export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, path, position, body) => `
+  mutation {
+    addPullRequestReviewComment(input: {
+      pullRequestReviewId: "${ pullRequestReviewId }",
+      inReplyTo: "${ inReplyTo }",
+      path: "${ path }",
+      position: ${ position },
+      body: "${ body }"
+    }) {
+      comment {
+        __typename
+        id
+        publishedAt
+        createdAt
+        path
+        position
+        originalPosition
+        outdated
+        url
+        author {
+          login
+          avatarUrl
+        }
+        body
+        diffHunk
+        commit {
+          oid
+          url
+        }
+        replyTo {
+          id
+        }
+        pullRequest {
+          id
+        }
+        pullRequestReview {
+          id
+        }
+      }
     }
   }
 `;

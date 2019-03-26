@@ -61,7 +61,7 @@ export function normalizeTimelineEvent({ node }) {
         body: node.body,
         state: node.state,
         url: node.url,
-        date: new Date(node.submittedAt)
+        date: new Date(node.submittedAt || node.createdAt)
       };
     case 'PullRequestReviewComment':
       return {
@@ -74,7 +74,7 @@ export function normalizeTimelineEvent({ node }) {
         diffHunk: node.diffHunk,
         replyTo: node.replyTo ? node.replyTo.id : null,
         url: node.url,
-        date: new Date(node.publishedAt),
+        date: new Date(node.publishedAt || node.createdAt),
         path: node.path
       };
     case 'IssueComment':
@@ -83,7 +83,7 @@ export function normalizeTimelineEvent({ node }) {
         type: node.__typename,
         author: normalizeUser(node.author),
         body: node.body,
-        date: new Date(node.publishedAt),
+        date: new Date(node.publishedAt || node.createdAt),
         url: node.url
       };
     case 'MergedEvent':
@@ -114,14 +114,16 @@ function normalizeReviewThread({ node }) {
     id: commentNode.id,
     author: normalizeUser(commentNode.author),
     body: commentNode.body,
-    date: new Date(commentNode.publishedAt),
+    date: new Date(commentNode.publishedAt || commentNode.createdAt),
     diffHunk: commentNode.diffHunk,
     path: commentNode.path,
     position: commentNode.position === null ? commentNode.originalPosition : commentNode.position,
     url: commentNode.url,
     outdated: commentNode.outdated,
     commit: commentNode.commit,
-    replyTo: commentNode.replyTo ? commentNode.replyTo.id : null
+    replyTo: commentNode.replyTo ? commentNode.replyTo.id : null,
+    pullRequestReviewId: commentNode.pullRequestReview ? commentNode.pullRequestReview.id : null,
+    pullRequestId: commentNode.pullRequest ? commentNode.pullRequest.id : null
   }));
 
   return {
