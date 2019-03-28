@@ -75,7 +75,10 @@ export function normalizeTimelineEvent({ node }) {
         replyTo: node.replyTo ? node.replyTo.id : null,
         url: node.url,
         date: new Date(node.publishedAt || node.createdAt),
-        path: node.path
+        path: node.path,
+        position: node.position === null ? node.originalPosition : node.position,
+        commit: node.commit,
+        pullRequestId: node.pullRequest ? node.pullRequest.id : null
       };
     case 'IssueComment':
       return {

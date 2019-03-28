@@ -358,7 +358,7 @@ export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, p
   mutation {
     addPullRequestReviewComment(input: {
       pullRequestReviewId: "${ pullRequestReviewId }",
-      inReplyTo: "${ inReplyTo }",
+      ${ inReplyTo ? `inReplyTo: "${ inReplyTo }"` : '' },
       path: "${ path }",
       position: ${ position },
       body: "${ body }"

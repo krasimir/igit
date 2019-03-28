@@ -124,12 +124,23 @@ roger.useReducer('repos', {
         const p = r.prs.find(({ id }) => id === pr.id);
 
         if (p) {
-          p.events = p.events.map(e => {
-            if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
-              e.comments.push(comment);
-            }
-            return e;
-          });
+          // add it to already existing review thread
+          if (topComment.id) {
+            p.events = p.events.map(e => {
+              if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
+                e.comments.push(comment);
+              }
+              return e;
+            });
+          // create a new thread
+          } else {
+            p.events.push({
+              type: 'PullRequestReviewThread',
+              isResolved: false,
+              date: comment.date,
+              comments: [ comment ]
+            });
+          }
         }
       }
       return r;

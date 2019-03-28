@@ -86,7 +86,7 @@ button.brand.delete:hover:enabled {
 }
 button.light {
   border: none;
-  background: none;;
+  background: none;
   padding: .5em 1em;
   font-size: 1em;
   border-radius: 4px;
@@ -99,6 +99,21 @@ button.light:hover:enabled {
   background: black;
   color: white;
   border: solid 1px black;
+}
+button.as-link {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  cursor: pointer;
+  font-size: 1em !important;
+  display: inline;
+  -moz-appearance: none;
+  box-sizing: content-box;
+  outline: none;
+}
+button.as-link:hover {
+  background: black !important;
+  color: white;
 }
 
 /* ---------------------------------------- tag */
@@ -548,6 +563,10 @@ header .profile img {
 }
 .hunk .lines-wrapper .hunk-chunk.insert {
   background: #e6ffed;
+}
+.hunk-line-button {
+  transform: translateX(-6px) translateY(-2px);
+  -webkit-transform: translateX(-6px) translateY(-2px);
 }
 .hunk pre {
   font-family: inherit;

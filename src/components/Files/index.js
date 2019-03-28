@@ -7,6 +7,7 @@ import roger from '../../jolly-roger';
 import Loading from '../Loading';
 import { getHunkFiles, getDiffItemType } from '../utils/ReviewDiff';
 import PullRequestReviewThread from '../Timeline/PullRequestReviewThread';
+import Postman from '../Postman';
 
 const SHOW_COMMENTS = 'SHOW_COMMENTS';
 
@@ -23,6 +24,12 @@ const expandedReducer = function (state, { path }) {
   }
   return [ ...state, path ];
 };
+const toCommentReducer = function (state, { path, line }) {
+  if (state.find(({ path: p, line: l }) => (path === p && line === l))) {
+    return state.filter(({ path: p, line: l }) => (p !== path && l !== line));
+  }
+  return [ ...state, { path, line } ];
+};
 const FilterOption = function ({ filter, dispatch, label, option }) {
   return (
     <label>
@@ -35,11 +42,12 @@ const FilterOption = function ({ filter, dispatch, label, option }) {
 };
 
 export default function Files({ pr, repo, className }) {
-  const { getPRFiles } = roger.useContext();
+  const { getPRFiles, postman } = roger.useContext();
   const [ diff, setDiff ] = useState(null);
   const [ error, setError ] = useState(false);
   const [ filter, dispatch ] = useReducer(filterReducer, [SHOW_COMMENTS]);
   const [ expanded, expand ] = useReducer(expandedReducer, []);
+  const [ toComment, openComment ] = useReducer(toCommentReducer, []);
 
   useEffect(() => {
     setDiff(null);
@@ -97,21 +105,42 @@ export default function Files({ pr, repo, className }) {
             {
               diffItem.hunks.map((hunk, i) => {
                 return hunk.changes.map((change, j) => {
-                  let lineThread;
+                  let lineThreads;
+                  const line = change.newLineNumber || change.lineNumber;
+                  const toCommentUI = toComment.find(({ path: p, line: l }) => (path === p && line === l));
 
                   totalDiffLines += 1;
                   if (threads.length > 0) {
-                    lineThread = threads.find(({ comments }) => comments[0].position - 1 === totalDiffLines + i);
+                    lineThreads = threads.filter(
+                      ({ comments }) => comments[0].position - 1 === totalDiffLines + i
+                    );
                   }
 
                   return (
                     <React.Fragment key={ `${ i }_${ j }` }>
-                      <div className={ `hunk-chunk ${ j === 0 ? 'hunk-chunk-start' : ''} ${ change.type}` }>
-                        <small className='opa5'>{ change.newLineNumber || change.lineNumber }</small>
+                      <div className={ `hunk-chunk ${ j === 0 ? 'hunk-chunk-start' : ''} ${ change.type }` }>
+                        <button
+                          className='hunk-line-button as-link'
+                          onClick={ () => openComment({ path, line }) }>
+                          <small className='opa5'>{ line }</small>
+                        </button>
                         <pre>{ change.content }</pre>
                       </div>
-                      { (lineThread && isFiltering(filter, SHOW_COMMENTS)) &&
-                        <PullRequestReviewThread expanded event={ lineThread } pr={ pr } repo={ repo } context='files' />}
+                      { (lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) &&
+                        lineThreads.map((lt, key) => <PullRequestReviewThread
+                          key={ key }
+                          expanded
+                          event={ lt }
+                          pr={ pr }
+                          repo={ repo }
+                          context='files' />) }
+                      { toCommentUI &&
+                        <Postman
+                          className='py05'
+                          onSave={ () => openComment({ path, line }) }
+                          handler={
+                            postman({ repo, pr }).newPullRequestReviewThread({ path, position: line})
+                          } /> }
                     </React.Fragment>
                   );
                 });
