@@ -101,7 +101,6 @@ export default function Files({ pr, repo, className }) {
 
                   totalDiffLines += 1;
                   if (threads.length > 0) {
-                    console.log(threads, threads[0].comments[0].position, totalDiffLines + i);
                     lineThread = threads.find(({ comments }) => comments[0].position - 1 === totalDiffLines + i);
                   }
 
@@ -112,7 +111,7 @@ export default function Files({ pr, repo, className }) {
                         <pre>{ change.content }</pre>
                       </div>
                       { (lineThread && isFiltering(filter, SHOW_COMMENTS)) &&
-                        <PullRequestReviewThread event={ lineThread } pr={ pr } repo={ repo } context='files' />}
+                        <PullRequestReviewThread expanded event={ lineThread } pr={ pr } repo={ repo } context='files' />}
                     </React.Fragment>
                   );
                 });

@@ -96,8 +96,8 @@ ThreadItem.propTypes = {
   pr: PropTypes.object.isRequired
 };
 
-export default function PullRequestReviewThread({ event, repo, pr, context }) {
-  let [ isBodyVisible, bodyVisibility ] = useState(false);
+export default function PullRequestReviewThread({ event, repo, pr, context, expanded }) {
+  let [ isBodyVisible, bodyVisibility ] = useState(expanded);
   const { postman } = roger.useContext();
 
   const comments = event.comments.map((comment, i) => {
@@ -132,8 +132,10 @@ PullRequestReviewThread.propTypes = {
   event: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
-  context: PropTypes.string.isRequired
+  context: PropTypes.string.isRequired,
+  expanded: PropTypes.bool
 };
 PullRequestReviewThread.defaultProps = {
-  context: 'timeline'
+  context: 'timeline',
+  expanded: false
 };

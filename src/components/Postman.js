@@ -18,10 +18,12 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
     type(value ? value.text : null);
   };
   const comment = async (method = 'add') => {
-    submit(true);
-    isEditing ? await handler.edit(value.id, text) : await handler[method](text);
-    resetOnSave ? reset() : submit(false);
-    onSave(text);
+    if (text !== '') {
+      submit(true);
+      isEditing ? await handler.edit(value.id, text) : await handler[method](text);
+      resetOnSave ? reset() : submit(false);
+      onSave(text);
+    }
   };
 
   return (
@@ -48,10 +50,18 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
       </div> }
       { (text !== null && !submitted) && <div className='right mt05'>
         <button className='brand cancel' onClick={ () => (reset(), onCancel()) }>Cancel</button>
-        { (handler.add || handler.edit) && <button className='brand cta' onClick={ comment }>Comment</button> }
-        <button className='brand cta' onClick={ () => comment('addToReview') }>
-          { handler.addToReview ? 'Add review comment' : 'Start review' }
-        </button>
+        { handler.add &&
+          <button className='brand cta' onClick={ () => comment('add') }>Comment</button> }
+        { handler.edit &&
+          <button className='brand cta' onClick={ () => comment('edit') }>Edit</button> }
+        { (!isEditing && handler.addToReview) &&
+          <button className='brand cta' onClick={ () => comment('addToReview') }>Add review comment</button> }
+        { (!isEditing && handler.addSingleComment) &&
+          <button className='brand cta' onClick={ () => comment('addSingleComment') }>
+            Add single comment
+          </button> }
+        { (!isEditing && handler.startReview) &&
+          <button className='brand cta' onClick={ () => comment('startReview') }>Start review</button> }
       </div> }
       { submitted && <div className='right mt05'><LoadingAnimation /></div> }
     </div>

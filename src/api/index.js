@@ -10,7 +10,9 @@ import {
   MUTATION_DELETE_COMMENT,
   MUTATION_PR_THREAD_COMMENT,
   MUTATION_DELETE_PR_THREAD_COMMENT,
-  MUTATION_ADD_PR_THREAD_COMMENT
+  MUTATION_ADD_PR_THREAD_COMMENT,
+  MUTATION_CREATE_REVIEW,
+  MUTATION_SUBMIT_REVIEW
 } from './graphql';
 import {
   createOrganization,
@@ -204,6 +206,21 @@ function createAPI() {
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent({ node: data.addPullRequestReviewComment.comment });
+  };
+  api.createReview = async function (pullRequestId, event, path, position, body) {
+    const q = MUTATION_CREATE_REVIEW(pullRequestId, event, path, position, body);
+    const { data } = await requestGraphQL(q);
+
+    return {
+      review: normalizeTimelineEvent({ node: data.addPullRequestReview.pullRequestReview }),
+      comments: data.addPullRequestReview.pullRequestReview.comments.edges.map(normalizeTimelineEvent)
+    };
+  };
+  api.submitReview = async function (pullRequestReviewId, event, body) {
+    const q = MUTATION_SUBMIT_REVIEW(pullRequestReviewId, event, body);
+    const { data } = await requestGraphQL(q);
+
+    return normalizeTimelineEvent({ node: data.submitPullRequestReview.pullRequestReview });
   };
   api.editPRThreadComment = async function (id, body) {
     // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');

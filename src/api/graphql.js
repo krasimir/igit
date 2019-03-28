@@ -396,3 +396,84 @@ export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, p
     }
   }
 `;
+
+export const MUTATION_CREATE_REVIEW = (pullRequestId, event, path, position, body) => `
+mutation {
+  addPullRequestReview(input: {
+    pullRequestId: "${ pullRequestId }"
+    ${ event ? `event: ${ event }` : ''}
+    ${ (path && position && body) ? `comments: [
+      {
+        path: "${ path }",
+        position: ${ position },
+        body: "${ body }"
+      }
+    ]` : '' }
+  }) {
+    pullRequestReview {
+      __typename
+      id
+      author {
+        avatarUrl
+        login
+      }
+      body
+      createdAt
+      submittedAt
+      state
+      url,
+      comments(first: 1) {
+        edges {
+          node {
+            __typename
+            ... on PullRequestReviewComment {
+              id
+              pullRequestReview {
+                id
+              }
+              author {
+                avatarUrl
+                login
+              }
+              path
+              body
+              outdated
+              publishedAt
+              createdAt
+              diffHunk
+              replyTo {
+                id
+              }
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const MUTATION_SUBMIT_REVIEW = (pullRequestReviewId, event, body) => `
+mutation {
+  submitPullRequestReview(input: {
+    pullRequestReviewId: "${ pullRequestReviewId }"
+    event: ${ event }
+    ${ body ? `body: ${ body }` : '' }
+  }) {
+    pullRequestReview {
+      __typename
+      id
+      author {
+        avatarUrl
+        login
+      }
+      body
+      createdAt
+      submittedAt
+      state
+      url
+    }
+  }
+}
+`;

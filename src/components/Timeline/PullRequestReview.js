@@ -8,16 +8,26 @@ import { MESSAGE, CHECK_CIRCLE, STORM, CLIPBOARD } from '../Icons';
 export default function PullRequestReview({ event }) {
   let [ isBodyVisible, bodyVisibility ] = useState(false);
   let StateIcon = MESSAGE;
+  let stateLabel = '';
 
   switch (event.state) { // APPROVED, CHANGES_REQUESTED, COMMENTED, DISMISSED, PENDING
     case 'APPROVED':
+      stateLabel = 'Approved';
       StateIcon = CHECK_CIRCLE;
     break;
     case 'CHANGES_REQUESTED':
+      stateLabel = 'Changes requested';
       StateIcon = STORM;
     break;
     case 'PENDING':
+      stateLabel = 'Pending review';
       StateIcon = CLIPBOARD;
+    break;
+    case 'COMMENT':
+      stateLabel = 'Comment';
+    break;
+    case 'DISMISS':
+    stateLabel = 'Review dismissed';
     break;
   }
   return (
@@ -26,7 +36,7 @@ export default function PullRequestReview({ event }) {
       <div>
         <Date event={ event } />&nbsp;
         <StateIcon size={ 18 }/>
-        { event.state.toLowerCase().replace('_', ' ') }
+        <small>{ stateLabel }</small>
         { event.body !== '' && <button className='card-tag-button' onClick={ () => bodyVisibility(!isBodyVisible) }>
           ···
         </button>}

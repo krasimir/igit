@@ -67,15 +67,30 @@ roger.context({
           };
         }
         return {
-          async add(text) {
-            const comment = await api.newPullRequestReviewThread(
-              topComment.pullRequestReviewId,
+          async startReview(text) {
+            const { review } = await api.createReview(pr.id);
+            const comment = await api.newPullRequestReviewComment(
+              review.id,
               topComment.id,
               topComment.path,
               topComment.position,
               text
             );
 
+            addEventToPR({ repo, pr, event: review });
+            addPRReviewComment({ repo, pr, topComment, comment });
+          },
+          async addSingleComment(text) {
+            const { review } = await api.createReview(pr.id);
+            const comment = await api.newPullRequestReviewComment(
+              review.id,
+              topComment.id,
+              topComment.path,
+              topComment.position,
+              text
+            );
+
+            await api.submitReview(review.id, 'COMMENT');
             addPRReviewComment({ repo, pr, topComment, comment });
           }
         };
