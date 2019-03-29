@@ -20,6 +20,7 @@ const filterReducer = function (state, { option }) {
   return [ ...state, option ];
 };
 const expandedReducer = function (state, { path }) {
+  if (path === null) return [];
   if (state.indexOf(path) >= 0) {
     return state.filter(p => p !== path);
   }
@@ -77,6 +78,7 @@ export default function Files({ pr, repo, className }) {
       comments.length > 0 &&
       comments[0].outdated === false
   ));
+  const paths = [];
 
   const files = parsedDiff.map((diffItem, key) => {
     let path = getHunkFiles(diffItem.oldPath, diffItem.newPath);
@@ -88,6 +90,8 @@ export default function Files({ pr, repo, className }) {
       }
       return false;
     });
+
+    paths.push(path);
 
     if (lastCommit) {
       viewFileUrl = `${ repo.url }/blob/${ lastCommit.oid }/${ diffItem.newPath }`;
@@ -162,6 +166,15 @@ export default function Files({ pr, repo, className }) {
           label='Show comments'
           option={ SHOW_COMMENTS }
           />
+        <button className='right as-link fz8' onClick={ () => {
+          if (expanded.length > 0) {
+            expand({ path: null });
+          } else {
+            paths.forEach(p => expand({ path: p }));
+          }
+         } } >
+          { expanded.length > 0 ? '↑ collapse all' : '↓ expand all' }
+        </button>
       </section>
       { files }
       <div className='hunk'>
