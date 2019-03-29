@@ -8,7 +8,7 @@ import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
 
 export default function Comment({ event, repo, pr }) {
-  const [ isBodyVisible, bodyVisibility ] = useState(false);
+  const [ isBodyVisible, bodyVisibility ] = useState(true);
   const [ isEditing, edit ] = useState(false);
   const [ profile ] = roger.useState('profile');
   const { postman } = roger.useContext();

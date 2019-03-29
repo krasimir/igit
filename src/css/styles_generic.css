@@ -176,6 +176,10 @@ hr {
   margin-top: .3em;
   margin-bottom: .3em;
 }
+.my1 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
 .pl05 {
   padding-left: .5em;
 }
@@ -238,4 +242,34 @@ svg {
 }
 .rel {
   position: relative;
+}
+.quote {
+  border-left: solid 2px #e2e2e2;
+  padding-left: 1em;
+}
+
+/* ************************************************ textarea */
+textarea {
+  width: 100%;
+  height: 43px;
+  padding: .8em;
+  font-family: inherit;
+  font-size: .9em;
+  border: solid 1px #e2e2e2;
+  border-radius: 4px;
+  resize: none;
+  overflow: hidden;
+}
+textarea:focus {
+  outline: none !important;
+  border: 1px solid #999;
+}
+textarea.type {
+  min-height: 140px;
+  height: auto;
+  resize: vertical;
+  overflow: auto;
+}
+textarea:disabled {
+  opacity: .5;
 }

@@ -68,7 +68,6 @@ export function normalizeTimelineEvent({ node }) {
         id: node.id,
         type: node.__typename,
         author: normalizeUser(node.author),
-        pullRequestReviewId: node.pullRequestReview.id,
         body: node.body,
         outdated: node.outdated,
         diffHunk: node.diffHunk,
@@ -78,6 +77,7 @@ export function normalizeTimelineEvent({ node }) {
         path: node.path,
         position: node.position === null ? node.originalPosition : node.position,
         commit: node.commit,
+        pullRequestReviewId: node.pullRequestReview.id,
         pullRequestId: node.pullRequest ? node.pullRequest.id : null
       };
     case 'IssueComment':

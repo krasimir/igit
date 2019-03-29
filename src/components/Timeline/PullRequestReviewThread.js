@@ -24,8 +24,8 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
     str = '...' + str.substr(str.length - 60, str.length);
   }
   str += comment.position ? ':' + comment.position : '';
-  if (isTheFirstOne && context === 'timeline') {
 
+  if (isTheFirstOne && context === 'timeline') {
     return (
       <div className='rel timeline-thread-comment'>
         { isBodyVisible &&
@@ -44,20 +44,20 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             { event.isResolved && <span className='tag'>resolved</span> }
             { comment.outdated && <span className='tag'>outdated</span> }
             { review && review.state === 'PENDING' && <span className='tag'>pending</span> }
-            { (isBodyVisible && !isEditing) && (
-                <div
-                  className='markdown'
-                  dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
-            ) }
-            { isEditing &&
-              <Postman
-                className='mt05'
-                handler={ postman({ repo, pr }).PullRequestReviewThread }
-                value={ { text: comment.body, id: comment.id } }
-                onSave={ () => edit(false) }
-                onCancel={ () => edit(false) } /> }
           </div>
         </div>
+        { (isBodyVisible && !isEditing) && (
+            <div
+              className='markdown mt05'
+              dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
+        ) }
+        { isEditing &&
+          <Postman
+            className='mt05'
+            handler={ postman({ repo, pr }).PullRequestReviewThread }
+            value={ { text: comment.body, id: comment.id } }
+            onSave={ () => edit(false) }
+            onCancel={ () => edit(false) } /> }
       </div>
     );
   }

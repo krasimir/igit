@@ -57,6 +57,21 @@ roger.context({
 
       registerPRs({ repo, prs });
     }
+  },
+  async submitReview({ reviewId, event, body }, { replaceEvent }) {
+    const review = await api.submitReview(reviewId, event, body);
+
+    replaceEvent({ event: review });
+  },
+  async deleteReview({ reviewId }, { deleteEvent }) {
+    await api.deleteReview(reviewId);
+
+    deleteEvent({ id: reviewId });
+  },
+  async createReview({ repo, pr, event, path, position, body }, { addEventToPR }) {
+    const { review } = await api.createReview(pr.id, event, path, position, body);
+
+    addEventToPR({ repo, pr, event: review });
   }
 });
 
@@ -86,6 +101,27 @@ roger.useReducer('repos', {
           p.events.push(event);
         }
       }
+      return r;
+    });
+  },
+  replaceEvent(repos, { event }) {
+    return repos.map(r => {
+      r.prs.forEach(p => {
+        p.events = p.events.map(e => {
+          if (e.id === event.id) {
+            return event;
+          }
+          return e;
+        });
+      });
+      return r;
+    });
+  },
+  deleteEvent(repos, { id }) {
+    return repos.map(r => {
+      r.prs.forEach(p => {
+        p.events = p.events.filter(e => e.id !== id);
+      });
       return r;
     });
   },

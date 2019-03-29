@@ -402,6 +402,7 @@ mutation {
   addPullRequestReview(input: {
     pullRequestId: "${ pullRequestId }"
     ${ event ? `event: ${ event }` : ''}
+    ${ body ? `body: "${ body }"` : ''}
     ${ (path && position && body) ? `comments: [
       {
         path: "${ path }",
@@ -459,7 +460,29 @@ mutation {
   submitPullRequestReview(input: {
     pullRequestReviewId: "${ pullRequestReviewId }"
     event: ${ event }
-    ${ body ? `body: ${ body }` : '' }
+    ${ body ? `body: "${ body }"` : '' }
+  }) {
+    pullRequestReview {
+      __typename
+      id
+      author {
+        avatarUrl
+        login
+      }
+      body
+      createdAt
+      submittedAt
+      state
+      url
+    }
+  }
+}
+`;
+
+export const MUTATION_DELETE_REVIEW = (pullRequestReviewId) => `
+mutation {
+  deletePullRequestReview(input: {
+    pullRequestReviewId: "${ pullRequestReviewId }"
   }) {
     pullRequestReview {
       __typename

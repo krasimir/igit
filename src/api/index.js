@@ -12,7 +12,8 @@ import {
   MUTATION_DELETE_PR_THREAD_COMMENT,
   MUTATION_ADD_PR_THREAD_COMMENT,
   MUTATION_CREATE_REVIEW,
-  MUTATION_SUBMIT_REVIEW
+  MUTATION_SUBMIT_REVIEW,
+  MUTATION_DELETE_REVIEW
 } from './graphql';
 import {
   createOrganization,
@@ -221,6 +222,11 @@ function createAPI() {
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent({ node: data.submitPullRequestReview.pullRequestReview });
+  };
+  api.deleteReview = async function (pullRequestReviewId) {
+    const q = MUTATION_DELETE_REVIEW(pullRequestReviewId);
+
+    await requestGraphQL(q);
   };
   api.editPRThreadComment = async function (id, body) {
     // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');

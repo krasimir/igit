@@ -8,6 +8,7 @@ import Loading from '../Loading';
 import { getHunkFiles, getDiffItemType } from '../utils/ReviewDiff';
 import PullRequestReviewThread from '../Timeline/PullRequestReviewThread';
 import Postman from '../Postman';
+import Review from '../Timeline/Review';
 
 const SHOW_COMMENTS = 'SHOW_COMMENTS';
 
@@ -82,7 +83,7 @@ export default function Files({ pr, repo, className }) {
     let viewFileUrl, totalDiffLines = -1;
     const isExpanded = expanded.indexOf(path) >= 0;
     const threads = events.filter(event => {
-      if (event.comments[0].path === diffItem.newPath) {
+      if (event.comments[0].path === diffItem.newPath || event.comments[0].path === diffItem.oldPath) {
         return true;
       }
       return false;
@@ -93,7 +94,7 @@ export default function Files({ pr, repo, className }) {
     }
 
     return (
-      <div className={ `hunk hunk-files ${ className ? className : '' }` } key={ key }>
+      <div className={ `hunk ${ className ? className : '' }` } key={ key }>
         <div className='header'>
           <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
           <button onClick={ () => expand({ path }) }>{ path }</button>
@@ -126,7 +127,7 @@ export default function Files({ pr, repo, className }) {
                         </button>
                         <pre>{ change.content }</pre>
                       </div>
-                      { (lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) &&
+                      { (lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) &&
                         lineThreads.map((lt, key) => <PullRequestReviewThread
                           key={ key }
                           expanded
@@ -163,6 +164,9 @@ export default function Files({ pr, repo, className }) {
           />
       </section>
       { files }
+      <div className='hunk'>
+        <Review pr={ pr } repo={ repo } />
+      </div>
     </div>
   );
 };
