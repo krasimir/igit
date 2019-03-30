@@ -181,6 +181,13 @@ function createAPI() {
       { 'Accept': 'application/vnd.github.v3.diff' }
     );
   };
+  api.fetchPRFile = function (repo, path, commit) {
+    return request(
+      `/repos/${ repo.owner }/${ repo.name }/contents/${ path }?ref=${ commit }`,
+      true,
+      { 'Accept': 'application/vnd.github.v3.raw' }
+    );
+  };
   api.addComment = async function (subjectId, body) {
     // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
 

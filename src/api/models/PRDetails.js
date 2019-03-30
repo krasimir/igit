@@ -126,7 +126,8 @@ function normalizeReviewThread({ node }) {
     commit: commentNode.commit,
     replyTo: commentNode.replyTo ? commentNode.replyTo.id : null,
     pullRequestReviewId: commentNode.pullRequestReview ? commentNode.pullRequestReview.id : null,
-    pullRequestId: commentNode.pullRequest ? commentNode.pullRequest.id : null
+    pullRequestId: commentNode.pullRequest ? commentNode.pullRequest.id : null,
+    isResolved: node.isResolved
   }));
 
   return {

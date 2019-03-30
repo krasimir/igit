@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
 
@@ -8,7 +8,6 @@ import SubmitPullRequestReview from './SubmitPullRequestReview';
 import flattenToPRReviewComments from '../../api/utils/flattenToPRReviewComments';
 
 export default function PullRequestReview({ event, pr }) {
-  let [ isBodyVisible, bodyVisibility ] = useState(true);
   let StateIcon = MESSAGE;
   let stateLabel = '';
 
@@ -33,6 +32,8 @@ export default function PullRequestReview({ event, pr }) {
     break;
   }
 
+  const reviewComments = flattenToPRReviewComments(pr, event.id);
+
   return (
     <div className={ `timeline-review-${ event.state }` }>
       <div className='media small'>
@@ -41,32 +42,28 @@ export default function PullRequestReview({ event, pr }) {
           <Date event={ event } />&nbsp;
           <StateIcon size={ 18 }/>
           <small>{ stateLabel }</small>
-          { event.body !== '' && <button className='card-tag-button' onClick={ () => bodyVisibility(!isBodyVisible) }>
-            ···
-          </button> }
         </div>
       </div>
-      { (isBodyVisible && event.body !== '') && <div
-        className='markdown mt05'
-        dangerouslySetInnerHTML={ { __html: marked(event.body) } } /> }
-      { event.state === 'PENDING' &&
-        <div className='mt05'>
-          <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/>
-          <div className='my1 quote'>
-            {
-              flattenToPRReviewComments(pr, event.id).map(comment => {
-                return (
-                  <div className='m0 fz8' key={ comment.id }>
-                    { comment.path }:{ comment.position }
-                    <div
-                      className='markdown mb05 fz9 opa5'
-                      dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
-                  </div>
-                );
-              })
-            }
-          </div>
-        </div> }
+      { event.body !== '' &&
+          <div className='markdown my05' dangerouslySetInnerHTML={ { __html: marked(event.body) } } />
+      }
+      { reviewComments.length > 0 && <div className='mt05 quote'>
+        {
+          reviewComments.map(comment => {
+            return (
+              <div className='m0 fz8' key={ comment.id }>
+                { comment.path }:{ comment.position }
+                { comment.outdated && <span className='tag'>outdated</span> }
+                { comment.isResolved && <span className='tag'>resolved</span> }
+                <div
+                  className='markdown mb05 fz9 opa5'
+                  dangerouslySetInnerHTML={ { __html: marked(comment.body) } } />
+              </div>
+            );
+          })
+        }
+      </div> }
+      { event.state === 'PENDING' && <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/> }
     </div>
   );
 };

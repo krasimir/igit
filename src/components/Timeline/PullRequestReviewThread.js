@@ -96,7 +96,7 @@ ThreadItem.propTypes = {
   pr: PropTypes.object.isRequired
 };
 
-export default function PullRequestReviewThread({ event, repo, pr, context, expanded }) {
+export default function PullRequestReviewThread({ event, repo, pr, context, expanded, className }) {
   let [ isBodyVisible, bodyVisibility ] = useState(expanded);
   const { postman } = roger.useContext();
 
@@ -133,6 +133,7 @@ PullRequestReviewThread.propTypes = {
   repo: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
   context: PropTypes.string.isRequired,
+  className: PropTypes.string,
   expanded: PropTypes.bool
 };
 PullRequestReviewThread.defaultProps = {

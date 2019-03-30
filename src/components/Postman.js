@@ -1,16 +1,32 @@
 /* eslint-disable no-sequences */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import roger from '../jolly-roger';
 import { LoadingAnimation } from './Loading';
 
-export default function Postman({ handler, value, className, onCancel, onSave, resetOnSave }) {
+export default function Postman({ handler, value, className, onCancel, onSave, resetOnSave, focus }) {
+  const textareaEl = useRef(null);
   const [ profile ] = roger.useState('profile');
   const [ text, type ] = useState(value ? value.text : null);
   const [ submitted, submit ] = useState(false);
   const [ deleteSure, areYouSure ] = useState(false);
+  const [ textareaClassName, setTextAreaClassName ] = useState(text !== null ? 'type' : '');
   const isEditing = !!value;
+  const disableInputs = text === '' || text === null;
+
+  useEffect(() => {
+    if (focus) {
+      setTextAreaClassName('type');
+      textareaEl.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (text !== null) {
+      setTextAreaClassName('type');
+    }
+  }, [ text ]);
 
   const reset = () => {
     submit(false);
@@ -31,9 +47,10 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
       <div className='media small'>
         <img src={ profile.avatar } className='avatar' title={ profile.login }/>
         <textarea
+          ref={ textareaEl }
           value={ text ? text : '' }
           placeholder='Reply'
-          className={ text !== null ? 'type' : '' }
+          className={ textareaClassName }
           onClick={ () => type(text || '') }
           disabled={ submitted }
           onChange={ e => type(e.target.value) } />
@@ -48,20 +65,36 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
           }
         } }>{ !deleteSure ? 'Delete' : 'Deleting! Are you sure?' }</button>
       </div> }
-      { (text !== null && !submitted) && <div className='right mt05'>
-        <button className='brand cancel' onClick={ () => (reset(), onCancel()) }>Cancel</button>
+      { (!submitted) && <div className='right mt05'>
+        <button
+          className='brand cancel'
+          onClick={ () => (reset(), onCancel()) }
+          disabled={ disableInputs }>Cancel</button>
         { handler.add &&
-          <button className='brand cta' onClick={ () => comment('add') }>Comment</button> }
+          <button
+            className='brand cta'
+            onClick={ () => comment('add') }
+            disabled={ disableInputs }>Comment</button> }
         { handler.edit &&
-          <button className='brand cta' onClick={ () => comment('edit') }>Edit</button> }
+          <button
+            className='brand cta'
+            onClick={ () => comment('edit') }
+            disabled={ disableInputs }>Edit</button> }
         { (!isEditing && handler.addToReview) &&
-          <button className='brand cta' onClick={ () => comment('addToReview') }>Add review comment</button> }
+          <button
+            className='brand cta'
+            onClick={ () => comment('addToReview') }
+            disabled={ disableInputs }>Add review comment</button> }
         { (!isEditing && handler.addSingleComment) &&
-          <button className='brand cta' onClick={ () => comment('addSingleComment') }>
-            Add single comment
-          </button> }
+          <button
+            className='brand cta'
+            onClick={ () => comment('addSingleComment') }
+            disabled={ disableInputs }>Add single comment</button> }
         { (!isEditing && handler.startReview) &&
-          <button className='brand cta' onClick={ () => comment('startReview') }>Start review</button> }
+          <button
+            className='brand cta'
+            onClick={ () => comment('startReview') }
+            disabled={ disableInputs }>Start review</button> }
       </div> }
       { submitted && <div className='right mt05'><LoadingAnimation /></div> }
     </div>
@@ -74,11 +107,13 @@ Postman.propTypes = {
   className: PropTypes.string,
   onCancel: PropTypes.func,
   onSave: PropTypes.func,
-  resetOnSave: PropTypes.bool
+  resetOnSave: PropTypes.bool,
+  focus: PropTypes.bool
 };
 Postman.defaultProps = {
   className: '',
   resetOnSave: false,
+  focus: false,
   onCancel: () => {},
   onSave: () => {}
 };

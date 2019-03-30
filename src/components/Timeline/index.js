@@ -88,7 +88,9 @@ export default function Timeline({ pr, repo }) {
           />
       </section>
       { events }
-      <Review pr={ pr } repo={ repo }/>
+      <div className='mt2'>
+        <Review pr={ pr } repo={ repo }/>
+      </div>
     </div>
   );
 };

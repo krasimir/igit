@@ -26,11 +26,11 @@ const expandedReducer = function (state, { path }) {
   }
   return [ ...state, path ];
 };
-const toCommentReducer = function (state, { path, line }) {
-  if (state.find(({ path: p, line: l }) => (path === p && line === l))) {
-    return state.filter(({ path: p, line: l }) => (p !== path && l !== line));
+const toCommentReducer = function (state, { path, line, diffLine }) {
+  if (state.find(({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === diffLine))) {
+    return state.filter(({ path: p, line: l, diffLine: dl }) => (p !== path && l !== line && dl !== diffLine));
   }
-  return [ ...state, { path, line } ];
+  return [ ...state, { path, line, diffLine } ];
 };
 const FilterOption = function ({ filter, dispatch, label, option }) {
   return (
@@ -112,7 +112,9 @@ export default function Files({ pr, repo, className }) {
                 return hunk.changes.map((change, j) => {
                   let lineThreads;
                   const line = change.newLineNumber || change.lineNumber;
-                  const toCommentUI = toComment.find(({ path: p, line: l }) => (path === p && line === l));
+                  const toCommentUI = toComment.find(
+                    ({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === j)
+                  );
 
                   totalDiffLines += 1;
                   if (threads.length > 0) {
@@ -126,26 +128,31 @@ export default function Files({ pr, repo, className }) {
                       <div className={ `hunk-chunk ${ j === 0 ? 'hunk-chunk-start' : ''} ${ change.type }` }>
                         <button
                           className='hunk-line-button as-link'
-                          onClick={ () => openComment({ path, line }) }>
+                          onClick={ () => openComment({ path, line, diffLine: j }) }>
                           <small className='opa5'>{ line }</small>
                         </button>
                         <pre>{ change.content }</pre>
                       </div>
                       { (lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) &&
-                        lineThreads.map((lt, key) => <PullRequestReviewThread
-                          key={ key }
-                          expanded
-                          event={ lt }
-                          pr={ pr }
-                          repo={ repo }
-                          context='files' />) }
+                        lineThreads.map((lt, key) =>
+                          <PullRequestReviewThread
+                            key={ key }
+                            expanded
+                            event={ lt }
+                            pr={ pr }
+                            repo={ repo }
+                            context='files' />) }
                       { toCommentUI &&
                         <Postman
                           className='py05'
-                          onSave={ () => openComment({ path, line }) }
+                          onSave={ () => openComment({ path, line, diffLine: j }) }
                           handler={
-                            postman({ repo, pr }).newPullRequestReviewThread({ path, position: line})
-                          } /> }
+                            postman({ repo, pr }).newPullRequestReviewThread({
+                              path,
+                              position: totalDiffLines + 1 + i
+                            })
+                          }
+                          focus /> }
                     </React.Fragment>
                   );
                 });
@@ -177,7 +184,7 @@ export default function Files({ pr, repo, className }) {
         </button>
       </section>
       { files }
-      <div className='hunk'>
+      <div className='pr-card-light mt2'>
         <Review pr={ pr } repo={ repo } />
       </div>
     </div>

@@ -43,8 +43,11 @@ roger.context({
   toggleRepo(repo) {
     api.toggleRepo(repo);
   },
-  async getPRFiles({ repo, prNumber }) {
-    return await api.fetchPRFiles(repo, prNumber);
+  getPRFiles({ repo, prNumber }) {
+    return api.fetchPRFiles(repo, prNumber);
+  },
+  getPRFile({ repo, path, commit }) {
+    return api.fetchPRFile(repo, path, commit);
   },
   async fetchData(repos, { registerPRs }) {
     for (let i = 0; i < repos.length; i++) {
