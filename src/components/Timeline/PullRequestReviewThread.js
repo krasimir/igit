@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import marked from 'marked';
 
 import Date from '../utils/Date';
-import { MESSAGE } from '../Icons';
+import { MESSAGE, CLOSE } from '../Icons';
 import ReviewDiff from '../utils/ReviewDiff';
 import roger from '../../jolly-roger';
 import Postman from '../Postman';
+import ResolveThread from './ResolveThread';
 
 function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr }) {
   const [ profile ] = roger.useState('profile');
@@ -27,9 +28,18 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
 
   if (isTheFirstOne && context === 'timeline') {
     return (
-      <div className='rel timeline-thread-comment'>
+      <div className='rel timeline-thread-comment relative'>
         { isBodyVisible &&
           <ReviewDiff data={ comment } className='mb05' shrinkBottom={ 12 } repoURL={ repoURL }/> }
+        { isBodyVisible &&
+          <div className='absolute' style={ { top: '14px', right: '14px' } }>
+            { comment.outdated && <span className='tag'>outdated</span> }
+            { comment.isResolved && <span className='tag'>resolved</span> }
+            <button className='as-link no-hover' onClick={ () => bodyVisibility(false) }>
+              <CLOSE size={ 14 }/>
+            </button>
+          </div>
+           }
         <div className='media small'>
           <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
           <div>
@@ -41,8 +51,8 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             </button>
             { (isBodyVisible && allowEdit) &&
               <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
-            { event.isResolved && <span className='tag'>resolved</span> }
-            { comment.outdated && <span className='tag'>outdated</span> }
+            { (!isBodyVisible && comment.isResolved) && <span className='tag'>resolved</span> }
+            { (!isBodyVisible && comment.outdated) && <span className='tag'>outdated</span> }
             { review && review.state === 'PENDING' && <span className='tag'>pending</span> }
           </div>
         </div>
@@ -96,7 +106,7 @@ ThreadItem.propTypes = {
   pr: PropTypes.object.isRequired
 };
 
-export default function PullRequestReviewThread({ event, repo, pr, context, expanded, className }) {
+export default function PullRequestReviewThread({ event, repo, pr, context, expanded }) {
   let [ isBodyVisible, bodyVisibility ] = useState(expanded);
   const { postman } = roger.useContext();
 
@@ -122,8 +132,13 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 ml2' }` }>
           <Postman
             resetOnSave
-            handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) }/>
+            handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) } />
         </div> }
+      { isBodyVisible &&
+        <ResolveThread
+          key={ event.id + '_' + event.isResolved }
+          event={ event }
+          onSuccess={ (resolved) => bodyVisibility(!resolved) }/> }
     </React.Fragment>
   );
 };
@@ -133,7 +148,6 @@ PullRequestReviewThread.propTypes = {
   repo: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
   context: PropTypes.string.isRequired,
-  className: PropTypes.string,
   expanded: PropTypes.bool
 };
 PullRequestReviewThread.defaultProps = {

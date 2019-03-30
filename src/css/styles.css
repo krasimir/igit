@@ -103,7 +103,7 @@ button.light:hover:enabled {
 button.as-link {
   border: none !important;
   background: none !important;
-  padding: 0 !important;
+  padding: 0 8px 5px 2px !important;
   cursor: pointer;
   font-size: 1em;
   display: inline;
@@ -114,6 +114,10 @@ button.as-link {
 button.as-link:hover {
   background: black !important;
   color: white;
+}
+button.as-link.no-hover:hover {
+  background: none !important;
+  color: black !important;
 }
 
 /* ---------------------------------------- tag */

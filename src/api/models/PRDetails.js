@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 function normalizeUser(data) {
   let avatar = data.avatarUrl;
   let name = data.name;
@@ -107,6 +108,8 @@ export function normalizeTimelineEvent({ node }) {
         date: new Date(node.createdAt),
         target: node.subject
       };
+    case 'PullRequestReviewThread':
+      return normalizeReviewThread({ node });
   }
 
   return false;
@@ -131,6 +134,7 @@ function normalizeReviewThread({ node }) {
   }));
 
   return {
+    id: node.id,
     type: 'PullRequestReviewThread',
     isResolved: node.isResolved,
     date: new Date(comments[comments.length - 1].date),

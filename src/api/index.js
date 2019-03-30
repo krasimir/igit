@@ -13,7 +13,9 @@ import {
   MUTATION_ADD_PR_THREAD_COMMENT,
   MUTATION_CREATE_REVIEW,
   MUTATION_SUBMIT_REVIEW,
-  MUTATION_DELETE_REVIEW
+  MUTATION_DELETE_REVIEW,
+  MUTATION_RESOLVE_THREAD,
+  MUTATION_UNRESOLVE_THREAD
 } from './graphql';
 import {
   createOrganization,
@@ -247,6 +249,18 @@ function createAPI() {
     const q = MUTATION_DELETE_PR_THREAD_COMMENT(id);
 
     await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
+  };
+  api.resolveThread = async function (id) {
+    const q = MUTATION_RESOLVE_THREAD(id);
+    const { data } = await requestGraphQL(q);
+
+    return normalizeTimelineEvent({ node: data.resolveReviewThread.thread });
+  };
+  api.unresolveThread = async function (id) {
+    const q = MUTATION_UNRESOLVE_THREAD(id);
+    const { data } = await requestGraphQL(q);
+
+    return normalizeTimelineEvent({ node: data.unresolveReviewThread.thread });
   };
 
   return api;

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import roger from '../jolly-roger';
 import { LoadingAnimation } from './Loading';
 
-export default function Postman({ handler, value, className, onCancel, onSave, resetOnSave, focus }) {
+export default function Postman({ handler, value, className, onCancel, onSave, resetOnSave, focus, children }) {
   const textareaEl = useRef(null);
   const [ profile ] = roger.useState('profile');
   const [ text, type ] = useState(value ? value.text : null);
@@ -32,6 +32,7 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
     submit(false);
     areYouSure(false);
     type(value ? value.text : null);
+    setTextAreaClassName('');
   };
   const comment = async (method = 'add') => {
     if (text !== '') {
@@ -69,7 +70,7 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
         <button
           className='brand cancel'
           onClick={ () => (reset(), onCancel()) }
-          disabled={ disableInputs }>Cancel</button>
+          disabled={ textareaClassName === '' }>Cancel</button>
         { handler.add &&
           <button
             className='brand cta'
@@ -97,6 +98,7 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
             disabled={ disableInputs }>Start review</button> }
       </div> }
       { submitted && <div className='right mt05'><LoadingAnimation /></div> }
+      { children }
     </div>
   );
 }
@@ -108,7 +110,8 @@ Postman.propTypes = {
   onCancel: PropTypes.func,
   onSave: PropTypes.func,
   resetOnSave: PropTypes.bool,
-  focus: PropTypes.bool
+  focus: PropTypes.bool,
+  children: PropTypes.object
 };
 Postman.defaultProps = {
   className: '',

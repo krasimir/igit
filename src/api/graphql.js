@@ -1,3 +1,47 @@
+const REVIEW_COMMENT = `
+__typename
+id
+publishedAt
+createdAt
+path
+position
+originalPosition
+outdated
+url
+author {
+  login
+  avatarUrl
+}
+body
+diffHunk
+commit {
+  oid
+  url
+}
+replyTo {
+  id
+}
+pullRequest {
+  id
+}
+pullRequestReview {
+  id
+}
+`;
+
+const REVIEW_THREAD = `
+__typename
+id
+isResolved
+comments(first: 50) {
+  totalCount
+  edges {
+    node {
+      ${ REVIEW_COMMENT }
+    }
+  }
+}`;
+
 export const QUERY_GET_REPOS_OF_ORG = (query, perPage, cursor) => `
   query {
     search(query: "${ query }", type: REPOSITORY, first: ${ perPage }${ cursor ? `, after: ${ cursor }` : ''}) {
@@ -209,42 +253,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                   totalCount
                   edges {
                     node {
-                      id
-                      isResolved
-                      comments(first: 50) {
-                        totalCount
-                        edges {
-                          node {
-                            id
-                            publishedAt
-                            createdAt
-                            path
-                            position
-                            originalPosition
-                            outdated
-                            url
-                            author {
-                              login
-                              avatarUrl
-                            }
-                            body
-                            diffHunk
-                            commit {
-                              oid
-                              url
-                            }
-                            replyTo {
-                              id
-                            }
-                            pullRequest {
-                              id
-                            }
-                            pullRequestReview {
-                              id
-                            }
-                          }
-                        }
-                      }
+                      ${ REVIEW_THREAD }
                     }
                   }
                 }
@@ -364,34 +373,7 @@ export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, p
       body: "${ body }"
     }) {
       comment {
-        __typename
-        id
-        publishedAt
-        createdAt
-        path
-        position
-        originalPosition
-        outdated
-        url
-        author {
-          login
-          avatarUrl
-        }
-        body
-        diffHunk
-        commit {
-          oid
-          url
-        }
-        replyTo {
-          id
-        }
-        pullRequest {
-          id
-        }
-        pullRequestReview {
-          id
-        }
+        ${ REVIEW_COMMENT }
       }
     }
   }
@@ -496,6 +478,30 @@ mutation {
       submittedAt
       state
       url
+    }
+  }
+}
+`;
+
+export const MUTATION_RESOLVE_THREAD = (threadId) => `
+mutation {
+  resolveReviewThread(input: {
+    threadId: "${ threadId }"
+  }) {
+    thread {
+      ${ REVIEW_THREAD }
+    }
+  }
+}
+`;
+
+export const MUTATION_UNRESOLVE_THREAD = (threadId) => `
+mutation {
+  unresolveReviewThread(input: {
+    threadId: "${ threadId }"
+  }) {
+    thread {
+      ${ REVIEW_THREAD }
     }
   }
 }

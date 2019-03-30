@@ -75,6 +75,16 @@ roger.context({
     const { review } = await api.createReview(pr.id, event, path, position, body);
 
     addEventToPR({ repo, pr, event: review });
+  },
+  async resolveThread({ threadId }, { replaceEvent }) {
+    const thread = await api.resolveThread(threadId);
+
+    replaceEvent({ event: thread });
+  },
+  async unresolveThread({ threadId }, { replaceEvent }) {
+    const thread = await api.unresolveThread(threadId);
+
+    replaceEvent({ event: thread });
   }
 });
 
