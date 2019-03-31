@@ -4,8 +4,8 @@ const toBeFlatten = {
   }
 };
 
-export default function flattenPREvents(pr) {
-  const result = pr.events
+export default function flattenPREvents(pr, returnRawEvents = false) {
+  return pr.events
     .reduce((result, event) => {
       result.push(event);
 
@@ -15,10 +15,5 @@ export default function flattenPREvents(pr) {
 
       return result;
     }, [])
-    .map(({ id }) => id);
-
-  // removing duplicates
-  return result.filter(function (item, pos) {
-    return result.indexOf(item) === pos;
-  });
+    .map(event => (returnRawEvents ? event : event.id));
 };

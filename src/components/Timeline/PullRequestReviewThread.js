@@ -9,6 +9,7 @@ import ReviewDiff from '../utils/ReviewDiff';
 import roger from '../../jolly-roger';
 import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
+import Horn from '../Horn';
 
 function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr }) {
   const [ profile ] = roger.useState('profile');
@@ -28,7 +29,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
 
   if (isTheFirstOne && context === 'timeline') {
     return (
-      <div className='rel timeline-thread-comment relative' id={ comment.id }>
+      <div className='timeline-thread-comment' id={ comment.id }>
         { isBodyVisible &&
           <ReviewDiff data={ comment } className='mb1' shrinkBottom={ 12 } repoURL={ repoURL }/> }
         { isBodyVisible &&
@@ -68,12 +69,13 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             value={ { text: comment.body, id: comment.id } }
             onSave={ () => edit(false) }
             onCancel={ () => edit(false) } /> }
+        <Horn ids={ comment.id }/>
       </div>
     );
   }
 
   return isBodyVisible || context === 'files' ? (
-    <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 mx03' }` } id={ comment.id }>
+    <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` } id={ comment.id }>
       <div className='media small'>
         <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
         <div>
@@ -92,6 +94,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
           value={ { text: comment.body, id: comment.id } }
           onSave={ () => edit(false) }
           onCancel={ () => edit(false) } /> }
+      <Horn ids={ comment.id }/>
     </div>
   ) : null;
 }
@@ -126,7 +129,7 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
   });
 
   return (
-    <React.Fragment>
+    <div className='relative'>
       { comments }
       { isBodyVisible &&
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 mx03' }` }>
@@ -141,7 +144,8 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
             event={ event }
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
-    </React.Fragment>
+      { !isBodyVisible && <Horn ids={ () => event.comments.map(comment => comment.id) }/> }
+    </div>
   );
 };
 

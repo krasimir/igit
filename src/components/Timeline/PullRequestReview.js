@@ -6,6 +6,7 @@ import Date from '../utils/Date';
 import { MESSAGE, CHECK_CIRCLE, STORM, CLIPBOARD } from '../Icons';
 import SubmitPullRequestReview from './SubmitPullRequestReview';
 import flattenToPRReviewComments from '../../api/utils/flattenToPRReviewComments';
+import Horn from '../Horn';
 
 export default function PullRequestReview({ event, pr, repo }) {
   let StateIcon = MESSAGE;
@@ -35,7 +36,7 @@ export default function PullRequestReview({ event, pr, repo }) {
   const reviewComments = flattenToPRReviewComments(pr, event.id);
 
   return (
-    <div className={ `timeline-review timeline-review-${ event.state }` } id={ event.id }>
+    <div className={ `timeline-review timeline-review-${ event.state } relative` } id={ event.id }>
       <div className='media small'>
         <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
         <div>
@@ -51,19 +52,21 @@ export default function PullRequestReview({ event, pr, repo }) {
         {
           reviewComments.map(comment => {
             return (
-              <div className='m0 fz8' key={ comment.id }>
+              <div className='m0 fz8 relative' key={ comment.id }>
                 <a href={ `#${ comment.id }` }>{ comment.path }:{ comment.position }</a>&nbsp;
                 { comment.outdated && <span className='tag'>outdated</span> }
                 { comment.isResolved && <span className='tag resolved'>resolved</span> }
                 <div
                   className='markdown mb05 fz9 opa7'
                   dangerouslySetInnerHTML={ { __html: marked(comment.body, repo) } } />
+                <Horn ids={ comment.id } />
               </div>
             );
           })
         }
       </div> }
       { event.state === 'PENDING' && <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/> }
+      <Horn ids={ () => [ event.id, ...reviewComments.map(({ id }) => id) ] } />
     </div>
   );
 };

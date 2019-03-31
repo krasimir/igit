@@ -6,6 +6,7 @@ import Date from '../utils/Date';
 import roger from '../../jolly-roger';
 import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
+import Horn from '../Horn';
 
 export default function Comment({ event, repo, pr }) {
   const [ isBodyVisible, bodyVisibility ] = useState(true);
@@ -15,7 +16,7 @@ export default function Comment({ event, repo, pr }) {
   const allowEdit = event.author.login === profile.login && isBodyVisible;
 
   return (
-    <div className='media small' id={ event.id }>
+    <div className='media small relative' id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event } />&nbsp;
@@ -37,6 +38,7 @@ export default function Comment({ event, repo, pr }) {
             onCancel={ () => edit(false) }
             onSave={ () => edit(false) } /> }
       </div>
+      <Horn ids={ event.id }/>
     </div>
   );
 };
