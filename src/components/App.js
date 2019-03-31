@@ -15,6 +15,7 @@ export default function App() {
   const { initialize } = roger.useContext();
   const [ profile ] = roger.useState('profile', null);
   const [ repos ] = roger.useState('repos', null);
+  const [ notifications ] = roger.useState('notifications', []);
 
   useEffect(() => {
     initialize();

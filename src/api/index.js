@@ -262,6 +262,15 @@ function createAPI() {
 
     return normalizeTimelineEvent({ node: data.unresolveReviewThread.thread });
   };
+  api.markAsRead = function (id) {
+    if (Array.isArray(id)) {
+      return db.markAsReadBulk(id);
+    }
+    return db.markAsRead(id);
+  };
+  api.getNotifications = async function () {
+    return (await db.getNotifications()).map(({ objectId }) => objectId);
+  };
 
   return api;
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { LoadingAnimation } from './Loading';
+import Horn from './Horn';
+import flattenPREvents from '../api/utils/flattenPREvents';
 
 export default function PRs({ prs, owner, name, prNumber }) {
   if (!prs || prs.length === 0) {
@@ -18,13 +20,16 @@ export default function PRs({ prs, owner, name, prNumber }) {
     <div>
       <div className='pl1 prs'>
         {
-          prs.map((pr, key) => (
+          prs.map(pr => (
             <Link
               to={ `/repo/${ owner }/${ name }/${ pr.number }` }
               key={ pr.id }
-              className={ selectedPR === pr ? 'list-link selected py05' : 'list-link py05' }>
+              className={
+                selectedPR === pr ? 'list-link selected py05 block relative' : 'list-link py05 block relative'
+              }>
               <img src={ pr.author.avatar } className='avatar tiny'/>
               { pr.title }&nbsp;(#{ pr.number })
+              <Horn ids={ () => flattenPREvents(pr) } />
             </Link>
           ))
         }

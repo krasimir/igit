@@ -5,10 +5,11 @@ import Diff from '../utils/Diff';
 import Date from '../utils/Date';
 import { GIT_COMMIT } from '../Icons';
 import trim from '../utils/trim';
+import Horn from '../Horn';
 
 export default function Commit({ event }) {
   return (
-    <div className='media small' id={ event.id }>
+    <div className='media small relative' id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event }/>&nbsp;
@@ -21,6 +22,7 @@ export default function Commit({ event }) {
         </small>
         <Diff data={ event } className='opa5'/>
       </div>
+      <Horn ids={ event.id }/>
     </div>
   );
 };

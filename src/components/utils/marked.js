@@ -1,6 +1,5 @@
 import MarkdownIt from 'markdown-it';
 import mentions from 'markdown-it-mentions';
-import emoji from 'markdown-it-emoji';
 
 const shaRegExps = [
   ' [a-f0-9]{40}',
@@ -24,7 +23,6 @@ function parseURL(username) {
 export default function (str, repo, pr) {
   let markdown = md
     .use(mentions, { parseURL, external: true })
-    .use(emoji)
     .render(str);
 
   if (repo) {

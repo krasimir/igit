@@ -7,7 +7,8 @@ function createDb() {
 
   db.version(1).stores({
     profile: '++id, token, name, avatar, login',
-    repos: '++id, name, repoId, nameWithOwner, isPrivate, url, selected, owner'
+    repos: '++id, name, repoId, nameWithOwner, isPrivate, url, selected, owner',
+    notifications: '++id, objectId'
   });
 
   api.getProfile = async function () {
@@ -33,6 +34,15 @@ function createDb() {
     } else {
       await db.repos.add(repo);
     }
+  };
+  api.getNotifications = async function () {
+    return db.notifications.toArray();
+  };
+  api.markAsRead = async function (id) {
+    await db.notifications.add({ objectId: id });
+  };
+  api.markAsReadBulk = async function (ids) {
+    await db.notifications.bulkAdd(ids.map(id => ({ objectId: id })));
   };
 
   return api;

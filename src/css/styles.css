@@ -353,6 +353,7 @@ header .profile img {
 /* ---------------------------------------- pr details*/
 .pr-details {
   padding-bottom: 2em;
+  position: relative;
 }
 .pr-details nav {
   border-bottom: solid 1px #e2e2e2;
@@ -653,4 +654,28 @@ header .profile img {
 }
 .timeline-thread-comment .d2h-file-wrapper {
   margin-bottom: .5em;
+}
+
+/* ---------------------------------------- horn */
+.horn {
+  position: absolute;
+  top: 4px;
+  right: -7px;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #f44336;
+  color: white;
+  font-size: 10px;
+  line-height: 21px;
+  z-index: 999;
+  cursor: pointer;
+  transition: transform 200ms ease-out;
+  -webkit-transition: transform 200ms ease-out;
+}
+.horn:hover {
+  cursor: grab;
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
 }

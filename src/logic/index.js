@@ -5,9 +5,10 @@ import { PRINT_PRS } from '../constants';
 import './postman';
 
 roger.context({
-  async initialize(action, { setProfile, setRepos }) {
+  async initialize(action, { setProfile, setRepos, setNotifications }) {
     setProfile(await api.getProfile());
     setRepos(await api.getLocalRepos());
+    setNotifications(await api.getNotifications());
   },
   async verify(token, { setVerification, setProfile }) {
     setVerification({ verifying: true, error: null });
@@ -85,6 +86,10 @@ roger.context({
     const thread = await api.unresolveThread(threadId);
 
     replaceEvent({ event: thread });
+  },
+  async markAsRead(id, { setNotifications }) {
+    await api.markAsRead(id);
+    setNotifications(await api.getNotifications());
   }
 });
 

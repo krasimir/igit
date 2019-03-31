@@ -9,6 +9,8 @@ import Timeline from './Timeline';
 import Files from './Files';
 import Diff from './utils/Diff';
 import { formatDate } from '../utils';
+import Horn from './Horn';
+import flattenPREvents from '../api/utils/flattenPREvents';
 
 const formatBranchLabels = (base, head) => {
   if (base.owner === head.owner) {
@@ -84,6 +86,7 @@ export default function PR({ url, pr, repo }) {
           </React.Fragment>
         ) }/>
       </Switch>
+      <Horn ids={ () => flattenPREvents(pr) } />
     </div>
   );
 };
