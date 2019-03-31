@@ -105,7 +105,7 @@ export default function Files({ pr, repo, className }) {
           { (threads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && <span>({ threads.length })</span>}
           { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
         </div>
-        { isExpanded && <div className='lines mt05'>
+        { isExpanded && <div className='lines'>
           <div className='lines-wrapper'>
             {
               diffItem.hunks.map((hunk, i) => {
@@ -184,7 +184,7 @@ export default function Files({ pr, repo, className }) {
         </button>
       </section>
       { files }
-      <div className='pr-card-light mt2'>
+      <div className='mt2'>
         <Review pr={ pr } repo={ repo } />
       </div>
     </div>

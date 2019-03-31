@@ -7,7 +7,7 @@ import trim from '../utils/trim';
 
 export default function RenamedTitleEvent({ event }) {
   return (
-    <div className='media small'>
+    <div className='media small' id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event } />&nbsp;

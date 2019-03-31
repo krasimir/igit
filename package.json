@@ -45,7 +45,9 @@
     "eslint-plugin-react": "7.12.4",
     "gitdiff-parser": "0.1.2",
     "jest": "24.1.0",
-    "marked": "0.6.1",
+    "markdown-it": "8.4.2",
+    "markdown-it-emoji": "1.4.0",
+    "markdown-it-mentions": "1.0.0",
     "onchange": "5.2.0",
     "prop-types": "15.7.2",
     "react": "^16.6.0",
@@ -53,10 +55,11 @@
     "react-hot-loader": "^4.3.11",
     "react-router-dom": "4.3.1",
     "react-testing-library": "6.0.0",
+    "sha-regex": "1.0.4",
+    "terser-webpack-plugin": "1.2.3",
     "uglifycss": "0.0.29",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10",
-    "terser-webpack-plugin": "1.2.3"
+    "webpack-dev-server": "^3.1.10"
   }
 }

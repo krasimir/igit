@@ -66,7 +66,7 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
           }
         } }>{ !deleteSure ? 'Delete' : 'Deleting! Are you sure?' }</button>
       </div> }
-      { (!submitted) && <div className='right mt05'>
+      { (!submitted && text !== null) && <div className='right mt05'>
         <button
           className='brand cancel'
           onClick={ () => (reset(), onCancel()) }

@@ -2,7 +2,6 @@
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 
-import ls from '../../api/localStorage';
 import Commit from './Commit';
 import PullRequestReview from './PullRequestReview';
 import Comment from './Comment';
@@ -11,9 +10,8 @@ import PullRequestReviewThread from './PullRequestReviewThread';
 import RenamedTitleEvent from './RenamedTitleEvent';
 import Reference from './Reference';
 import Review from './Review';
+import flattenUsers from '../../api/utils/flattenUsers';
 
-const COMMITS_TYPES = ['Commit', 'MergedEvent'];
-const COMMENTS_TYPES = ['PullRequestReviewComment', 'IssueComment', 'PullRequestReviewThread'];
 const components = {
   Commit,
   PullRequestReview,
@@ -25,38 +23,28 @@ const components = {
   CrossReferencedEvent: Reference,
   ReferencedEvent: Reference
 };
-const TIMELINE_FILTER = 'TIMELINE_FILTER';
 
-const isFiltering = (filter, compareTo) => !!filter.find(f => compareTo.indexOf(f) >= 0);
-const filterReducer = function (state, { arr }) {
-  let newState;
-
-  if (isFiltering(state, arr)) {
-    newState = state.filter(f => arr.indexOf(f) < 0);
-  } else {
-    newState = state.concat(arr);
+const filterByUserReducer = function (state, { user }) {
+  if (state.find(u => u === user)) {
+    return state.filter(u => u !== user);
   }
-
-  ls.set(TIMELINE_FILTER, newState);
-  return newState;
-};
-const FilterOption = function ({ filter, dispatch, label, arr }) {
-  return (
-    <label>
-      <input
-        type='checkbox'
-        checked={ isFiltering(filter, arr) }
-        onChange={ () => dispatch({ arr }) } />{ label }
-    </label>
-  );
+  return [ ...state, user ];
 };
 
 export default function Timeline({ pr, repo }) {
-  const [ filter, dispatch ] = useReducer(filterReducer, ls.get(TIMELINE_FILTER, []));
+  const users = flattenUsers(pr).map(({ login }) => login);
+  const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
   const events = pr.events
     .filter(event => {
-      if (filter.length === 0) return true;
-      return filter.indexOf(event.type) >= 0;
+      if (filterByAuthor.length > 0) {
+        if (event.author) {
+          return filterByAuthor.find(u => u === event.author.login);
+        } else if (event.type === 'PullRequestReviewThread') {
+          return event.comments.find(comment => filterByAuthor.find(u => u === comment.author.login));
+        }
+        return false;
+      }
+      return true;
     })
     .map((event, key) => {
       const Component = components[event.type];
@@ -74,18 +62,17 @@ export default function Timeline({ pr, repo }) {
   return (
     <div className='timeline'>
       <section className='filter mb1'>
-        <FilterOption
-          filter={ filter }
-          dispatch={ dispatch }
-          label='Only commits'
-          arr={ COMMITS_TYPES }
-          />
-        <FilterOption
-          filter={ filter }
-          dispatch={ dispatch }
-          label='Only comments'
-          arr={ COMMENTS_TYPES }
-          />
+        {
+          users.map(user => (
+            <label key={ user }>
+              <input
+                type='checkbox'
+                checked={ !!filterByAuthor.find(u => u === user) }
+                onChange={ () => setFilterByAuthor({ user }) }/>
+              { user }
+            </label>
+          ))
+        }
       </section>
       { events }
       <div className='mt2'>

@@ -18,10 +18,12 @@ export default function Review({ pr, repo }) {
         repo={ repo }/>
     ) :
     (
-      <SubmitPullRequestReview
-        key={ pr.id + '_' + pr.events.length }
-        repo={ repo }
-        pr={ pr }/>
+      <div className='timeline-review'>
+        <SubmitPullRequestReview
+          key={ pr.id + '_' + pr.events.length }
+          repo={ repo }
+          pr={ pr }/>
+      </div>
     );
 }
 

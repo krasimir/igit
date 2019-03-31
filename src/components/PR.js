@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
-import marked from 'marked';
+import marked from './utils/marked';
 import { Link, Switch, Route } from 'react-router-dom';
 
 import Loading from './Loading';
@@ -62,7 +62,7 @@ export default function PR({ url, pr, repo }) {
           </div>
         </div>
         <hr />
-        <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body) } } />
+        <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body, repo) } } />
       </div>
       <Switch>
         <Route path={ url + '/files' } render={ () => (

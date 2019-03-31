@@ -21,11 +21,11 @@ export default function ResolveThread({ event, onSuccess }) {
   }
 
   if (submitted) {
-    return <span className='ml1 mb1 mt05 block'><LoadingAnimation /></span>;
+    return <span className='block'><LoadingAnimation /></span>;
   }
 
   return (
-    <button className='as-link opa5 block ml2 mb1 mt05' onClick={ submit }>
+    <button className='as-link opa5 block' onClick={ submit }>
       <CHECK size={ 18 }/>{ event.isResolved ? 'Unresolve conversation' : 'Resolve conversation' }
     </button>
   );

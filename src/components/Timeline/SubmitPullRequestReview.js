@@ -26,7 +26,7 @@ export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }
   }
 
   return (
-    <div className='cf'>
+    <div className='cf' id={ pr ? pr.id : reviewId }>
       <textarea
         value={ text ? text : '' }
         placeholder='What you think?'
