@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import diffParser from 'gitdiff-parser';
 import PropTypes from 'prop-types';
 
-const HUNK_LINE_HEIGHT = 30;
+const HUNK_LINE_HEIGHT = 23;
 
 function ensureDiffHeaderExists(diff, path) {
   let diffStr = diff;
@@ -67,21 +67,23 @@ export default function ReviewDiff({ data, className, shrinkBottom, repoURL }) {
             <span className='tag'>{ getDiffItemType(diffItem.type) }</span>&nbsp;
             <span className='filenames'>{ filenames }</span>
           </div>
-          <div className='lines' style={ { height: `${ HUNK_LINE_HEIGHT * totalLinesOfCode }px` } }>
-            <div className='lines-wrapper'>
-              {
-                diffItem.hunks.map((hunk, i) => {
-                  return hunk.changes.map((change, j) => {
-                    return (
-                      <div key={ `${ i }_${ j }` } className={ `hunk-chunk ${ change.type }` }>
-                        <small className='opa5'>{ change.newLineNumber || change.lineNumber }</small>
-                        <pre>{ change.content }</pre>
-                      </div>
-                    );
-                  });
-                })
-              }
-            </div>
+          <div className='lines'>
+            <table className='lines-wrapper'>
+              <tbody>
+                {
+                  diffItem.hunks.map((hunk, i) => {
+                    return hunk.changes.map((change, j) => {
+                      return (
+                        <tr key={ `${ i }_${ j }` } className={ `code-line ${ change.type }` }>
+                          <td><small className='opa5'>{ change.newLineNumber || change.lineNumber }</small></td>
+                          <td><pre>{ change.content }</pre></td>
+                        </tr>
+                      );
+                    });
+                  })
+                }
+              </tbody>
+            </table>
             { shrinking && isShrinkingEnabled ? <div className='expand-all-lines'>
               <button onClick={ () => useShrinking(false) }>↑</button>
             </div> : null }

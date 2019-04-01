@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Commit from './Commit';
@@ -11,6 +11,8 @@ import RenamedTitleEvent from './RenamedTitleEvent';
 import Reference from './Reference';
 import Review from './Review';
 import flattenUsers from '../../api/utils/flattenUsers';
+import Postman from '../Postman';
+import roger from '../../jolly-roger';
 
 const components = {
   Commit,
@@ -32,6 +34,7 @@ const filterByUserReducer = function (state, { user }) {
 };
 
 export default function Timeline({ pr, repo }) {
+  const { postman } = roger.useContext();
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
   const events = pr.events
@@ -59,6 +62,14 @@ export default function Timeline({ pr, repo }) {
       return <div key={ key }>{ event.type }</div>;
     });
 
+  useEffect(() => {
+    users.forEach(user => {
+      if (filterByAuthor.indexOf(user) < 0) {
+        setFilterByAuthor({ user });
+      }
+    });
+  }, [ pr.id ]);
+
   return (
     <div className='timeline'>
       <section className='filter mb1'>
@@ -75,9 +86,13 @@ export default function Timeline({ pr, repo }) {
         }
       </section>
       { events }
-      <div className='mt2'>
-        <Review pr={ pr } repo={ repo }/>
+      <div className='timeline-thread-comment my03'>
+        <Postman
+          resetOnSave
+          handler={ postman({ repo, pr }).newTimelineComment }
+          placeholder='Leave a comment' />
       </div>
+      <Review pr={ pr } repo={ repo }/>
     </div>
   );
 };

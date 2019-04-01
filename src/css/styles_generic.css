@@ -37,11 +37,14 @@ input[type="text"]:disabled {
   opacity: .5;
 }
 pre, code, .markdown pre code {
-  white-space: pre-wrap !important;
+  font-family: 'Fira Mono', monospace !important;
+  /* white-space: pre-wrap !important;
   white-space: -moz-pre-wrap !important;
   white-space: -pre-wrap !important;
-  white-space: -o-pre-wrap !important;
-  word-wrap: break-word !important;
+  white-space: -o-pre-wrap !important; */
+  /* word-wrap: break-word !important; */
+  margin: 0;
+  padding: 0;
 }
 a.default-link {
   background: none;
@@ -144,6 +147,9 @@ hr {
 .mt1 {
   margin-top: 1em;
 }
+.mt03 {
+  margin-top: .3em;
+}
 .mt05 {
   margin-top: .5em;
 }
@@ -203,6 +209,9 @@ hr {
 }
 .pl05 {
   padding-left: .5em;
+}
+.p1 {
+  padding: 1em;
 }
 .pl1 {
   padding-left: 1em;

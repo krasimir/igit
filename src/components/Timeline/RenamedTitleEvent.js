@@ -15,7 +15,7 @@ export default function RenamedTitleEvent({ event }) {
         <EDIT size={ 18 }/>
         { trim(`renamed to ${ event.currentTitle }`) }
       </div>
-      <Horn ids={ event.id }/>
+      <Horn events={ [ event ] }/>
     </div>
   );
 };

@@ -86,7 +86,7 @@ export default function PR({ url, pr, repo }) {
           </React.Fragment>
         ) }/>
       </Switch>
-      <Horn ids={ () => flattenPREvents(pr) } />
+      <Horn events={ flattenPREvents(pr) } />
     </div>
   );
 };

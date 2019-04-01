@@ -7,6 +7,7 @@ import roger from '../jolly-roger';
 import PRs from './PRs';
 import PR from './PR';
 import { CHEVRON_RIGHT, CHEVRON_DOWN } from './Icons';
+import FakePR from './FakePR';
 
 export default function Repos({ match }) {
   const { fetchData } = roger.useContext();
@@ -45,32 +46,28 @@ export default function Repos({ match }) {
     pr = repo.prs.find(({ number }) => number.toString() === prNumber);
   }
 
+  const reposList = repos.filter(({ selected }) => selected).map(repo => {
+    const expanded = repo.owner === owner && repo.name === name;
+    const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
+
+    return (
+      <div key={ repo.repoId } className='relative'>
+        <Link to={ linkUrl } className='list-link'>
+          { expanded ? <CHEVRON_DOWN size={ 18 }/> : <CHEVRON_RIGHT size={ 18 }/> }
+          { repo.nameWithOwner }
+        </Link>
+        { expanded && <PRs { ...match.params } prs={ repo.prs }/> }
+      </div>
+    );
+  });
+
   return (
     <div className='layout'>
       <aside>
-        {
-          repos.map(repo => {
-            const expanded = repo.owner === owner && repo.name === name;
-            const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
-
-            return (
-              <div key={ repo.repoId }>
-                <Link to={ linkUrl } className='list-link'>
-                  { expanded ? <CHEVRON_DOWN size={ 18 }/> : <CHEVRON_RIGHT size={ 18 }/> }
-                  { repo.nameWithOwner }
-                </Link>
-                { expanded && <PRs { ...match.params } prs={ repo.prs }/> }
-              </div>
-            );
-          })
-        }
+        { reposList }
       </aside>
       <section>
-        { pr ?
-          <PR pr={ pr } url={ match.url } repo={ repo } /> :
-          <div className='pr-card-light opa5'>
-            <p className='tac m0'>¯\_(ツ)_/¯</p>
-          </div> }
+        { pr ? <PR pr={ pr } url={ match.url } repo={ repo } /> : <FakePR /> }
       </section>
     </div>
   );

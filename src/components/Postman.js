@@ -5,7 +5,18 @@ import PropTypes from 'prop-types';
 import roger from '../jolly-roger';
 import { LoadingAnimation } from './Loading';
 
-export default function Postman({ handler, value, className, onCancel, onSave, resetOnSave, focus, children }) {
+export default function Postman({
+  handler,
+  value,
+  className,
+  onCancel,
+  onSave,
+  resetOnSave,
+  focus,
+  children,
+  placeholder,
+  showAvatar
+}) {
   const textareaEl = useRef(null);
   const [ profile ] = roger.useState('profile');
   const [ text, type ] = useState(value ? value.text : null);
@@ -45,18 +56,18 @@ export default function Postman({ handler, value, className, onCancel, onSave, r
 
   return (
     <div className={ `postman cf ${ className }` }>
-      <div className='media small'>
-        <img src={ profile.avatar } className='avatar' title={ profile.login }/>
+      <div className={ showAvatar ? 'media small' : '' }>
+        { showAvatar && <img src={ profile.avatar } className='avatar' title={ profile.login }/> }
         <textarea
           ref={ textareaEl }
           value={ text ? text : '' }
-          placeholder='Reply'
+          placeholder={ placeholder }
           className={ textareaClassName }
           onClick={ () => type(text || '') }
           disabled={ submitted }
           onChange={ e => type(e.target.value) } />
       </div>
-      { (isEditing && !submitted) && <div className='left mt05 ml2'>
+      { (isEditing && !submitted) && <div className={ showAvatar ? 'left mt05 ml2' : 'left mt05' }>
         <button className='light' onClick={ () => {
           if (!deleteSure) {
             areYouSure(true);
@@ -107,10 +118,12 @@ Postman.propTypes = {
   handler: PropTypes.object.isRequired,
   value: PropTypes.object,
   className: PropTypes.string,
+  placeholder: PropTypes.string,
   onCancel: PropTypes.func,
   onSave: PropTypes.func,
   resetOnSave: PropTypes.bool,
   focus: PropTypes.bool,
+  showAvatar: PropTypes.bool,
   children: PropTypes.object
 };
 Postman.defaultProps = {
@@ -118,5 +131,7 @@ Postman.defaultProps = {
   resetOnSave: false,
   focus: false,
   onCancel: () => {},
-  onSave: () => {}
+  onSave: () => {},
+  placeholder: 'Reply',
+  showAvatar: true
 };

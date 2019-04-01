@@ -191,8 +191,6 @@ function createAPI() {
     );
   };
   api.addComment = async function (subjectId, body) {
-    // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
-
     const q = MUTATION_ADD_COMMENT(subjectId, body);
     const { data } = await requestGraphQL(q);
 
@@ -267,6 +265,12 @@ function createAPI() {
       return db.markAsReadBulk(id);
     }
     return db.markAsRead(id);
+  };
+  api.markAsUnread = function (id) {
+    if (Array.isArray(id)) {
+      return db.bulkDelete(id);
+    }
+    return db.delete(id);
   };
   api.getNotifications = async function () {
     return (await db.getNotifications()).map(({ objectId }) => objectId);

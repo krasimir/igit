@@ -29,7 +29,7 @@ export default function PRs({ prs, owner, name, prNumber }) {
               }>
               <img src={ pr.author.avatar } className='avatar tiny'/>
               { pr.title }&nbsp;(#{ pr.number })
-              <Horn ids={ () => flattenPREvents(pr) } />
+              <Horn events={ flattenPREvents(pr) } />
             </Link>
           ))
         }

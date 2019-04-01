@@ -138,6 +138,7 @@ function normalizeReviewThread({ node }) {
     type: 'PullRequestReviewThread',
     isResolved: node.isResolved,
     date: new Date(comments[comments.length - 1].date),
+    author: comments[0].author,
     comments: comments
   };
 }

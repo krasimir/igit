@@ -2,13 +2,13 @@ import MarkdownIt from 'markdown-it';
 import mentions from 'markdown-it-mentions';
 
 const shaRegExps = [
-  ' [a-f0-9]{40}',
-  ' [a-f0-9]{7}',
-  ' [a-f0-9]{10}',
-  ' [a-f0-9]{56}',
-  ' [a-f0-9]{64}',
+  ' [a-f0-9]{128}',
   ' [a-f0-9]{96}',
-  ' [a-f0-9]{128}'
+  ' [a-f0-9]{64}',
+  ' [a-f0-9]{56}',
+  ' [a-f0-9]{40}',
+  ' [a-f0-9]{10}',
+  ' [a-f0-9]{7}'
 ];
 const re = new RegExp(shaRegExps.join('|'), 'gm');
 

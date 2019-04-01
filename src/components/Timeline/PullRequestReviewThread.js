@@ -68,14 +68,17 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             handler={ postman({ repo, pr }).PullRequestReviewThread }
             value={ { text: comment.body, id: comment.id } }
             onSave={ () => edit(false) }
-            onCancel={ () => edit(false) } /> }
-        <Horn ids={ comment.id }/>
+            onCancel={ () => edit(false) }
+            showAvatar={ false }/> }
+        <Horn events={ [ comment ] }/>
       </div>
     );
   }
 
   return isBodyVisible || context === 'files' ? (
-    <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` } id={ comment.id }>
+    <div
+      className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }
+      id={ comment.id }>
       <div className='media small'>
         <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
         <div>
@@ -93,8 +96,9 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
           handler={ postman({ repo, pr }).PullRequestReviewThread }
           value={ { text: comment.body, id: comment.id } }
           onSave={ () => edit(false) }
-          onCancel={ () => edit(false) } /> }
-      <Horn ids={ comment.id }/>
+          onCancel={ () => edit(false) }
+          showAvatar={ false }/> }
+      <Horn events={ [ comment ] }/>
     </div>
   ) : null;
 }
@@ -132,7 +136,7 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
     <div className='relative'>
       { comments }
       { isBodyVisible &&
-        <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2' : 'my03 mx03' }` }>
+        <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }>
           <Postman
             resetOnSave
             handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) } />
@@ -144,7 +148,7 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
             event={ event }
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
-      { !isBodyVisible && <Horn ids={ () => event.comments.map(comment => comment.id) }/> }
+      { !isBodyVisible && <Horn events={ event.comments }/> }
     </div>
   );
 };

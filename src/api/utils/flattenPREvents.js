@@ -4,16 +4,14 @@ const toBeFlatten = {
   }
 };
 
-export default function flattenPREvents(pr, returnRawEvents = false) {
+export default function flattenPREvents(pr) {
   return pr.events
     .reduce((result, event) => {
-      result.push(event);
-
       if (toBeFlatten[event.type]) {
         result = result.concat(toBeFlatten[event.type](event));
+      } else {
+        result.push(event);
       }
-
       return result;
-    }, [])
-    .map(event => (returnRawEvents ? event : event.id));
+    }, []);
 };

@@ -14,7 +14,7 @@ export default function MergedEvent({ event }) {
         <GIT_MERGE size={ 18 }/>
         <small>merged to</small> <span className='branch'>{ event.ref }</span>
       </div>
-      <Horn ids={ event.id }/>
+      <Horn events={ [ event ] }/>
     </div>
   );
 };

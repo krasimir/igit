@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { LoadingAnimation } from '../Loading';
 import roger from '../../jolly-roger';
 
 export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }) {
+  const textareaEl = useRef(null);
   const [ profile ] = roger.useState('profile');
   const { submitReview, createReview, deleteReview } = roger.useContext();
   const [ text, type ] = useState(null);
@@ -13,6 +14,13 @@ export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }
   const isAuthor = prAuthor && profile.login === prAuthor.login;
 
   async function submit(event) {
+    if (
+      (event === 'REQUEST_CHANGES' || event === 'COMMENT') &&
+      (text === '' || text === null)
+    ) {
+      textareaEl.current.focus();
+      return;
+    }
     setSubmitted(true);
     if (reviewId) {
       await submitReview({ reviewId, event, body: text });
@@ -28,8 +36,9 @@ export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }
   return (
     <div className='cf' id={ pr ? pr.id : reviewId }>
       <textarea
+        ref={ textareaEl }
         value={ text ? text : '' }
-        placeholder='What you think?'
+        placeholder='Leave a comment'
         className={ text !== null ? 'type' : '' }
         onClick={ () => type(text || '') }
         disabled={ submitted }

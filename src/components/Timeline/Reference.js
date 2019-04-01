@@ -16,7 +16,7 @@ export default function Reference({ event }) {
         <small>mentioned at</small>&nbsp;
         <a href={ event.target.url } target='_blank'>{ trim(`${ event.target.title }`, 40) }</a>
       </div>
-      <Horn ids={ event.id }/>
+      <Horn events={ [ event ] }/>
     </div>
   );
 };

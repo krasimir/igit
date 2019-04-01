@@ -97,6 +97,73 @@ export default function Files({ pr, repo, className }) {
       viewFileUrl = `${ repo.url }/blob/${ lastCommit.oid }/${ diffItem.newPath }`;
     }
 
+    const items = [];
+    let table = { rows: [], __table: true };
+
+    diffItem.hunks.map((hunk, i) => {
+      return hunk.changes.map((change, j) => {
+        let lineThreads;
+        const line = change.newLineNumber || change.lineNumber;
+        const toCommentUI = toComment.find(
+          ({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === j)
+        );
+
+        totalDiffLines += 1;
+        if (threads.length > 0) {
+          lineThreads = threads.filter(
+            ({ comments }) => comments[0].position - 1 === totalDiffLines + i
+          );
+        }
+
+        table.rows.push({
+          type: change.type,
+          path,
+          line,
+          diffLine: j,
+          content: change.content
+        });
+
+        if ((lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS))) {
+          items.push(table);
+          table = { rows: [], __table: true };
+          items.push(
+            lineThreads.map(
+              (lt, key) =>
+                <PullRequestReviewThread
+                  key={ key }
+                  expanded
+                  event={ lt }
+                  pr={ pr }
+                  repo={ repo }
+                  context='files' />
+            )
+          );
+        }
+        if (toCommentUI) {
+          items.push(table);
+          table = { rows: [], __table: true };
+          items.push(
+            <div className='p1'>
+              <Postman
+                className='py05'
+                onSave={ () => openComment({ path, line, diffLine: j }) }
+                handler={
+                  postman({ repo, pr }).newPullRequestReviewThread({
+                    path,
+                    position: totalDiffLines + 1 + i
+                  })
+                }
+                focus />
+            </div>
+          );
+        }
+      });
+    });
+
+    if (table.length > 0) {
+      items.push(table);
+    }
+
     return (
       <div className={ `hunk ${ className ? className : '' }` } key={ key }>
         <div className='header'>
@@ -106,59 +173,74 @@ export default function Files({ pr, repo, className }) {
           { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
         </div>
         { isExpanded && <div className='lines'>
-          <div className='lines-wrapper'>
-            {
-              diffItem.hunks.map((hunk, i) => {
-                return hunk.changes.map((change, j) => {
-                  let lineThreads;
-                  const line = change.newLineNumber || change.lineNumber;
-                  const toCommentUI = toComment.find(
-                    ({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === j)
-                  );
-
-                  totalDiffLines += 1;
-                  if (threads.length > 0) {
-                    lineThreads = threads.filter(
-                      ({ comments }) => comments[0].position - 1 === totalDiffLines + i
+          <table className='lines-wrapper'>
+            <tbody>
+              {
+                diffItem.hunks.map((hunk, i) => {
+                  return hunk.changes.map((change, j) => {
+                    let lineThreads;
+                    const line = change.newLineNumber || change.lineNumber;
+                    const toCommentUI = toComment.find(
+                      ({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === j)
                     );
-                  }
 
-                  return (
-                    <React.Fragment key={ `${ i }_${ j }` }>
-                      <div className={ `hunk-chunk ${ j === 0 ? 'hunk-chunk-start' : ''} ${ change.type }` }>
-                        <button
-                          className='hunk-line-button as-link'
-                          onClick={ () => openComment({ path, line, diffLine: j }) }>
-                          <small className='opa5'>{ line }</small>
-                        </button>
-                        <pre>{ change.content }</pre>
-                      </div>
-                      { (lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) &&
-                        lineThreads.map((lt, key) =>
-                          <PullRequestReviewThread
-                            key={ key }
-                            expanded
-                            event={ lt }
-                            pr={ pr }
-                            repo={ repo }
-                            context='files' />) }
-                      { toCommentUI &&
-                        <Postman
-                          className='py05'
-                          onSave={ () => openComment({ path, line, diffLine: j }) }
-                          handler={
-                            postman({ repo, pr }).newPullRequestReviewThread({
-                              path,
-                              position: totalDiffLines + 1 + i
-                            })
-                          }
-                          focus /> }
-                    </React.Fragment>
-                  );
-                });
-              })
-            }
-          </div>
+                    totalDiffLines += 1;
+                    if (threads.length > 0) {
+                      lineThreads = threads.filter(
+                        ({ comments }) => comments[0].position - 1 === totalDiffLines + i
+                      );
+                    }
+
+                    return (
+                      <React.Fragment key={ `${ i }_${ j }` }>
+                        <tr className={ `code-line ${ j === 0 ? 'code-line-start' : ''} ${ change.type }` }>
+                          <td>
+                            <button className='as-link' onClick={ () => openComment({ path, line, diffLine: j }) }>
+                              <small className='opa5'>{ line }</small>
+                            </button>
+                          </td>
+                          <td><pre>{ change.content }</pre></td>
+                        </tr>
+                        { (lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && (
+                          <tr>
+                            <td colSpan={ 2 }>
+                              {
+                                lineThreads.map((lt, key) =>
+                                  <PullRequestReviewThread
+                                    key={ key }
+                                    expanded
+                                    event={ lt }
+                                    pr={ pr }
+                                    repo={ repo }
+                                    context='files' />)
+                              }
+                            </td>
+                          </tr>
+                        ) }
+                        { toCommentUI &&
+                          <tr>
+                            <td colSpan={ 2 }>
+                              <div className='p1'>
+                                <Postman
+                                  className='py05'
+                                  onSave={ () => openComment({ path, line, diffLine: j }) }
+                                  handler={
+                                    postman({ repo, pr }).newPullRequestReviewThread({
+                                      path,
+                                      position: totalDiffLines + 1 + i
+                                    })
+                                  }
+                                  focus />
+                              </div>
+                            </td>
+                          </tr> }
+                      </React.Fragment>
+                    );
+                  });
+                })
+              }
+            </tbody>
+          </table>
         </div> }
       </div>
     );
@@ -184,7 +266,7 @@ export default function Files({ pr, repo, className }) {
         </button>
       </section>
       { files }
-      <div className='mt2'>
+      <div className='mt03'>
         <Review pr={ pr } repo={ repo } />
       </div>
     </div>

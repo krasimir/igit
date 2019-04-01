@@ -44,6 +44,14 @@ function createDb() {
   api.markAsReadBulk = async function (ids) {
     await db.notifications.bulkAdd(ids.map(id => ({ objectId: id })));
   };
+  api.delete = async function (id) {
+    const entry = await db.notifications.get({ objectId: id });
+
+    await db.notifications.delete(entry.id);
+  };
+  api.bulkDelete = function (ids) {
+    return Promise.all(ids.map(api.delete));
+  };
 
   return api;
 }

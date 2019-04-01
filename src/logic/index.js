@@ -90,6 +90,10 @@ roger.context({
   async markAsRead(id, { setNotifications }) {
     await api.markAsRead(id);
     setNotifications(await api.getNotifications());
+  },
+  async markAsUnread(id, { setNotifications }) {
+    await api.markAsUnread(id);
+    setNotifications(await api.getNotifications());
   }
 });
 

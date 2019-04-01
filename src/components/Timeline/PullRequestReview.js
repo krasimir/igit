@@ -46,7 +46,7 @@ export default function PullRequestReview({ event, pr, repo }) {
         </div>
       </div>
       { event.body !== '' &&
-          <div className='markdown my05' dangerouslySetInnerHTML={ { __html: marked(event.body, repo) } } />
+          <div className='markdown mt05' dangerouslySetInnerHTML={ { __html: marked(event.body, repo) } } />
       }
       { reviewComments.length > 0 && <div className='mt05'>
         {
@@ -59,14 +59,14 @@ export default function PullRequestReview({ event, pr, repo }) {
                 <div
                   className='markdown mb05 fz9 opa7'
                   dangerouslySetInnerHTML={ { __html: marked(comment.body, repo) } } />
-                <Horn ids={ comment.id } />
+                <Horn events={ [ comment ] } />
               </div>
             );
           })
         }
       </div> }
       { event.state === 'PENDING' && <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/> }
-      <Horn ids={ () => [ event.id, ...reviewComments.map(({ id }) => id) ] } />
+      <Horn events={ [ event ] } />
     </div>
   );
 };

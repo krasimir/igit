@@ -1,55 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import flattenPREvents from '../api/utils/flattenPREvents';
 
 import roger from '../jolly-roger';
 
-function Horn({ ids }) {
-  const { markAsRead } = roger.useContext();
+function Horn({ events }) {
+  const { markAsRead, markAsUnread } = roger.useContext();
   const [ notifications ] = roger.useState('notifications');
-  const [ repos ] = roger.useState('repos');
   const [ profile ] = roger.useState('profile');
-  const value = typeof ids === 'function' ? ids() : ids;
-  const allEvents = repos.reduce((events, repo) => {
-    if (repo.prs) {
-      return events.concat(...repo.prs.map((pr => flattenPREvents(pr, true))));
-    }
-    return events;
-  }, []);
-  let unread;
 
-  function isAuthoredByTheCurrentUser(id) {
-    const e = allEvents.find(event => event.id === id);
-
-    if (!e) return false;
-    return e.author && e.author.login === profile.login;
+  function isAuthoredByTheCurrentUser(event) {
+    return event.author && event.author.login === profile.login;
   }
 
-  if (Array.isArray(value)) {
-    unread = value.filter(
-      id => !notifications.find(i => i === id) && !isAuthoredByTheCurrentUser(id)
-    ).length;
-    if (!unread) {
-      return null;
+  const unread = events.filter(
+    event => !notifications.find(i => i === event.id) && !isAuthoredByTheCurrentUser(event)
+  );
+
+  if (unread.length === 0) {
+    if (events.length === 1 && !isAuthoredByTheCurrentUser(events[0])) {
+      return <div className='horn read' onClick={ () => markAsUnread([ events[0].id ]) }>✔</div>;
     }
-  } else {
-    if (notifications.find(id => id === value) || isAuthoredByTheCurrentUser(value)) {
-      return null;
-    }
-    unread = '1';
+    return null;
   }
 
   return (
-    <div className='horn' onClick={ () => markAsRead(value) }>{ unread }</div>
+    <div className='horn' onClick={ () => markAsRead(events.map(({ id }) => id)) }>
+      { unread.length === 1 ? '✔' : unread.length }
+    </div>
   );
 }
 
 Horn.propTypes = {
-  ids: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.string
-  ]).isRequired
+  events: PropTypes.any.isRequired
 };
 
 export default withRouter(Horn);
