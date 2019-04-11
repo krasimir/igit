@@ -87,7 +87,7 @@ p {
 }
 #app {
   position: relative;
-  padding: 1em;
+  padding: 0 1em 1em 1em;
 }
 .centered-content {
   max-width: 550px;
@@ -210,11 +210,17 @@ hr {
 .pl05 {
   padding-left: .5em;
 }
+.p0 {
+  padding: 0 !important;
+}
 .p1 {
   padding: 1em;
 }
 .pl1 {
   padding-left: 1em;
+}
+.pt1 {
+  padding-top: 1em;
 }
 .px1 {
   padding-left: 1em;
@@ -262,8 +268,8 @@ hr {
 }
 .list-link svg, .list-link img {
   margin-right: 6px;
-  transform: translateY(6px);
-  -webkit-transform: translateY(6px);
+  transform: translateY(4px);
+  -webkit-transform: translateY(4px);
 }
 svg {
   transform: translateY(3px);

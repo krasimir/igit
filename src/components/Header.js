@@ -7,15 +7,9 @@ import Logo from './Logo';
 export default function Header({ profile }) {
   return (
     <header>
-      <Link to='/'>
-        <Logo width={ 70 }/>
+      <Link to='/' className='p0 no-hover'>
+        <Logo width={ 70 } />
       </Link>
-      <div className='separator' />
-      <div className='right profile'>
-        <Link to='/settings'>
-          <img src={ profile.avatar } />
-        </Link>
-      </div>
     </header>
   );
 }

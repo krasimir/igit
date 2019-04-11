@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Commit from './Commit';
@@ -13,6 +13,9 @@ import Review from './Review';
 import flattenUsers from '../../api/utils/flattenUsers';
 import Postman from '../Postman';
 import roger from '../../jolly-roger';
+import isItANewEvent from '../utils/isItANewEvent';
+import { AuthorAvatar } from '../utils/getAuthorByEvent';
+import camelCaseToRegularText from '../utils/camelCaseToRegularText';
 
 const components = {
   Commit,
@@ -35,8 +38,12 @@ const filterByUserReducer = function (state, { user }) {
 
 export default function Timeline({ pr, repo }) {
   const { postman } = roger.useContext();
+  const [ notifications ] = roger.useState('notifications');
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
+  const [ dimOldEvents, setDimOldEvents ] = useState(true);
+  const [ profile ] = roger.useState('profile');
+
   const events = pr.events
     .filter(event => {
       if (filterByAuthor.length > 0) {
@@ -50,6 +57,14 @@ export default function Timeline({ pr, repo }) {
       return true;
     })
     .map((event, key) => {
+      if (dimOldEvents && !isItANewEvent(event, notifications, profile)) {
+        return (
+          <div key={ event.id } className='media small timeline-thread-comment dim'>
+            <AuthorAvatar event={ event } />
+            <span>{ camelCaseToRegularText(event.type) }</span>
+          </div>
+        );
+      }
       const Component = components[event.type];
 
       if (event.type === 'PullRequestReview' && event.state === 'PENDING') {
@@ -73,6 +88,13 @@ export default function Timeline({ pr, repo }) {
   return (
     <div className='timeline'>
       <section className='filter mb1'>
+        <label key='only-new'>
+          <input
+            type='checkbox'
+            checked={ dimOldEvents }
+            onChange={ () => setDimOldEvents(!dimOldEvents) }/>
+          Dim old events
+        </label>
         {
           users.map(user => (
             <label key={ user }>

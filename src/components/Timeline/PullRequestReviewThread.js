@@ -33,7 +33,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
         { isBodyVisible &&
           <ReviewDiff data={ comment } className='mb1' shrinkBottom={ 12 } repoURL={ repoURL }/> }
         { isBodyVisible &&
-          <div className='absolute' style={ { top: '20px', right: '16px' } }>
+          <div className='absolute' style={ { top: '12px', right: '7px' } }>
             { comment.isResolved && <span className='tag resolved'>resolved</span> }
             { comment.outdated && <span className='tag'>outdated</span> }
             <button className='as-link no-hover' onClick={ () => bodyVisibility(false) }>

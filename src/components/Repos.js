@@ -3,18 +3,33 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+import Header from './Header';
 import roger from '../jolly-roger';
 import PRs from './PRs';
 import PR from './PR';
-import { CHEVRON_RIGHT, CHEVRON_DOWN } from './Icons';
+import { CHEVRON_RIGHT, CHEVRON_DOWN, CHECK_CIRCLE } from './Icons';
 import FakePR from './FakePR';
+import Horn from './Horn';
+import flattenPREvents from '../api/utils/flattenPREvents';
+import { PULLING } from '../constants';
+
+const flattenPRsEvents = allPRs => {
+  if (allPRs && allPRs.length > 0) {
+    return allPRs.reduce((events, pr) => {
+      return events.concat(flattenPREvents(pr));
+    }, []);
+  }
+  return [];
+};
 
 export default function Repos({ match }) {
   const { fetchData } = roger.useContext();
+  const [ profile ] = roger.useState('profile', null);
   const { owner, name, prNumber } = match.params;
   const [ repos ] = roger.useState('repos', []);
   const subscribedRepos = repos.filter(repo => repo.selected);
   const [ error, setError ] = useState(null);
+  const [ fetchDataInterval, setFetchDataInterval ] = useState(null);
 
   if (subscribedRepos.length === 0) {
     return (
@@ -28,13 +43,23 @@ export default function Repos({ match }) {
   }
 
   useEffect(() => {
-    fetchData(subscribedRepos).then(
-      () => {},
+    const f = () => fetchData(subscribedRepos).then(
+      () => {
+        if (PULLING) {
+          setFetchDataInterval(setTimeout(f, PULLING));
+        }
+      },
       error => {
         console.error(error);
         setError(error);
       }
     );
+
+    f();
+
+    return () => {
+      clearTimeout(fetchDataInterval);
+    };
   }, []);
 
   const repo = repos.find(
@@ -57,6 +82,7 @@ export default function Repos({ match }) {
           { repo.nameWithOwner }
         </Link>
         { expanded && <PRs { ...match.params } prs={ repo.prs }/> }
+        <Horn events={ flattenPRsEvents(repo.prs) } />
       </div>
     );
   });
@@ -64,9 +90,20 @@ export default function Repos({ match }) {
   return (
     <div className='layout'>
       <aside>
-        { reposList }
+        <Header profile={ profile } />
+        <Link to='/' className='list-link'>
+          <CHECK_CIRCLE size={ 18 }/>
+          Dashboard
+        </Link>
+        <div className='pl05'>
+          { reposList }
+        </div>
+        <Link to='/settings' className='list-link'>
+          <CHEVRON_RIGHT size={ 18 }/>
+          Settings
+        </Link>
       </aside>
-      <section>
+      <section className='pt1'>
         { pr ? <PR pr={ pr } url={ match.url } repo={ repo } /> : <FakePR /> }
       </section>
     </div>

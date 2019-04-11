@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-d
 import Loading from './Loading';
 import Authorize from './Authorize';
 import Settings from './Settings';
-import Header from './Header';
 import { BASE_PATH, NO_TOKEN } from '../constants';
 import roger from '../jolly-roger';
 import '../logic';
@@ -34,7 +33,6 @@ export default function App() {
   return (
     <Router basename={ BASE_PATH }>
       <Fragment>
-        <Header profile={ profile } />
         <Switch>
           <Route path='/settings' component={ Settings } />
           { repos.length === 0 && <Redirect to='/settings' /> }

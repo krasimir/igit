@@ -270,7 +270,7 @@ export const MUTATION_ADD_COMMENT = (subjectId, body) => `
   mutation {
     addComment(input: {
       subjectId: "${ subjectId }",
-      body: "${ body }"
+      body: ${ JSON.stringify(body) }
     }) {
       commentEdge {
         node {
@@ -294,7 +294,7 @@ export const MUTATION_EDIT_COMMENT = (id, body) => `
   mutation {
     updateIssueComment(input: {
       id: "${ id }",
-      body: "${ body }"
+      body: ${ JSON.stringify(body) }
     }) {
       issueComment {
         __typename
@@ -326,7 +326,7 @@ export const MUTATION_PR_THREAD_COMMENT = (id, body) => `
   mutation {
     updatePullRequestReviewComment(input: {
       pullRequestReviewCommentId: "${ id }",
-      body: "${ body }"
+      body: ${ JSON.stringify(body) }
     }) {
       pullRequestReviewComment {
         __typename
@@ -370,7 +370,7 @@ export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, p
       ${ inReplyTo ? `inReplyTo: "${ inReplyTo }"` : '' },
       path: "${ path }",
       position: ${ position },
-      body: "${ body }"
+      body: ${ JSON.stringify(body) }
     }) {
       comment {
         ${ REVIEW_COMMENT }
@@ -384,12 +384,12 @@ mutation {
   addPullRequestReview(input: {
     pullRequestId: "${ pullRequestId }"
     ${ event ? `event: ${ event }` : ''}
-    ${ body ? `body: "${ body }"` : ''}
+    ${ body ? `body: ${ JSON.stringify(body) }` : ''}
     ${ (path && position && body) ? `comments: [
       {
         path: "${ path }",
         position: ${ position },
-        body: "${ body }"
+        body: ${ JSON.stringify(body) }
       }
     ]` : '' }
   }) {
@@ -442,7 +442,7 @@ mutation {
   submitPullRequestReview(input: {
     pullRequestReviewId: "${ pullRequestReviewId }"
     event: ${ event }
-    ${ body ? `body: "${ body }"` : '' }
+    ${ body ? `body: ${ JSON.stringify(body) }` : '' }
   }) {
     pullRequestReview {
       __typename

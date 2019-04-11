@@ -41,22 +41,13 @@ export function getDiffItemType(type) {
 
 export default function ReviewDiff({ data, className, shrinkBottom, repoURL }) {
   const { diffHunk, path, commit } = data;
-  const [ isShrinkingEnabled, useShrinking ] = useState(true);
 
   try {
     const parsedDiff = diffParser.parse(ensureDiffHeaderExists(diffHunk, path));
 
     return parsedDiff.map((diffItem, key) => {
-      let totalLinesOfCode = diffItem.hunks.reduce((total, hunk) => {
-        total += hunk.changes.length;
-        return total;
-      }, 0);
-      const shrinking = shrinkBottom && totalLinesOfCode > shrinkBottom;
       let filenames = getHunkFiles(diffItem.oldPath, diffItem.newPath);
 
-      if (shrinking && isShrinkingEnabled) {
-        totalLinesOfCode = shrinkBottom;
-      }
       if (commit && path) {
         filenames = <a href={ `${ repoURL }/blob/${ commit.oid }/${ path }` } target='_blank'>{ filenames }</a>;
       }
@@ -84,9 +75,6 @@ export default function ReviewDiff({ data, className, shrinkBottom, repoURL }) {
                 }
               </tbody>
             </table>
-            { shrinking && isShrinkingEnabled ? <div className='expand-all-lines'>
-              <button onClick={ () => useShrinking(false) }>↑</button>
-            </div> : null }
           </div>
         </div>
       );

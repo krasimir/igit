@@ -100,8 +100,8 @@ export default function Files({ pr, repo, className }) {
     const items = [];
     let table = { rows: [], __table: true };
 
-    diffItem.hunks.map((hunk, i) => {
-      return hunk.changes.map((change, j) => {
+    diffItem.hunks.forEach((hunk, i) => {
+      hunk.changes.forEach((change, j) => {
         let lineThreads;
         const line = change.newLineNumber || change.lineNumber;
         const toCommentUI = toComment.find(
@@ -160,7 +160,7 @@ export default function Files({ pr, repo, className }) {
       });
     });
 
-    if (table.length > 0) {
+    if (table.rows.length > 0) {
       items.push(table);
     }
 
@@ -172,76 +172,35 @@ export default function Files({ pr, repo, className }) {
           { (threads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && <span>({ threads.length })</span>}
           { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
         </div>
-        { isExpanded && <div className='lines'>
-          <table className='lines-wrapper'>
-            <tbody>
-              {
-                diffItem.hunks.map((hunk, i) => {
-                  return hunk.changes.map((change, j) => {
-                    let lineThreads;
-                    const line = change.newLineNumber || change.lineNumber;
-                    const toCommentUI = toComment.find(
-                      ({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === j)
-                    );
-
-                    totalDiffLines += 1;
-                    if (threads.length > 0) {
-                      lineThreads = threads.filter(
-                        ({ comments }) => comments[0].position - 1 === totalDiffLines + i
-                      );
-                    }
-
-                    return (
-                      <React.Fragment key={ `${ i }_${ j }` }>
-                        <tr className={ `code-line ${ j === 0 ? 'code-line-start' : ''} ${ change.type }` }>
+        { isExpanded && items.map((item, i) => {
+            if (item.__table) {
+              return (
+                <div className='lines' key={ i }>
+                  <table className='lines-wrapper'>
+                    <tbody>
+                      {
+                        item.rows.map((row, j) => (
+                          <tr className={ `code-line ${ row.diffLine === 0 ? 'code-line-start' : ''} ${ row.type }` } key={ j }>
                           <td>
-                            <button className='as-link' onClick={ () => openComment({ path, line, diffLine: j }) }>
-                              <small className='opa5'>{ line }</small>
+                            <button className='as-link'
+                              onClick={ () =>
+                                openComment({ path: row.path, line: row.line, diffLine: row.diffLine })
+                              }>
+                              <small className='opa5'>{ row.line }</small>
                             </button>
                           </td>
-                          <td><pre>{ change.content }</pre></td>
+                          <td><pre>{ row.content }</pre></td>
                         </tr>
-                        { (lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && (
-                          <tr>
-                            <td colSpan={ 2 }>
-                              {
-                                lineThreads.map((lt, key) =>
-                                  <PullRequestReviewThread
-                                    key={ key }
-                                    expanded
-                                    event={ lt }
-                                    pr={ pr }
-                                    repo={ repo }
-                                    context='files' />)
-                              }
-                            </td>
-                          </tr>
-                        ) }
-                        { toCommentUI &&
-                          <tr>
-                            <td colSpan={ 2 }>
-                              <div className='p1'>
-                                <Postman
-                                  className='py05'
-                                  onSave={ () => openComment({ path, line, diffLine: j }) }
-                                  handler={
-                                    postman({ repo, pr }).newPullRequestReviewThread({
-                                      path,
-                                      position: totalDiffLines + 1 + i
-                                    })
-                                  }
-                                  focus />
-                              </div>
-                            </td>
-                          </tr> }
-                      </React.Fragment>
-                    );
-                  });
-                })
-              }
-            </tbody>
-          </table>
-        </div> }
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              );
+            }
+            return item;
+          })
+        }
       </div>
     );
   });

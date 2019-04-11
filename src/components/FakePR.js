@@ -4,7 +4,6 @@ import Placeholder from './Placeholder';
 export default function FakePR() {
   return (
     <div>
-      <p className='tac pr-card-light'>←&nbsp;&nbsp;Pick a pull request from the list on the left.</p>
       <div className='pr-details opa5'>
         <div className='pr-card'>
           <div className='media'>

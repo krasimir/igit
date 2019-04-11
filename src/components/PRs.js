@@ -18,7 +18,7 @@ export default function PRs({ prs, owner, name, prNumber }) {
 
   return (
     <div>
-      <div className='pl1 prs'>
+      <div className='prs'>
         {
           prs.map(pr => (
             <Link
