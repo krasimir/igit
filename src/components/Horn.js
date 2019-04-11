@@ -36,4 +36,4 @@ Horn.propTypes = {
   events: PropTypes.any.isRequired
 };
 
-export default withRouter(Horn);
+ export default withRouter(Horn);

@@ -12,6 +12,7 @@ import FakePR from './FakePR';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import { PULLING } from '../constants';
+import isItANewEvent from './utils/isItANewEvent';
 
 const flattenPRsEvents = allPRs => {
   if (allPRs && allPRs.length > 0) {
@@ -23,8 +24,9 @@ const flattenPRsEvents = allPRs => {
 };
 
 export default function Repos({ match }) {
-  const { fetchData } = roger.useContext();
+  const { fetchData, setTotalUnread } = roger.useContext();
   const [ profile ] = roger.useState('profile', null);
+  const [ notifications ] = roger.useState('notifications');
   const { owner, name, prNumber } = match.params;
   const [ repos ] = roger.useState('repos', []);
   const subscribedRepos = repos.filter(repo => repo.selected);
@@ -71,9 +73,13 @@ export default function Repos({ match }) {
     pr = repo.prs.find(({ number }) => number.toString() === prNumber);
   }
 
+  let totalUnread = 0;
   const reposList = repos.filter(({ selected }) => selected).map(repo => {
     const expanded = repo.owner === owner && repo.name === name;
     const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
+    const repoEvents = flattenPRsEvents(repo.prs);
+
+    totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications, profile)).length;
 
     return (
       <div key={ repo.repoId } className='relative'>
@@ -82,10 +88,12 @@ export default function Repos({ match }) {
           { repo.nameWithOwner }
         </Link>
         { expanded && <PRs { ...match.params } prs={ repo.prs }/> }
-        <Horn events={ flattenPRsEvents(repo.prs) } />
+        <Horn events={ repoEvents } />
       </div>
     );
   });
+
+  setTotalUnread(totalUnread);
 
   return (
     <div className='layout'>

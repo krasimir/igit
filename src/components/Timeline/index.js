@@ -16,6 +16,7 @@ import roger from '../../jolly-roger';
 import isItANewEvent from '../utils/isItANewEvent';
 import { AuthorAvatar } from '../utils/getAuthorByEvent';
 import camelCaseToRegularText from '../utils/camelCaseToRegularText';
+import Horn from '../Horn';
 
 const components = {
   Commit,
@@ -41,7 +42,7 @@ export default function Timeline({ pr, repo }) {
   const [ notifications ] = roger.useState('notifications');
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
-  const [ dimOldEvents, setDimOldEvents ] = useState(true);
+  const [ dimKnownEvents, setDimKnownEvents ] = useState(true);
   const [ profile ] = roger.useState('profile');
 
   const events = pr.events
@@ -57,11 +58,12 @@ export default function Timeline({ pr, repo }) {
       return true;
     })
     .map((event, key) => {
-      if (dimOldEvents && !isItANewEvent(event, notifications, profile)) {
+      if (dimKnownEvents && !isItANewEvent(event, notifications, profile)) {
         return (
-          <div key={ event.id } className='media small timeline-thread-comment dim'>
+          <div key={ event.id } className='media small timeline-thread-comment dim relative'>
             <AuthorAvatar event={ event } />
             <span>{ camelCaseToRegularText(event.type) }</span>
+            <Horn events={ [event] } />
           </div>
         );
       }
@@ -91,9 +93,9 @@ export default function Timeline({ pr, repo }) {
         <label key='only-new'>
           <input
             type='checkbox'
-            checked={ dimOldEvents }
-            onChange={ () => setDimOldEvents(!dimOldEvents) }/>
-          Dim old events
+            checked={ dimKnownEvents }
+            onChange={ () => setDimKnownEvents(!dimKnownEvents) }/>
+          Dim known events
         </label>
         {
           users.map(user => (

@@ -8,7 +8,7 @@ import Horn from '../Horn';
 
 export default function RenamedTitleEvent({ event }) {
   return (
-    <div className='media small relative' id={ event.id }>
+    <div className='timeline-thread-comment media small relative' id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event } />&nbsp;

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { CHECK, CHEVRON_RIGHT, CHECK_CIRCLE } from './Icons';
@@ -8,6 +8,7 @@ import roger from '../jolly-roger';
 import Header from './Header';
 
 export default function Repos() {
+  const textInput = useRef(null);
   const { fetchOrganizations, fetchAllRepos, toggleRepo } = roger.useContext();
   const [ repos, setRepos ] = roger.useState('repos');
   const [ profile ] = roger.useState('profile');
@@ -19,14 +20,17 @@ export default function Repos() {
 
   useEffect(() => {
     fetchOrganizations().then(
-      orgs => setSearchQuery([
-        { label: 'My repositories', param: `user:${ profile.login }`, selected: true },
-        ...orgs.map(org => ({
-          label: `Repositories in "${ org.name }" organization`,
-          param: `org:${ org.login }`,
-          selected: false
-        }))
-      ]),
+      orgs => {
+        setSearchQuery([
+          { label: 'My repositories', param: `user:${ profile.login }`, selected: true },
+          ...orgs.map(org => ({
+            label: `Repositories in "${ org.name }" organization`,
+            param: `org:${ org.login }`,
+            selected: false
+          }))
+        ]);
+        textInput.current.focus();
+      },
       error => {
         console.log(error);
         setError(new Error('GitHorn can not get your organizations. Wait a bit and refresh the page.'));
@@ -49,6 +53,7 @@ export default function Repos() {
           }
           setRepos(allRepos);
           setFetchingRepos(false);
+          textInput.current.focus();
         },
         error => {
           console.log(error);
@@ -125,6 +130,7 @@ export default function Repos() {
           </div>
           <div key='filter'>
             <input
+              ref={ textInput }
               type='text'
               placeholder='repository name'
               className='mb1'

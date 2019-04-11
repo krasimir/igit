@@ -94,6 +94,13 @@ roger.context({
   async markAsUnread(id, { setNotifications }) {
     await api.markAsUnread(id);
     setNotifications(await api.getNotifications());
+  },
+  setTotalUnread(number) {
+    if (number === 0) {
+      document.title = '✔ GitHorn';
+    } else {
+      document.title = `(${ number }) GitHorn`;
+    }
   }
 });
 

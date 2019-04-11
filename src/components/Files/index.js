@@ -111,7 +111,9 @@ export default function Files({ pr, repo, className }) {
         totalDiffLines += 1;
         if (threads.length > 0) {
           lineThreads = threads.filter(
-            ({ comments }) => comments[0].position - 1 === totalDiffLines + i
+            ({ comments }) => {
+              return comments[0].position - 1 === totalDiffLines + i;
+            }
           );
         }
 
@@ -180,7 +182,9 @@ export default function Files({ pr, repo, className }) {
                     <tbody>
                       {
                         item.rows.map((row, j) => (
-                          <tr className={ `code-line ${ row.diffLine === 0 ? 'code-line-start' : ''} ${ row.type }` } key={ j }>
+                          <tr className={
+                            `code-line ${ row.diffLine === 0 ? 'code-line-start' : ''} ${ row.type }`
+                          } key={ j }>
                           <td>
                             <button className='as-link'
                               onClick={ () =>

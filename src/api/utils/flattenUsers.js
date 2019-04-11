@@ -7,12 +7,12 @@ export default function flattenUsers(pr) {
   // ].filter(comment => comment.pullRequestReviewId === pullRequestReviewId);
 
   const users = pr.events.reduce((result, event) => {
-    if (event.author) {
+    if (event.author && event.author.login) {
       result[event.author.login] = event.author;
     }
     if (event.comments) {
       event.comments.forEach(comment => {
-        if (comment.author) {
+        if (comment.author && comment.author.login) {
           result[comment.author.login] = comment.author;
         }
       });

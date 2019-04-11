@@ -87,7 +87,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
           owner {
               login
           },
-          pullRequests(states: OPEN, first: ${ perPage }${ cursor ? `, after: ${ cursor }` : ''}) {
+          pullRequests(states: OPEN, first: ${ perPage }${ cursor ? `, after: "${ cursor }"` : ''}) {
             totalCount
             edges {
               cursor
@@ -202,6 +202,8 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
                           id
                         }
                         url
+                        position
+                        originalPosition
                       }
                       ... on IssueComment {
                         id
@@ -348,6 +350,8 @@ export const MUTATION_PR_THREAD_COMMENT = (id, body) => `
           id
         }
         url
+        position
+        originalPosition
       }
     }
   }
@@ -428,6 +432,8 @@ mutation {
                 id
               }
               url
+              position
+              originalPosition
             }
           }
         }
