@@ -11,7 +11,7 @@ import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
 import Horn from '../Horn';
 
-function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr }) {
+function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim }) {
   const [ profile ] = roger.useState('profile');
   const { postman } = roger.useContext();
   const [ isEditing, edit ] = useState(false);
@@ -28,6 +28,20 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
   str += comment.position ? ':' + comment.position : '';
 
   if (isTheFirstOne && context === 'timeline') {
+    if (dim) {
+      return (
+        <div className='timeline-thread-comment dim' id={ comment.id }>
+          <div className='media small'>
+            <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
+            <div>
+              <Date event={ event.comments[totalComments - 1] } />&nbsp;
+              <MESSAGE size={ 18 }/>&nbsp;
+              ({ totalComments })
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className='timeline-thread-comment' id={ comment.id }>
         { isBodyVisible &&
@@ -98,7 +112,6 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
           onSave={ () => edit(false) }
           onCancel={ () => edit(false) }
           showAvatar={ false }/> }
-      <Horn events={ [ comment ] }/>
     </div>
   ) : null;
 }
@@ -110,10 +123,11 @@ ThreadItem.propTypes = {
   repoURL: PropTypes.string.isRequired,
   context: PropTypes.string.isRequired,
   repo: PropTypes.object.isRequired,
-  pr: PropTypes.object.isRequired
+  pr: PropTypes.object.isRequired,
+  dim: PropTypes.bool
 };
 
-export default function PullRequestReviewThread({ event, repo, pr, context, expanded }) {
+export default function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
   let [ isBodyVisible, bodyVisibility ] = useState(expanded);
   const { postman } = roger.useContext();
 
@@ -123,32 +137,33 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
         event={ event }
         index={ i }
         key={ comment.id }
-        isBodyVisible={ isBodyVisible }
+        isBodyVisible={ isBodyVisible && !dim }
         bodyVisibility={ bodyVisibility }
         repoURL={ repo.url }
         context={ context }
         repo={ repo }
-        pr={ pr }/>
+        pr={ pr }
+        dim={ dim }/>
     );
   });
 
   return (
     <div className='relative'>
       { comments }
-      { isBodyVisible &&
+      { (isBodyVisible && !dim) &&
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }>
           <Postman
             resetOnSave
             handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) } />
         </div> }
-      { (isBodyVisible && context === 'timeline') &&
+      { (isBodyVisible && context === 'timeline' && !dim) &&
         <div className='ml2 mb1 mt05'>
           <ResolveThread
             key={ event.id + '_' + event.isResolved }
             event={ event }
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
-      { !isBodyVisible && <Horn events={ event.comments }/> }
+      <Horn events={ event.comments }/>
     </div>
   );
 };
@@ -158,7 +173,8 @@ PullRequestReviewThread.propTypes = {
   repo: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
   context: PropTypes.string.isRequired,
-  expanded: PropTypes.bool
+  expanded: PropTypes.bool,
+  dim: PropTypes.bool
 };
 PullRequestReviewThread.defaultProps = {
   context: 'timeline',

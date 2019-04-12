@@ -79,7 +79,7 @@ export default function Repos({ match }) {
     const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
     const repoEvents = flattenPRsEvents(repo.prs);
 
-    totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications, profile)).length;
+    totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications)).length;
 
     return (
       <div key={ repo.repoId } className='relative'>

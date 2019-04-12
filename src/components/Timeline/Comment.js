@@ -8,12 +8,28 @@ import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
 import Horn from '../Horn';
 
-export default function Comment({ event, repo, pr }) {
+export default function Comment({ event, repo, pr, dim }) {
   const [ isBodyVisible, bodyVisibility ] = useState(true);
   const [ isEditing, edit ] = useState(false);
   const [ profile ] = roger.useState('profile');
   const { postman } = roger.useContext();
   const allowEdit = event.author.login === profile.login && isBodyVisible;
+
+  if (dim) {
+    return (
+      <div className='timeline-thread-comment relative dim'>
+        <div className='media small' id={ event.id }>
+          <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
+          <div>
+            <Date event={ event } />&nbsp;
+            <MESSAGE size={ 18 }/>
+            Comment
+          </div>
+        </div>
+        <Horn events={ [ event ] }/>
+      </div>
+    );
+  }
 
   return (
     <div className='timeline-thread-comment relative'>
@@ -52,5 +68,6 @@ export default function Comment({ event, repo, pr }) {
 Comment.propTypes = {
   event: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
-  repo: PropTypes.object.isRequired
+  repo: PropTypes.object.isRequired,
+  dim: PropTypes.bool
 };

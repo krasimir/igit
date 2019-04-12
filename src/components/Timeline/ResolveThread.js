@@ -33,7 +33,8 @@ export default function ResolveThread({ event, onSuccess }) {
 
 ResolveThread.propTypes = {
   event: PropTypes.object.isRequired,
-  onSuccess: PropTypes.func
+  onSuccess: PropTypes.func,
+  dim: PropTypes.bool
 };
 ResolveThread.defaultProps = {
   onSuccess: () => {}

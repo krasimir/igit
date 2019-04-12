@@ -68,5 +68,6 @@ SubmitPullRequestReview.propTypes = {
   reviewId: PropTypes.string,
   prAuthor: PropTypes.object,
   repo: PropTypes.object,
-  pr: PropTypes.object
+  pr: PropTypes.object,
+  dim: PropTypes.bool
 };

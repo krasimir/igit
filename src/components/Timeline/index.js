@@ -14,9 +14,6 @@ import flattenUsers from '../../api/utils/flattenUsers';
 import Postman from '../Postman';
 import roger from '../../jolly-roger';
 import isItANewEvent from '../utils/isItANewEvent';
-import { AuthorAvatar } from '../utils/getAuthorByEvent';
-import camelCaseToRegularText from '../utils/camelCaseToRegularText';
-import Horn from '../Horn';
 
 const components = {
   Commit,
@@ -43,7 +40,6 @@ export default function Timeline({ pr, repo }) {
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
   const [ dimKnownEvents, setDimKnownEvents ] = useState(true);
-  const [ profile ] = roger.useState('profile');
 
   const events = pr.events
     .filter(event => {
@@ -58,15 +54,7 @@ export default function Timeline({ pr, repo }) {
       return true;
     })
     .map((event, key) => {
-      if (dimKnownEvents && !isItANewEvent(event, notifications, profile)) {
-        return (
-          <div key={ event.id } className='media small timeline-thread-comment dim relative'>
-            <AuthorAvatar event={ event } />
-            <span>{ camelCaseToRegularText(event.type) }</span>
-            <Horn events={ [event] } />
-          </div>
-        );
-      }
+      const isDimmed = dimKnownEvents && !isItANewEvent(event, notifications);
       const Component = components[event.type];
 
       if (event.type === 'PullRequestReview' && event.state === 'PENDING') {
@@ -74,7 +62,12 @@ export default function Timeline({ pr, repo }) {
       }
 
       if (Component) {
-        return <Component event={ event } key={ event.id + '_' + key } pr={ pr } repo={ repo }/>;
+        return <Component
+          event={ event }
+          key={ event.id + '_' + key }
+          pr={ pr }
+          repo={ repo }
+          dim={ isDimmed } />;
       }
       return <div key={ key }>{ event.type }</div>;
     });
@@ -95,7 +88,7 @@ export default function Timeline({ pr, repo }) {
             type='checkbox'
             checked={ dimKnownEvents }
             onChange={ () => setDimKnownEvents(!dimKnownEvents) }/>
-          Dim known events
+          Dim seen events
         </label>
         {
           users.map(user => (

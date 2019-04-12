@@ -10,7 +10,9 @@ const createStore = () => ({
   reducers: {},
   onUpdate(slice) {
     if (this.updaters[slice]) {
-      this.updaters[slice].forEach(u => u(this.state[slice]));
+      for (let i = 0; i < this.updaters[slice].length; i++) {
+        this.updaters[slice][i](this.state[slice]);
+      }
     }
   }
 });
@@ -44,8 +46,10 @@ function useState(slice, initialState) {
     store.updaters[slice].push(setLocalState);
   }
 
-  userEffectReact(() => () => {
-    store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
+  userEffectReact(() => {
+    return () => {
+      store.updaters[slice] = store.updaters[slice].filter(u => u !== setLocalState);
+    };
   }, []);
   return [ state, setState ];
 };

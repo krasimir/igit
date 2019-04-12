@@ -432,7 +432,7 @@ header .logo {
   border-radius: 4px;
   position: relative;
 }
-.timeline-thread-comment.dim {
+.timeline-thread-comment.dim, .timeline-review.dim {
   opacity: .5;
   font-size: .8em;
 }

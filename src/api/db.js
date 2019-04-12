@@ -47,7 +47,11 @@ function createDb() {
   api.delete = async function (id) {
     const entry = await db.notifications.get({ objectId: id });
 
-    await db.notifications.delete(entry.id);
+    if (entry) {
+      await db.notifications.delete(entry.id);
+    } else {
+      console.warn(`There is no notification with id "${ id }". You are trying to delete it but it is not there.`);
+    }
   };
   api.bulkDelete = function (ids) {
     return Promise.all(ids.map(api.delete));

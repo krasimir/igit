@@ -1,13 +1,8 @@
-export default function isItANewEvent(event, notifications, profile) {
+export default function isItANewEvent(event, notifications) {
   if (notifications.find(i => i === event.id)) {
     return false;
   } else if (event.type === 'PullRequestReviewThread') {
-    return !event.comments.every(comment => {
-      return notifications.find(i => i === comment.id) ||
-        (comment.author && comment.author.login === profile.login);
-    });
-  } else if (event.author && event.author.login === profile.login) {
-    return false;
+    return !event.comments.every(comment => notifications.find(i => i === comment.id));
   }
 
   return true;

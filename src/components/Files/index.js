@@ -57,7 +57,7 @@ export default function Files({ pr, repo, className }) {
       console.log(error);
       setError(error);
     });
-  }, [ pr ]);
+  }, [ pr.id, pr.updatedAt ]);
 
   if (error) {
     return (

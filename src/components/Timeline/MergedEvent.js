@@ -5,9 +5,11 @@ import Date from '../utils/Date';
 import { GIT_MERGE } from '../Icons';
 import Horn from '../Horn';
 
-export default function MergedEvent({ event }) {
+export default function MergedEvent({ event, dim }) {
+  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
+
   return (
-    <div className='timeline-thread-comment media small relative' id={ event.id }>
+    <div className={ cls } id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         <Date event={ event } />&nbsp;
@@ -20,5 +22,6 @@ export default function MergedEvent({ event }) {
 };
 
 MergedEvent.propTypes = {
-  event: PropTypes.object.isRequired
+  event: PropTypes.object.isRequired,
+  dim: PropTypes.bool
 };
