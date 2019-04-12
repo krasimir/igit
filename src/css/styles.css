@@ -432,7 +432,7 @@ header .logo {
   border-radius: 4px;
   position: relative;
 }
-.timeline-thread-comment.dim, .timeline-review.dim {
+.dim {
   opacity: .5;
   font-size: .8em;
 }
@@ -639,12 +639,15 @@ header .logo {
   -webkit-transform: scale(1.2);
 }
 .horn.read {
-  background: #999;
-  opacity: 0;
+  background: white;
+  opacity: 1;
+  color: #e2e2e2;
   cursor: pointer;
+  line-height: 19px;
 }
 .horn.read:hover {
-  opacity: 1;
+  color: black;
+  border: solid 1px black;
 }
 
 /* ---------------------------------------- placeholder */

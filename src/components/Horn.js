@@ -13,10 +13,9 @@ function Horn({ events }) {
   const unread = events.filter(event => isItANewEvent(event, notifications));
 
   if (unread.length === 0) {
-    if (events.length === 1) {
-      return <div className='horn read' onClick={ () => markAsUnread([ events[0].id ]) }>+1</div>;
-    }
-    return null;
+    return <div className='horn read' onClick={ () => markAsUnread(events.map(({ id }) => id)) }>
+      { events.length }
+    </div>;
   }
 
   return (
@@ -27,7 +26,7 @@ function Horn({ events }) {
 }
 
 Horn.propTypes = {
-  events: PropTypes.any.isRequired
+  events: PropTypes.array.isRequired
 };
 
  export default Horn;

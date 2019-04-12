@@ -30,7 +30,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
   if (isTheFirstOne && context === 'timeline') {
     if (dim) {
       return (
-        <div className='timeline-thread-comment dim' id={ comment.id }>
+        <div className='timeline-thread-comment' id={ comment.id }>
           <div className='media small'>
             <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
             <div>
@@ -112,6 +112,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
           onSave={ () => edit(false) }
           onCancel={ () => edit(false) }
           showAvatar={ false }/> }
+      <Horn events={ [ comment ] }/>
     </div>
   ) : null;
 }
@@ -148,7 +149,7 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
   });
 
   return (
-    <div className='relative'>
+    <div className={ `relative ${ dim ? 'dim' : ''}` }>
       { comments }
       { (isBodyVisible && !dim) &&
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }>
