@@ -192,15 +192,6 @@ header .logo {
 .settings .selected svg {
   opacity: 1;
 }
-.settings .search-criteria label {
-  display: grid;
-  grid-template-columns: 35px 1fr;
-}
-.settings .search-criteria input {
-  font-size: 2em;
-  transform: translateY(4px);
-  -webkit-transform: translateY(4px);
-}
 
 /* ---------------------------------------- vendor */
 .lds-ellipsis {
@@ -464,7 +455,6 @@ header .logo {
 
 .files {
   font-size: .9em;
-  line-height: 1.4em;
 }
 .hunk + .hunk {
   margin-top: .2em;
@@ -472,13 +462,8 @@ header .logo {
 
 /* ---------------------------------------- filter */
 
-.filter input {
-  font-size: 2em;
-  transform: translateY(-1px);
-  -webkit-transform: translateY(-1px);
-}
 .filter label {
-  display: inline-block;
+  float: left;
 }
 .filter label + label {
   margin-left: 1em;

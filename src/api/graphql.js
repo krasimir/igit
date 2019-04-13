@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const REVIEW_COMMENT = `
 __typename
 id
@@ -41,6 +42,176 @@ comments(first: 50) {
     }
   }
 }`;
+
+const PULL_REQUEST = `
+id
+number
+title
+url
+baseRefName
+headRefName
+headRepository {
+  owner {
+    login
+  }
+}
+createdAt
+updatedAt
+permalink
+author {
+  login
+  avatarUrl
+  url
+}
+changedFiles
+additions
+deletions
+mergeable
+merged
+mergedAt
+closed
+closedAt
+body
+timeline(first: 100) {
+  totalCount
+  edges {
+    cursor
+    node {
+      __typename
+      ... on Commit {
+        oid
+        id
+        author {
+          name
+          avatarUrl
+          user {
+            login
+          }
+        }
+        message
+        additions
+        deletions
+        url
+        committedDate
+      }
+      ... on RenamedTitleEvent {
+        id
+        actor {
+          avatarUrl
+          login
+        }
+        currentTitle
+        previousTitle
+        createdAt
+      }
+      ... on CrossReferencedEvent {
+        id,
+        actor {
+          avatarUrl
+          login
+        }
+        referencedAt
+        target {
+          ... on Issue {
+            title
+            url
+          }
+          ... on PullRequest {
+            title
+            url
+          }
+        }
+        url
+      }
+      ... on PullRequestReview {
+        id
+        author {
+          avatarUrl
+          login
+        }
+        body
+        createdAt
+        submittedAt
+        state
+        url
+      }
+      ... on PullRequestReviewComment {
+        id
+        pullRequestReview {
+          id
+        }
+        author {
+          avatarUrl
+          login
+        }
+        path
+        body
+        outdated
+        publishedAt
+        createdAt
+        diffHunk
+        replyTo {
+          id
+        }
+        url
+        position
+        originalPosition
+      }
+      ... on IssueComment {
+        id
+        author {
+          avatarUrl
+          login
+        }
+        body
+        publishedAt
+        createdAt
+        url
+      }
+      ... on MergedEvent {
+        id
+        actor {
+          avatarUrl
+          login
+        }
+        commit {
+          oid
+          commitUrl
+        }
+        mergeRefName
+        createdAt
+        url
+      }
+      ... on ReferencedEvent {
+        id
+        actor {
+          avatarUrl
+          login
+        }
+        createdAt
+        subject {
+          ... on Issue {
+            title
+            url
+          }
+          ... on PullRequest {
+            title
+            url
+          }
+        }
+      }
+    }
+  }
+}
+reviewThreads(first: 50) {
+  totalCount
+  edges {
+    node {
+      ${ REVIEW_THREAD }
+    }
+  }
+}
+`;
 
 export const QUERY_GET_REPOS_OF_ORG = (query, perPage, cursor) => `
   query {
@@ -92,173 +263,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
             edges {
               cursor
               node {
-                id
-                number
-                title
-                url
-                baseRefName
-                headRefName
-                headRepository {
-                  owner {
-                    login
-                  }
-                }
-                createdAt
-                updatedAt
-                permalink
-                author {
-                  login
-                  avatarUrl
-                  url
-                }
-                changedFiles
-                additions
-                deletions
-                mergeable
-                merged
-                mergedAt
-                closed
-                closedAt
-                body
-                timeline(first: 100) {
-                  totalCount
-                  edges {
-                    cursor
-                    node {
-                      __typename
-                      ... on Commit {
-                        oid
-                        id
-                        author {
-                          name
-                          avatarUrl
-                          user {
-                            login
-                          }
-                        }
-                        message
-                        additions
-                        deletions
-                        url
-                        committedDate
-                      }
-                      ... on RenamedTitleEvent {
-                        id
-                        actor {
-                          avatarUrl
-                          login
-                        }
-                        currentTitle
-                        previousTitle
-                        createdAt
-                      }
-                      ... on CrossReferencedEvent {
-                        id,
-                        actor {
-                          avatarUrl
-                          login
-                        }
-                        referencedAt
-                        target {
-                          ... on Issue {
-                            title
-                            url
-                          }
-                          ... on PullRequest {
-                            title
-                            url
-                          }
-                        }
-                        url
-                      }
-                      ... on PullRequestReview {
-                        id
-                        author {
-                          avatarUrl
-                          login
-                        }
-                        body
-                        createdAt
-                        submittedAt
-                        state
-                        url
-                      }
-                      ... on PullRequestReviewComment {
-                        id
-                        pullRequestReview {
-                          id
-                        }
-                        author {
-                          avatarUrl
-                          login
-                        }
-                        path
-                        body
-                        outdated
-                        publishedAt
-                        createdAt
-                        diffHunk
-                        replyTo {
-                          id
-                        }
-                        url
-                        position
-                        originalPosition
-                      }
-                      ... on IssueComment {
-                        id
-                        author {
-                          avatarUrl
-                          login
-                        }
-                        body
-                        publishedAt
-                        createdAt
-                        url
-                      }
-                      ... on MergedEvent {
-                        id
-                        actor {
-                          avatarUrl
-                          login
-                        }
-                        commit {
-                          oid
-                          commitUrl
-                        }
-                        mergeRefName
-                        createdAt
-                        url
-                      }
-                      ... on ReferencedEvent {
-                        id
-                        actor {
-                          avatarUrl
-                          login
-                        }
-                        createdAt
-                        subject {
-                          ... on Issue {
-                            title
-                            url
-                          }
-                          ... on PullRequest {
-                            title
-                            url
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                reviewThreads(first: 50) {
-                  totalCount
-                  edges {
-                    node {
-                      ${ REVIEW_THREAD }
-                    }
-                  }
-                }
+                ${ PULL_REQUEST }
               }
             }
           }
@@ -267,6 +272,20 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
     }
   }
 }`;
+
+export const QUERY_GET_PR = (name, owner, prNumber) => `
+  query {
+    repository(name: "${ name }", owner: ${ owner }) {
+      name,
+      owner {
+          login
+      },
+      pullRequest(number: ${ prNumber }) {
+        ${ PULL_REQUEST }
+      }
+    }
+  }
+`;
 
 export const MUTATION_ADD_COMMENT = (subjectId, body) => `
   mutation {

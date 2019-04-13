@@ -11,7 +11,8 @@ roger.context({
       deleteEventFromPR,
       addPRReviewComment,
       replacePRReviewComment,
-      deletePRReviewComment
+      deletePRReviewComment,
+      markAsRead
     }
   ) {
     return {
@@ -19,6 +20,7 @@ roger.context({
         async add(text) {
           const event = await api.addComment(pr.id, text);
 
+          markAsRead(event.id);
           addEventToPR({ repo, pr, event });
         }
       },
@@ -26,6 +28,7 @@ roger.context({
         async edit(id, text) {
           const event = await api.editComment(id, text);
 
+          markAsRead(event.id);
           replaceEventInPR({ repo, pr, event });
         },
         async del(id) {
@@ -38,6 +41,7 @@ roger.context({
         async edit(id, text) {
           const comment = await api.editPRThreadComment(id, text);
 
+          markAsRead(comment.id);
           replacePRReviewComment({ repo, pr, comment });
         },
         async del(id) {
@@ -62,6 +66,7 @@ roger.context({
                 text
               );
 
+              markAsRead(comment.id);
               addPRReviewComment({ repo, pr, topComment, comment });
             }
           };
@@ -77,6 +82,7 @@ roger.context({
               text
             );
 
+            markAsRead([ review.id, comment.id ]);
             addEventToPR({ repo, pr, event: review });
             addPRReviewComment({ repo, pr, topComment, comment });
           },
@@ -90,6 +96,7 @@ roger.context({
               text
             );
 
+            markAsRead([ review.id, comment.id ]);
             await api.submitReview(review.id, 'COMMENT');
             addPRReviewComment({ repo, pr, topComment, comment });
           }

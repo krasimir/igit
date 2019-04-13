@@ -14,6 +14,7 @@ import flattenUsers from '../../api/utils/flattenUsers';
 import Postman from '../Postman';
 import roger from '../../jolly-roger';
 import isItANewEvent from '../utils/isItANewEvent';
+import useDimSeenEvents from '../Settings/useDimSeenEvents';
 
 const components = {
   Commit,
@@ -39,7 +40,7 @@ export default function Timeline({ pr, repo }) {
   const [ notifications ] = roger.useState('notifications');
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
-  const [ dimKnownEvents, setDimKnownEvents ] = useState(true);
+  const { dimKnownEvents, component: dimKnownEventsComponent } = useDimSeenEvents();
 
   const events = pr.events
     .filter(event => {
@@ -82,14 +83,8 @@ export default function Timeline({ pr, repo }) {
 
   return (
     <div className='timeline'>
-      <section className='filter mb1'>
-        <label key='only-new'>
-          <input
-            type='checkbox'
-            checked={ dimKnownEvents }
-            onChange={ () => setDimKnownEvents(!dimKnownEvents) }/>
-          Dim seen events
-        </label>
+      <section className='filter mb1 cf'>
+        { dimKnownEventsComponent }
         {
           users.map(user => (
             <label key={ user }>

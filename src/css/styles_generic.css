@@ -283,8 +283,18 @@ svg {
   border-left: solid 2px #e2e2e2;
   padding-left: 1em;
 }
+/* ---------------------------------------- label */
+label {
+  display: grid;
+  grid-template-columns: 35px 1fr;
+}
+label input[type="checkbox"] {
+  font-size: 2em;
+  transform: translateY(4px);
+  -webkit-transform: translateY(4px);
+}
 
-/* ************************************************ textarea */
+/* ---------------------------------------- textarea */
 textarea {
   width: 100%;
   height: 43px;
@@ -310,7 +320,7 @@ textarea:disabled {
   opacity: .5;
 }
 
-/* ************************************************ select */
+/* ---------------------------------------- select */
 select {
   display: block;
   font-size: .8em;

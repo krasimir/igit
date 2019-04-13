@@ -7,7 +7,7 @@ import Header from './Header';
 import roger from '../jolly-roger';
 import PRs from './PRs';
 import PR from './PR';
-import { CHEVRON_RIGHT, CHEVRON_DOWN, CHECK_CIRCLE } from './Icons';
+import { CHEVRON_RIGHT, CHEVRON_DOWN, ARROW_RIGHT_CIRCLE } from './Icons';
 import FakePR from './FakePR';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
@@ -45,7 +45,7 @@ export default function Repos({ match }) {
   }
 
   useEffect(() => {
-    const f = () => fetchData(subscribedRepos).then(
+    const f = () => fetchData({ repos: subscribedRepos, repoName: name, prNumber }).then(
       () => {
         if (PULLING) {
           setFetchDataInterval(setTimeout(f, PULLING));
@@ -100,14 +100,14 @@ export default function Repos({ match }) {
       <aside>
         <Header profile={ profile } />
         <Link to='/' className='list-link'>
-          <CHECK_CIRCLE size={ 18 }/>
+          <ARROW_RIGHT_CIRCLE size={ 18 }/>
           Dashboard
         </Link>
         <div className='pl05'>
           { reposList }
         </div>
         <Link to='/settings' className='list-link'>
-          <CHEVRON_RIGHT size={ 18 }/>
+          <ARROW_RIGHT_CIRCLE size={ 18 }/>
           Settings
         </Link>
       </aside>

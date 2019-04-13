@@ -50,7 +50,7 @@ roger.context({
   getPRFile({ repo, path, commit }) {
     return api.fetchPRFile(repo, path, commit);
   },
-  async fetchData(repos, { registerPRs }) {
+  async fetchData({ repos, repoName, prNumber }, { registerPRs }) {
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i];
       const prs = await api.fetchRemotePRs(repo);
@@ -59,12 +59,17 @@ roger.context({
         console.log(repo.name, JSON.stringify(prs, null, 2));
       }
 
+      if (prNumber && repo.name === repoName && !prs.find(pr => pr.number === prNumber)) {
+        prs.push(await api.fetchRemotePR(repo, prNumber));
+      }
+
       registerPRs({ repo, prs });
     }
   },
-  async submitReview({ reviewId, event, body }, { replaceEvent }) {
+  async submitReview({ reviewId, event, body }, { replaceEvent, markAsRead }) {
     const review = await api.submitReview(reviewId, event, body);
 
+    markAsRead(review.id);
     replaceEvent({ event: review });
   },
   async deleteReview({ reviewId }, { deleteEvent }) {
@@ -72,9 +77,10 @@ roger.context({
 
     deleteEvent({ id: reviewId });
   },
-  async createReview({ repo, pr, event, path, position, body }, { addEventToPR }) {
+  async createReview({ repo, pr, event, path, position, body }, { addEventToPR, markAsRead }) {
     const { review } = await api.createReview(pr.id, event, path, position, body);
 
+    markAsRead(review.id);
     addEventToPR({ repo, pr, event: review });
   },
   async resolveThread({ threadId }, { replaceEvent }) {

@@ -1,16 +1,8 @@
 import MarkdownIt from 'markdown-it';
 import mentions from 'markdown-it-mentions';
 
-const shaRegExps = [
-  ' [a-f0-9]{128}',
-  ' [a-f0-9]{96}',
-  ' [a-f0-9]{64}',
-  ' [a-f0-9]{56}',
-  ' [a-f0-9]{40}',
-  ' [a-f0-9]{10}',
-  ' [a-f0-9]{7}'
-];
-const re = new RegExp(shaRegExps.join('|'), 'gm');
+const shaRe = new RegExp(/\b[0-9a-f]{5,40}\b/, 'gm');
+const prOrIssueNumber = new RegExp(/#[0-9]\b/gm);
 
 const md = new MarkdownIt({
   linkify: true
@@ -26,13 +18,21 @@ export default function (str, repo, pr) {
     .render(str);
 
   if (repo) {
-    markdown = markdown.replace(re, function (str) {
-      return `
-        <a href="https://github.com/${ repo.owner }/${ repo.name }/commit/${ str.trim() }" target="_blank">
-          ${ str }
-        </a>
-      `;
-    });
+    markdown = markdown
+      .replace(shaRe, function (str) {
+        return `
+          <a href="https://github.com/${ repo.owner }/${ repo.name }/commit/${ str.trim() }" target="_blank">
+            ${ str }
+          </a>
+        `;
+      })
+      .replace(prOrIssueNumber, function (str) {
+        return `
+          <a href="https://github.com/${ repo.owner }/${ repo.name }/pull/${ str.trim().substr(1) }" target="_blank">
+            ${ str }
+          </a>
+        `;
+      });
   }
 
   return markdown;

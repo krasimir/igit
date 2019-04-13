@@ -38,7 +38,8 @@ const FilterOption = function ({ filter, dispatch, label, option }) {
       <input
         type='checkbox'
         checked={ isFiltering(filter, option) }
-        onChange={ () => dispatch({ option }) } />{ label }
+        onChange={ () => dispatch({ option }) } />
+        <span>{ label }</span>
     </label>
   );
 };
@@ -145,7 +146,7 @@ export default function Files({ pr, repo, className }) {
           items.push(table);
           table = { rows: [], __table: true };
           items.push(
-            <div className='p1'>
+            <div className='px1' key={ path + '_' + line }>
               <Postman
                 className='py05'
                 onSave={ () => openComment({ path, line, diffLine: j }) }
@@ -211,7 +212,7 @@ export default function Files({ pr, repo, className }) {
 
   return (
     <div className='files'>
-      <section className='filter mb1'>
+      <section className='filter mb1 cf'>
         <FilterOption
           filter={ filter }
           dispatch={ dispatch }

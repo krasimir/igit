@@ -2,10 +2,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { CHECK, CHEVRON_RIGHT, CHECK_CIRCLE } from './Icons';
-import Loading from './Loading';
-import roger from '../jolly-roger';
-import Header from './Header';
+import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
+import Loading from '../Loading';
+import roger from '../../jolly-roger';
+import Header from '../Header';
+import useDimSeenEvents from './useDimSeenEvents';
 
 export default function Repos() {
   const textInput = useRef(null);
@@ -17,6 +18,7 @@ export default function Repos() {
   const [ error, setError ] = useState(null);
   const [ isFetchingRepos, setFetchingRepos ] = useState(false);
   const [ noRepos, setNoRepos ] = useState(false);
+  const { component: dimSeenEventsComponent } = useDimSeenEvents();
 
   useEffect(() => {
     fetchOrganizations().then(
@@ -93,22 +95,26 @@ export default function Repos() {
           Dashboard
         </Link>
         <Link to='/settings' className='list-link'>
-          <CHECK_CIRCLE size={ 18 }/>
+          <ARROW_RIGHT_CIRCLE size={ 18 }/>
           Settings
         </Link>
       </aside>
       <div className='settings'>
         <div className='pr-card mt1'>
-          <h2 className='tac'>Hey, { profile.name }</h2>
+          <h2 className='tac'>
+            <img className='avatar iblock mb1' src={ profile.avatar } />
+            <br />
+            Hey, { profile.name }
+          </h2>
         </div>
-        <div className='mt2'>
+        <div className='mt2 pr-card-light'>
           { selectedRepos.length > 0 &&
-            <React.Fragment>
-              <h3 className='mb1 mt2'>Selected repositories</h3>
+            <div className='mb2'>
+              <h3 className='mb1'>Selected repositories</h3>
               { selectedRepos }
-            </React.Fragment>
+            </div>
           }
-          <h3 className='mb1 mt2'>Search for a repository</h3>
+          <h3 className='mb1'>Search for a repository</h3>
           <div className='search-criteria mb1'>
             {
               searchQuery.map(criteria => {
@@ -160,6 +166,10 @@ export default function Repos() {
                   );
                 })
           }
+        </div>
+        <div className='mt2 pr-card-light'>
+          <h3 className='mb1'>Other settings</h3>
+          { dimSeenEventsComponent }
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import {
   QUERY_GET_REPOS_OF_ORG,
   QUERY_GET_ORGANIZATIONS,
   QUERY_GET_PRS,
+  QUERY_GET_PR,
   MUTATION_ADD_COMMENT,
   MUTATION_EDIT_COMMENT,
   MUTATION_DELETE_COMMENT,
@@ -173,6 +174,15 @@ function createAPI() {
     };
 
     return get();
+  };
+  api.fetchRemotePR = async function (repo, prNumber) {
+    if (USE_MOCKS) return requestMock(USE_MOCKS + '/prs.json')[0];
+
+    const q = QUERY_GET_PR(repo.name, repo.owner, prNumber);
+    const { data } = await requestGraphQL(q);
+    const repoData = data.repository;
+
+    return createPRDetails(repoData.pullRequest, repoData.owner.login);
   };
   api.fetchPRFiles = function (repo, prNumber) {
     if (USE_MOCKS) return requestMock(USE_MOCKS + '/diff');
