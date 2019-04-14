@@ -59,7 +59,11 @@ roger.context({
         console.log(repo.name, JSON.stringify(prs, null, 2));
       }
 
-      if (prNumber && repo.name === repoName && !prs.find(pr => pr.number === prNumber)) {
+      if (
+        prNumber &&
+        repo.name === repoName &&
+        prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
+      ) {
         prs.push(await api.fetchRemotePR(repo, prNumber));
       }
 
