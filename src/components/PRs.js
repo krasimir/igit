@@ -5,8 +5,8 @@ import { LoadingAnimation } from './Loading';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 
-export default function PRs({ prs, owner, name, prNumber }) {
-  if (!prs || prs.length === 0) {
+export default function PRs({ prs, owner, name, prNumber, loading }) {
+  if (!prs || loading) {
     return (
       <div>
         <LoadingAnimation /> Loading, please wait ...
@@ -16,24 +16,30 @@ export default function PRs({ prs, owner, name, prNumber }) {
 
   const selectedPR = prs.find(({ number }) => number.toString() === prNumber);
 
-  return (
-    <div>
+  if (prs.length === 0) {
+    return (
       <div className='prs'>
-        {
-          prs.map((pr, i) => (
-            <Link
-              to={ `/repo/${ owner }/${ name }/${ pr.number }` }
-              key={ pr.id }
-              className={
-                selectedPR === pr ? 'list-link selected py05 block relative' : 'list-link py05 block relative'
-              }>
-                <img src={ pr.author.avatar } className='avatar tiny'/>
-              { pr.title }&nbsp;(#{ pr.number })
-              <Horn events={ flattenPREvents(pr) } />
-            </Link>
-          ))
-        }
+        <div className='pl1'>No pull requests.</div>
       </div>
+    );
+  }
+
+  return (
+    <div className='prs'>
+      {
+        prs.map((pr, i) => (
+          <Link
+            to={ `/repo/${ owner }/${ name }/${ pr.number }` }
+            key={ pr.id }
+            className={
+              selectedPR === pr ? 'list-link selected py05 block relative' : 'list-link py05 block relative'
+            }>
+              <img src={ pr.author.avatar } className='avatar tiny'/>
+            { pr.title }&nbsp;(#{ pr.number })
+            <Horn events={ flattenPREvents(pr) } />
+          </Link>
+        ))
+      }
     </div>
   );
 }
@@ -42,5 +48,6 @@ PRs.propTypes = {
   prs: PropTypes.array,
   owner: PropTypes.string,
   name: PropTypes.string,
-  prNumber: PropTypes.string
+  prNumber: PropTypes.string,
+  loading: PropTypes.bool.isRequired
 };

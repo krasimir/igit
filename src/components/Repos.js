@@ -32,6 +32,7 @@ export default function Repos({ match }) {
   const subscribedRepos = repos.filter(repo => repo.selected);
   const [ error, setError ] = useState(null);
   const [ fetchDataInterval, setFetchDataInterval ] = useState(null);
+  const [ fetchingPRs, setFetchingPRs ] = useState(false);
 
   if (subscribedRepos.length === 0) {
     return (
@@ -45,17 +46,22 @@ export default function Repos({ match }) {
   }
 
   useEffect(() => {
-    const f = () => fetchData({ repos: subscribedRepos, repoName: name, prNumber }).then(
-      () => {
-        if (PULLING) {
-          setFetchDataInterval(setTimeout(f, PULLING));
+    const f = () => {
+      setFetchingPRs(true);
+      fetchData({ repos: subscribedRepos, repoName: name, prNumber }).then(
+        () => {
+          setFetchingPRs(false);
+          if (PULLING) {
+            setFetchDataInterval(setTimeout(f, PULLING));
+          }
+        },
+        error => {
+          setFetchingPRs(false);
+          console.error(error);
+          setError(error);
         }
-      },
-      error => {
-        console.error(error);
-        setError(error);
-      }
-    );
+      );
+    };
 
     f();
 
@@ -87,7 +93,7 @@ export default function Repos({ match }) {
           { expanded ? <CHEVRON_DOWN size={ 18 }/> : <CHEVRON_RIGHT size={ 18 }/> }
           { repo.nameWithOwner }
         </Link>
-        { expanded && <PRs { ...match.params } prs={ repo.prs }/> }
+        { expanded && <PRs { ...match.params } prs={ repo.prs } loading={ fetchingPRs } /> }
         <Horn events={ repoEvents } />
       </div>
     );
@@ -107,7 +113,7 @@ export default function Repos({ match }) {
           { reposList }
         </div>
         <Link to='/settings' className='list-link'>
-          <ARROW_RIGHT_CIRCLE size={ 18 }/>
+          <CHEVRON_RIGHT size={ 18 }/>
           Settings
         </Link>
       </aside>

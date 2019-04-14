@@ -531,3 +531,27 @@ mutation {
   }
 }
 `;
+
+export const MUTATION_MERGE_PR = (prId) => `
+mutation {
+  mergePullRequest(input: {
+    pullRequestId: "${ prId }"
+  }) {
+    pullRequest {
+      ${ PULL_REQUEST }
+    }
+  }
+}
+`;
+
+export const MUTATION_CLOSE_PR = (prId) => `
+mutation {
+  closePullRequest(input: {
+    pullRequestId: "${ prId }"
+  }) {
+    pullRequest {
+      ${ PULL_REQUEST }
+    }
+  }
+}
+`;

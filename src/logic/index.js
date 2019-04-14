@@ -64,7 +64,11 @@ roger.context({
         repo.name === repoName &&
         prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
       ) {
-        prs.push(await api.fetchRemotePR(repo, prNumber));
+        const otherPR = await api.fetchRemotePR(repo, prNumber);
+
+        if (otherPR) {
+          prs.push(otherPR);
+        }
       }
 
       registerPRs({ repo, prs });
@@ -111,6 +115,16 @@ roger.context({
     } else {
       document.title = `(${ number }) GitHorn`;
     }
+  },
+  async mergePR({ id, repo }, { replacePR }) {
+    const pr = await api.mergePR(id, repo);
+
+    replacePR({ pr });
+  },
+  async closePR({ id, repo }, { replacePR }) {
+    const pr = await api.closePR(id, repo);
+
+    replacePR({ pr });
   }
 });
 
@@ -257,6 +271,17 @@ roger.useReducer('repos', {
           });
         }
       }
+      return r;
+    });
+  },
+  replacePR(repos, { pr }) {
+    return repos.map(r => {
+      r.prs = r.prs.map(p => {
+        if (p.id === pr.id) {
+          return pr;
+        }
+        return p;
+      });
       return r;
     });
   }

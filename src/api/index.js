@@ -16,7 +16,9 @@ import {
   MUTATION_SUBMIT_REVIEW,
   MUTATION_DELETE_REVIEW,
   MUTATION_RESOLVE_THREAD,
-  MUTATION_UNRESOLVE_THREAD
+  MUTATION_UNRESOLVE_THREAD,
+  MUTATION_MERGE_PR,
+  MUTATION_CLOSE_PR
 } from './graphql';
 import {
   createOrganization,
@@ -284,6 +286,18 @@ function createAPI() {
   };
   api.getNotifications = async function () {
     return (await db.getNotifications()).map(({ objectId }) => objectId);
+  };
+  api.mergePR = async function (id, repo) {
+    const q = MUTATION_MERGE_PR(id);
+    const { data } = await requestGraphQL(q);
+
+    return createPRDetails(data.mergePullRequest.pullRequest, repo.owner.login);
+  };
+  api.closePR = async function (id, repo) {
+    const q = MUTATION_CLOSE_PR(id);
+    const { data } = await requestGraphQL(q);
+
+    return createPRDetails(data.closePullRequest.pullRequest, repo.owner.login);
   };
 
   return api;

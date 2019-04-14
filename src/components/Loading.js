@@ -24,6 +24,13 @@ Loading.defaultProps = {
   showLogo: true
 };
 
-export function LoadingAnimation() {
-  return <div className='lds-ellipsis loading-animation ml1'><div></div><div></div><div></div><div></div></div>;
+export function LoadingAnimation({ className }) {
+  return (
+    <div className={ `lds-ellipsis loading-animation ml1 ${ className }` }>
+      <div></div><div></div><div></div><div></div>
+    </div>
+  );
 }
+LoadingAnimation.propTypes = {
+  className: PropTypes.string
+};
