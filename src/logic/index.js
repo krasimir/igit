@@ -125,6 +125,9 @@ roger.context({
     const pr = await api.closePR(id, repo);
 
     replacePR({ pr });
+  },
+  getPRStatuses({ prNumber, repo }) {
+    return api.getPRStatuses(prNumber, repo);
   }
 });
 

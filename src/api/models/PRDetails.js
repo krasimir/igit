@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-function normalizeUser(data) {
+export function normalizeUser(data) {
   let avatar = data.avatarUrl;
   let name = data.name;
   let login = data.login;

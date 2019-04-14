@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
+/* eslint-disable no-use-before-define */
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { CLOSE, CHECK } from './Icons';
+import { CLOSE, CHECK, MORE_HORIZONTAL } from './Icons';
 import roger from '../jolly-roger';
 import { LoadingAnimation } from './Loading';
 
+const isStatusSuccessful = (status) => {
+  if (status === null) return true;
+
+  return status.every(({ state }) => state === 'SUCCESS');
+};
+
 export default function MergePR({ pr, repo }) {
-  const { mergePR, closePR } = roger.useContext();
+  const { mergePR, closePR, getPRStatuses } = roger.useContext();
   const [ submitted, setSubmitted ] = useState(false);
+  const [ statuses, setStatuses ] = useState(null);
+  const areChecksOk = statuses === null || statuses.length === 0 || statuses.every(s => isStatusSuccessful(s.status));
+  const areThereAnyChecks = statuses && statuses.length > 0 && statuses.some(s => s.status !== null);
+  let mergeButtonLabel = 'Merge pull request';
+
+  useEffect(() => {
+    setStatuses(null);
+    getPRStatuses({ prNumber: pr.number, repo }).then(setStatuses);
+  }, [ pr.number ]);
 
   async function merge() {
     setSubmitted(`Merging <code>${ pr.title }</code> pull request.`);
@@ -31,6 +47,12 @@ export default function MergePR({ pr, repo }) {
     );
   }
 
+  if (pr.mergeable === 'CONFLICTING') {
+    mergeButtonLabel = 'Can not be merged. Conflicting.';
+  } else if (!areChecksOk) {
+    mergeButtonLabel = 'Merge even checks failure';
+  }
+
   return (
     <div>
       <hr />
@@ -41,12 +63,26 @@ export default function MergePR({ pr, repo }) {
         <CLOSE size={ 18 } />&nbsp;Close pull request
       </button>
       <button
-        className='brand cta right'
+        className={ `brand right ${ areChecksOk ? 'cta' : 'delete' }` }
         disabled={ submitted || pr.mergeable !== 'MERGEABLE' }
         onClick={ () => merge() }>
         <CHECK size={ 18 } />&nbsp;
-        { pr.mergeable === 'CONFLICTING' ? 'Can not be merged. Conflicting.' : 'Merge pull request' }
+        { mergeButtonLabel }
       </button>
+      { statuses && statuses.length > 0 ? (
+        areThereAnyChecks && <div className='mt1 fz8 pr-card-light'>
+          {
+            statuses.map(
+              ({ commit, status }) =>
+                <Status key={ commit.id } commit={ commit } status={ status } />
+            )
+          }
+        </div>
+      ) : (
+        <div className='mt1 fz8 pr-card-light'>
+          <LoadingAnimation className='m0'/>
+        </div>
+      ) }
     </div>
   );
 };
@@ -55,3 +91,52 @@ MergePR.propTypes = {
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired
 };
+
+function Status({ commit, status }) {
+  const [ expanded, expand ] = useState(false);
+
+  return (
+    <div className='opa7'>
+      <button className='as-link tal' onClick={ () => expand(!expanded) }>
+        { status === null ?
+            <span className='ml1'>&nbsp;&nbsp;&nbsp;</span> :
+            isStatusSuccessful(status) ?
+              <CHECK size={ 18 } color='#079221' /> :
+              <CLOSE size={ 18 } color='#920721' /> }
+        { commit.message }
+      </button>
+      { expanded && <div className='ml2'>
+        {
+          status && status.map(context => {
+            return (
+              <div key={ context.id }>
+                <div className='media small'>
+                  <img src={ context.creator.avatar } className='avatar' alt={ context.creator.login } />
+                  <div>
+                    { statusIcon(context.state) }
+                    <a href={ context.targetUrl } target='_blank'>{ context.context }</a>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div> }
+    </div>
+  );
+}
+
+Status.propTypes = {
+  commit: PropTypes.object.isRequired,
+  status: PropTypes.any
+};
+
+function statusIcon(state) {
+  switch (state) {
+    case 'ERROR':
+    case 'FAILURE': return <CLOSE size={ 18 } color='#920721' />;
+    case 'EXPECTED':
+    case 'PENDING': return <MORE_HORIZONTAL size={ 18 } />;
+  }
+  return <CHECK size={ 18 } color='#079221' />;
+}

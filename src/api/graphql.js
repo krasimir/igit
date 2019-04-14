@@ -287,6 +287,44 @@ export const QUERY_GET_PR = (name, owner, prNumber) => `
   }
 `;
 
+export const QUERY_GET_PR_STATUSES = (prNumber, name, owner) => `
+  query {
+    repository(name: "${ name }", owner: ${ owner }) {
+      name,
+      owner {
+        login
+      },
+      pullRequest(number: ${ prNumber }) {
+        id,
+        commits(last: 3) {
+          edges {
+            node {
+              commit {
+                id,
+                message,
+                status {
+                  contexts {
+                    id,
+                    context,
+                    createdAt,
+                    creator {
+                      login,
+                      avatarUrl
+                    },
+                    targetUrl,
+                    description,
+                    state
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const MUTATION_ADD_COMMENT = (subjectId, body) => `
   mutation {
     addComment(input: {

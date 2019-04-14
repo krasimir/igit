@@ -18,14 +18,16 @@ import {
   MUTATION_RESOLVE_THREAD,
   MUTATION_UNRESOLVE_THREAD,
   MUTATION_MERGE_PR,
-  MUTATION_CLOSE_PR
+  MUTATION_CLOSE_PR,
+  QUERY_GET_PR_STATUSES
 } from './graphql';
 import {
   createOrganization,
   createProfile,
   createRepo,
   createPRDetails,
-  normalizeTimelineEvent
+  normalizeTimelineEvent,
+  createStatus
 } from './models';
 
 function createAPI() {
@@ -298,6 +300,12 @@ function createAPI() {
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.closePullRequest.pullRequest, repo.owner.login);
+  };
+  api.getPRStatuses = async function (prNumber, repo) {
+    const q = QUERY_GET_PR_STATUSES(prNumber, repo.name, repo.owner);
+    const { data } = await requestGraphQL(q);
+
+    return data.repository.pullRequest.commits.edges.map(createStatus);
   };
 
   return api;
