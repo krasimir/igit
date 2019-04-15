@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { CLOSE, CHECK, MORE_HORIZONTAL } from './Icons';
+import { CLOSE, CHECK, MORE_HORIZONTAL, CIRCLE } from './Icons';
 import roger from '../jolly-roger';
 import { LoadingAnimation } from './Loading';
+import Reviewers from './Reviewers';
 
 const isStatusSuccessful = (status) => {
   if (status === null) return true;
@@ -12,7 +13,7 @@ const isStatusSuccessful = (status) => {
   return status.every(({ state }) => state === 'SUCCESS');
 };
 
-export default function MergePR({ pr, repo }) {
+export default function PROps({ pr, repo }) {
   const { mergePR, closePR, getPRStatuses } = roger.useContext();
   const [ submitted, setSubmitted ] = useState(false);
   const [ statuses, setStatuses ] = useState(null);
@@ -83,26 +84,32 @@ export default function MergePR({ pr, repo }) {
           <LoadingAnimation className='m0'/>
         </div>
       ) }
+      <Reviewers pr={ pr }/>
     </div>
   );
 };
 
-MergePR.propTypes = {
+PROps.propTypes = {
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired
 };
 
 function Status({ commit, status }) {
   const [ expanded, expand ] = useState(false);
+  let icon;
+
+  if (status === null) {
+    icon = <CIRCLE size={ 14 } color='#e8e8e8' />;
+  } else {
+    icon = isStatusSuccessful(status) ?
+      <CHECK size={ 14 } color='#079221' /> :
+      <CLOSE size={ 14 } color='#920721' />;
+  }
 
   return (
     <div className='opa7'>
       <button className='as-link tal' onClick={ () => expand(!expanded) }>
-        { status === null ?
-            <span className='ml1'>&nbsp;&nbsp;&nbsp;</span> :
-            isStatusSuccessful(status) ?
-              <CHECK size={ 18 } color='#079221' /> :
-              <CLOSE size={ 18 } color='#920721' /> }
+        { icon }
         { commit.message }
       </button>
       { expanded && <div className='ml2'>

@@ -274,7 +274,7 @@ hr {
 svg {
   transform: translateY(3px);
   -webkit-transform: translateY(3px);
-  margin: 0 .2em;
+  margin-right: .2em;
 }
 .rel {
   position: relative;

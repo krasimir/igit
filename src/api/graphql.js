@@ -211,6 +211,23 @@ reviewThreads(first: 50) {
     }
   }
 }
+reviewRequests(first: 50) {
+  edges {
+    node {
+      requestedReviewer {
+        ... on Team {
+          name
+          avatarUrl
+        }
+        ... on User {
+          name
+          avatarUrl,
+          login
+        }
+      }
+    }
+  }
+}
 `;
 
 export const QUERY_GET_REPOS_OF_ORG = (query, perPage, cursor) => `

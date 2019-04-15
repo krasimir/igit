@@ -36,7 +36,7 @@
 }
 .prs {
   border-left: solid 1px #e2e2e2;
-  margin-left: 12px;
+  margin-left: 8px;
 }
 .prs .list-link {
   padding: .5em 1em;
@@ -109,7 +109,6 @@ button.light:hover:enabled {
 button.as-link {
   border: none !important;
   background: none !important;
-  padding: 0 8px 5px 2px !important;
   cursor: pointer;
   font-size: 1em;
   display: inline;
@@ -124,6 +123,10 @@ button.as-link:hover {
 button.as-link.no-hover:hover {
   background: none !important;
   color: black !important;
+}
+button.as-link svg {
+  transform: translateY(0.2em);
+  -webkit-transform: translateY(0.2em);
 }
 
 /* ---------------------------------------- tag */

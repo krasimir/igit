@@ -82,7 +82,7 @@ export default function Repos() {
     .filter(({ selected }) => selected)
     .map(repo => (
         <a className='list-link selected' key={ repo.repoId } onClick={ () => toggleRepo(repo) }>
-          <CHECK /> { repo.nameWithOwner }
+          <CHECK size={ 18 }/> { repo.nameWithOwner }
         </a>
       ));
 
@@ -161,7 +161,7 @@ export default function Repos() {
 
                   return (
                     <a className={ className } key={ repo.repoId } onClick={ () => toggleRepo(repo) }>
-                      <CHECK /> { repo.nameWithOwner }
+                      <CHECK size={ 18 }/> { repo.nameWithOwner }
                     </a>
                   );
                 })

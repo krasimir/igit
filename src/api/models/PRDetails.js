@@ -184,5 +184,11 @@ export default function createPRDetails(pr, baseRepoOwner) {
     return a.date - b.date;
   });
 
+  o.reviewers = pr.reviewRequests.edges.map(({ node }) => {
+    return normalizeUser(node.requestedReviewer);
+  });
+
+  console.log(o.title, o.reviewers);
+
   return o;
 }

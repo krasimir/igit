@@ -11,7 +11,7 @@ import Diff from './utils/Diff';
 import { formatDate } from '../utils';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
-import MergePR from './MergePR';
+import PROps from './PROps';
 
 const formatBranchLabels = (base, head) => {
   if (base.owner === head.owner) {
@@ -66,7 +66,7 @@ export default function PR({ url, pr, repo }) {
         </div>
         <hr />
         <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body, repo) } } />
-        { (!pr.merged && !pr.closed) && <MergePR pr={ pr } repo={ repo }/> }
+        { (!pr.merged && !pr.closed) && <PROps pr={ pr } repo={ repo }/> }
       </div>
       <Switch>
         <Route path={ url + '/files' } render={ () => (

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Dexie from 'dexie';
 
 function createDb() {
@@ -32,7 +33,9 @@ function createDb() {
     if (repoInDB) {
       await db.repos.where('repoId').equals(repo.repoId).delete();
     } else {
-      await db.repos.add(repo);
+      const { prs, ...rest } = repo;
+
+      await db.repos.add({ ...rest });
     }
   };
   api.getNotifications = async function () {
