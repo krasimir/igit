@@ -74,7 +74,7 @@ export default function Postman({
   };
 
   return (
-    <div className={ `cf ${ className }` }>
+    <div className={ `cf ${ className } relative` }>
       <div className={ showAvatar ? 'media small' : '' }>
         { showAvatar && <img src={ profile.avatar } className='avatar' title={ profile.login }/> }
         <textarea

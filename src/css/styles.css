@@ -663,8 +663,11 @@ header .logo {
 /* ---------------------------------------- postman suggestions */
 .suggestions {
   position: absolute;
-  top: 9px;
-  right: 9px;
+  top: 7px;
+  right: 6px;
+}
+.py05 .suggestions {
+  top: 12px;
 }
 .suggestions > a {
   line-height: 0;
@@ -693,5 +696,5 @@ header .logo {
   padding: 2px 4px;
 }
 .suggestions-items + .suggestions-items {
-  border-top: solid 1px #e2e2e2;
+  border-top: solid 1px #e2e2e2
 }

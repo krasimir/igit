@@ -146,7 +146,7 @@ export default function Files({ pr, repo, className }) {
           items.push(table);
           table = { rows: [], __table: true };
           items.push(
-            <div className='px1' key={ path + '_' + line }>
+            <div className='px1 bt1 bb1' key={ path + '_' + line }>
               <Postman
                 className='py05'
                 onSave={ () => openComment({ path, line, diffLine: j }) }
