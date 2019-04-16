@@ -1,4 +1,4 @@
-const LOCAL = true;
+const LOCAL = false;
 
 export const BASE_PATH = '/app';
 export const NO_TOKEN = 'NO_TOKEN';

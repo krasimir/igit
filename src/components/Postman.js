@@ -1,9 +1,10 @@
-/* eslint-disable no-sequences */
+/* eslint-disable no-sequences, no-use-before-define */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import roger from '../jolly-roger';
 import { LoadingAnimation } from './Loading';
+import Suggestions from './Suggestions';
 
 export default function Postman({
   handler,
@@ -20,9 +21,11 @@ export default function Postman({
   const textareaEl = useRef(null);
   const [ profile ] = roger.useState('profile');
   const [ text, type ] = useState(value ? value.text : null);
+  const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);
   const [ deleteSure, areYouSure ] = useState(false);
   const [ textareaClassName, setTextAreaClassName ] = useState(text !== null ? 'type' : '');
+  const [ suggestionsEnabled, enableSuggestions ] = useState(false);
   const isEditing = !!value;
   const disableInputs = text === '' || text === null;
 
@@ -39,11 +42,16 @@ export default function Postman({
     }
   }, [ text ]);
 
+  const onTextChange = (e) => {
+    type(e.target.value);
+    setTextareaPosition(e.target.selectionStart);
+  };
   const reset = () => {
     submit(false);
     areYouSure(false);
     type(value ? value.text : null);
     setTextAreaClassName('');
+    setTextareaPosition(0);
   };
   const comment = async (method = 'add') => {
     if (text !== '') {
@@ -53,9 +61,20 @@ export default function Postman({
       onSave(text);
     }
   };
+  const addToText = (value) => {
+    const before = (text || '').substr(0, textareaPosition);
+    const after = (text || '').substr(textareaPosition, text ? text.length : 0);
+
+    type(before + value + after);
+    const newPosition = textareaPosition + value.length;
+
+    textareaEl.current.focus();
+
+    setTimeout(() => setCaretPosition(textareaEl.current, newPosition), 10);
+  };
 
   return (
-    <div className={ `postman cf ${ className }` }>
+    <div className={ `cf ${ className }` }>
       <div className={ showAvatar ? 'media small' : '' }>
         { showAvatar && <img src={ profile.avatar } className='avatar' title={ profile.login }/> }
         <textarea
@@ -65,7 +84,10 @@ export default function Postman({
           className={ textareaClassName }
           onClick={ () => type(text || '') }
           disabled={ submitted }
-          onChange={ e => type(e.target.value) } />
+          onChange={ onTextChange }
+          onFocus={ () => enableSuggestions(true) }
+          onBlur={ () => setTimeout(() => enableSuggestions(false), 200) }
+          onClick={ (e) => setTextareaPosition(e.target.selectionStart) } />
       </div>
       { (isEditing && !submitted) && <div className={ showAvatar ? 'left mt05 ml2' : 'left mt05' }>
         <button className='light' onClick={ () => {
@@ -110,6 +132,9 @@ export default function Postman({
       </div> }
       { submitted && <div className='right mt05'><LoadingAnimation /></div> }
       { children }
+      <Suggestions
+        visible={ suggestionsEnabled }
+        onSelect={ addToText } />
     </div>
   );
 }
@@ -135,3 +160,19 @@ Postman.defaultProps = {
   placeholder: 'Reply',
   showAvatar: true
 };
+
+function setCaretPosition(elem, caretPos) {
+  if (elem.createTextRange) {
+    let range = elem.createTextRange();
+
+    range.move('character', caretPos);
+    range.select();
+  } else {
+    if (elem.selectionStart) {
+        elem.focus();
+        elem.setSelectionRange(caretPos, caretPos);
+    } else {
+      elem.focus();
+    }
+  }
+}
