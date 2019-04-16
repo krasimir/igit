@@ -35,7 +35,7 @@ export default function Repos() {
       },
       error => {
         console.log(error);
-        setError(new Error('Gitco can not get your organizations. Wait a bit and refresh the page.'));
+        setError(new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
       }
     );
   }, []);
@@ -59,7 +59,7 @@ export default function Repos() {
         },
         error => {
           console.log(error);
-          setError(new Error('Gitco can not fetch repositories.'));
+          setError(new Error('IGit can not fetch repositories.'));
           setFetchingRepos(false);
         }
       );
