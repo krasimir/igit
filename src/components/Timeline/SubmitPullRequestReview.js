@@ -14,13 +14,13 @@ export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }
   const isAuthor = prAuthor && profile.login === prAuthor.login;
 
   async function submit(event) {
-    if (
-      (event === 'REQUEST_CHANGES' || event === 'COMMENT') &&
-      (text === '' || text === null)
-    ) {
-      textareaEl.current.focus();
-      return;
-    }
+    // if (
+    //   (event === 'REQUEST_CHANGES' || event === 'COMMENT') &&
+    //   (text === '' || text === null)
+    // ) {
+    //   textareaEl.current.focus();
+    //   return;
+    // }
     setSubmitted(true);
     if (reviewId) {
       await submitReview({ reviewId, event, body: text });

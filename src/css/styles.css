@@ -1,7 +1,6 @@
 /* ---------------------------------------- layout */
 
 .layout {
-  padding-top: 1em;
   display: grid;
   grid-template-columns: 260px calc(800px - 2em);
   column-gap: 2em;
@@ -9,6 +8,7 @@
   margin: 0 auto;
   transform: translateX(-140px);
   -webkit-transform: translateX(-140px);
+  padding: 1em;
 }
 @media all and (max-width: 1350px) {
   .layout {
@@ -643,4 +643,17 @@ header .logo {
   display: inline-block;
   background: #999;
   margin-right: 15px;
+}
+
+/* ---------------------------------------- update-progress */
+.update-progress {
+  width: 100%;
+  height: 1px;
+  background: #e2e2e2;
+}
+.update-progress > div {
+  background: #999;
+  height: 1px;
+  transition: width 500ms ease-out;
+  -webkit-transition: width 500ms ease-out;
 }

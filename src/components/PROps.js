@@ -12,12 +12,20 @@ const isStatusSuccessful = (status) => {
 
   return status.every(({ state }) => state === 'SUCCESS');
 };
+const isPending = (status) => {
+  if (status === null) return false;
+
+  return status.some(({ state }) => (state === 'PENDING' || state === 'EXPECTED'));
+};
 
 export default function PROps({ pr, repo }) {
   const { mergePR, closePR, getPRStatuses } = roger.useContext();
   const [ submitted, setSubmitted ] = useState(false);
   const [ statuses, setStatuses ] = useState(null);
-  const areChecksOk = statuses === null || statuses.length === 0 || statuses.every(s => isStatusSuccessful(s.status));
+  const isLastCheckOk =
+    statuses === null ||
+    statuses.length === 0 ||
+    isStatusSuccessful(statuses[statuses.length - 1].status);
   const areThereAnyChecks = statuses && statuses.length > 0 && statuses.some(s => s.status !== null);
   let mergeButtonLabel = 'Merge pull request';
 
@@ -50,7 +58,7 @@ export default function PROps({ pr, repo }) {
 
   if (pr.mergeable === 'CONFLICTING') {
     mergeButtonLabel = 'Can not be merged. Conflicting.';
-  } else if (!areChecksOk) {
+  } else if (!isLastCheckOk) {
     mergeButtonLabel = 'Merge even checks failure';
   }
 
@@ -64,7 +72,7 @@ export default function PROps({ pr, repo }) {
         <CLOSE size={ 18 } />&nbsp;Close pull request
       </button>
       <button
-        className={ `brand right ${ areChecksOk ? 'cta' : 'delete' }` }
+        className={ `brand right ${ isLastCheckOk ? 'cta' : 'delete' }` }
         disabled={ submitted || pr.mergeable !== 'MERGEABLE' }
         onClick={ () => merge() }>
         <CHECK size={ 18 } />&nbsp;
@@ -100,6 +108,8 @@ function Status({ commit, status }) {
 
   if (status === null) {
     icon = <CIRCLE size={ 14 } color='#e8e8e8' />;
+  } else if (isPending(status)) {
+    icon = <MORE_HORIZONTAL size={ 14 } />;
   } else {
     icon = isStatusSuccessful(status) ?
       <CHECK size={ 14 } color='#079221' /> :

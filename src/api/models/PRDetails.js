@@ -188,7 +188,5 @@ export default function createPRDetails(pr, baseRepoOwner) {
     return normalizeUser(node.requestedReviewer);
   });
 
-  console.log(o.title, o.reviewers);
-
   return o;
 }

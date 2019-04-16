@@ -164,7 +164,7 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
             event={ event }
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
-      <Horn events={ event.comments }/>
+      { !isBodyVisible && <Horn events={ event.comments }/> }
     </div>
   );
 };

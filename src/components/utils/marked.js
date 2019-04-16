@@ -3,7 +3,7 @@ import mentions from 'markdown-it-mentions';
 
 import emojis from '../../emoji.json';
 
-const shaRe = new RegExp(/\b[0-9a-f]{5,40}\b/, 'gm');
+const shaRe = new RegExp(/ \b[0-9a-f]{5,40}\b/, 'gm');
 const prOrIssueNumber = new RegExp(/#[0-9]\b/gm);
 const emojiRe = new RegExp(':[a-zA-Z]+:', 'gm');
 
@@ -22,6 +22,9 @@ export default function (str, repo, pr) {
 
       if (emojis[s]) return emojis[s];
       return str;
+    })
+    .replace(shaRe, function (str) {
+      return `[${ str }](https://github.com/${ repo.owner }/${ repo.name }/commit/${ str.trim() })`;
     });
 
   let markdown = md
@@ -30,13 +33,6 @@ export default function (str, repo, pr) {
 
   if (repo) {
     markdown = markdown
-      .replace(shaRe, function (str) {
-        return `
-          <a href="https://github.com/${ repo.owner }/${ repo.name }/commit/${ str.trim() }" target="_blank">
-            ${ str }
-          </a>
-        `;
-      })
       .replace(prOrIssueNumber, function (str) {
         return `
           <a href="https://github.com/${ repo.owner }/${ repo.name }/pull/${ str.trim().substr(1) }" target="_blank">

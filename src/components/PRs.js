@@ -6,7 +6,7 @@ import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 
 export default function PRs({ prs, owner, name, prNumber, loading }) {
-  if (!prs || loading) {
+  if (!prs) {
     return (
       <div>
         <LoadingAnimation /> Loading, please wait ...
@@ -16,7 +16,7 @@ export default function PRs({ prs, owner, name, prNumber, loading }) {
 
   const selectedPR = prs.find(({ number }) => number.toString() === prNumber);
 
-  if (prs.length === 0) {
+  if (prs.length === 0 && !loading) {
     return (
       <div className='prs'>
         <div className='pl1'>No pull requests.</div>

@@ -54,7 +54,7 @@ export default function Timeline({ pr, repo }) {
       }
       return true;
     })
-    .map((event, key) => {
+    .map((event) => {
       const isDimmed = dimKnownEvents && !isItANewEvent(event, notifications);
       const Component = components[event.type];
 
@@ -65,12 +65,12 @@ export default function Timeline({ pr, repo }) {
       if (Component) {
         return <Component
           event={ event }
-          key={ event.id + '_' + key }
+          key={ event.id }
           pr={ pr }
           repo={ repo }
           dim={ isDimmed } />;
       }
-      return <div key={ key }>{ event.type }</div>;
+      return <div key={ event.id }>{ event.type }</div>;
     });
 
   useEffect(() => {

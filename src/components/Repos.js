@@ -13,6 +13,7 @@ import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import { PULLING } from '../constants';
 import isItANewEvent from './utils/isItANewEvent';
+import UpdateProgress from './UpdateProgress';
 
 const flattenPRsEvents = allPRs => {
   if (allPRs && allPRs.length > 0) {
@@ -94,7 +95,7 @@ export default function Repos({ match }) {
           { repo.nameWithOwner }
         </Link>
         { expanded && <PRs { ...match.params } prs={ repo.prs } loading={ fetchingPRs } /> }
-        <Horn events={ repoEvents } />
+        { !expanded && <Horn events={ repoEvents } /> }
       </div>
     );
   });
@@ -102,24 +103,27 @@ export default function Repos({ match }) {
   setTotalUnread(totalUnread);
 
   return (
-    <div className='layout'>
-      <aside>
-        <Header profile={ profile } />
-        <Link to='/' className='list-link'>
-          <ARROW_RIGHT_CIRCLE size={ 18 }/>
-          Dashboard
-        </Link>
-        <div className='pl05'>
-          { reposList }
-        </div>
-        <Link to='/settings' className='list-link'>
-          <CHEVRON_RIGHT size={ 18 }/>
-          Settings
-        </Link>
-      </aside>
-      <section className='pt1'>
-        { pr ? <PR pr={ pr } url={ match.url } repo={ repo } /> : <FakePR /> }
-      </section>
+    <div>
+      <UpdateProgress fetchDataInterval={ fetchDataInterval }/>
+      <div className='layout'>
+        <aside>
+          <Header profile={ profile } />
+          <Link to='/' className='list-link'>
+            <ARROW_RIGHT_CIRCLE size={ 18 }/>
+            Dashboard
+          </Link>
+          <div className='pl05'>
+            { reposList }
+          </div>
+          <Link to='/settings' className='list-link'>
+            <CHEVRON_RIGHT size={ 18 }/>
+            Settings
+          </Link>
+        </aside>
+        <section className='pt1'>
+          { pr ? <PR pr={ pr } url={ match.url } repo={ repo } /> : <FakePR /> }
+        </section>
+      </div>
     </div>
   );
 }

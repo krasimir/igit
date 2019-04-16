@@ -87,7 +87,6 @@ p {
 }
 #app {
   position: relative;
-  padding: 0 1em 1em 1em;
 }
 .centered-content {
   max-width: 550px;

@@ -49,7 +49,7 @@ export default function Files({ pr, repo, className }) {
   const [ diff, setDiff ] = useState(null);
   const [ error, setError ] = useState(false);
   const [ filter, dispatch ] = useReducer(filterReducer, [SHOW_COMMENTS]);
-  const [ expanded, expand ] = useReducer(expandedReducer, []);
+  const [ collapsed, collapse ] = useReducer(expandedReducer, []);
   const [ toComment, openComment ] = useReducer(toCommentReducer, []);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function Files({ pr, repo, className }) {
       console.log(error);
       setError(error);
     });
-  }, [ pr.id, pr.updatedAt ]);
+  }, [ pr.id ]);
 
   if (error) {
     return (
@@ -84,7 +84,7 @@ export default function Files({ pr, repo, className }) {
   const files = parsedDiff.map((diffItem, key) => {
     let path = getHunkFiles(diffItem.oldPath, diffItem.newPath);
     let viewFileUrl, totalDiffLines = -1;
-    const isExpanded = expanded.indexOf(path) >= 0;
+    const isCollapsed = !(collapsed.indexOf(path) >= 0);
     const threads = events.filter(event => {
       if (event.comments[0].path === diffItem.newPath || event.comments[0].path === diffItem.oldPath) {
         return true;
@@ -171,11 +171,11 @@ export default function Files({ pr, repo, className }) {
       <div className={ `hunk ${ className ? className : '' }` } key={ key }>
         <div className='header'>
           <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
-          <button onClick={ () => expand({ path }) }>{ path }</button>
+          <button onClick={ () => collapse({ path }) }>{ path }</button>
           { (threads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && <span>({ threads.length })</span>}
           { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
         </div>
-        { isExpanded && items.map((item, i) => {
+        { isCollapsed && items.map((item, i) => {
             if (item.__table) {
               return (
                 <div className='lines' key={ i }>
@@ -220,13 +220,13 @@ export default function Files({ pr, repo, className }) {
           option={ SHOW_COMMENTS }
           />
         <button className='right as-link fz8' onClick={ () => {
-          if (expanded.length > 0) {
-            expand({ path: null });
+          if (collapsed.length > 0) {
+            collapse({ path: null });
           } else {
-            paths.forEach(p => expand({ path: p }));
+            paths.forEach(p => collapse({ path: p }));
           }
          } } >
-          { expanded.length > 0 ? '↑ collapse all' : '↓ expand all' }
+          { collapsed.length === 0 ? '↑ collapse all' : '↓ expand all' }
         </button>
       </section>
       { files }
