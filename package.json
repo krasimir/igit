@@ -1,5 +1,5 @@
 {
-  "name": "githorn",
+  "name": "gitco",
   "version": "0.1.0",
   "description": "An app for managing GitHub pull requests",
   "main": "index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/krasimir/githorn.git"
+    "url": "git+https://github.com/krasimir/gitco.git"
   },
   "keywords": [
     "github",
@@ -25,9 +25,9 @@
   "author": "Krasimir Tsonev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/krasimir/githorn/issues"
+    "url": "https://github.com/krasimir/gitco/issues"
   },
-  "homepage": "https://github.com/krasimir/githorn#readme",
+  "homepage": "https://github.com/krasimir/gitco#readme",
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/plugin-transform-regenerator": "7.0.0",

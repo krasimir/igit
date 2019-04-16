@@ -4,7 +4,7 @@ import Dexie from 'dexie';
 function createDb() {
   const api = {};
 
-  const db = new Dexie('GitHorn');
+  const db = new Dexie('Gitco');
 
   db.version(1).stores({
     profile: '++id, token, name, avatar, login',
