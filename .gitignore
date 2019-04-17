@@ -64,3 +64,5 @@ _assets
 dist/mocks/*
 dist/mocks/**/*
 .DS_Store
+now.json
+.nowignore

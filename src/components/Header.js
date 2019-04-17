@@ -8,7 +8,7 @@ export default function Header({ profile }) {
   return (
     <header>
       <Link to='/' className='p0 no-hover'>
-        <Logo width={ 70 } />
+        <Logo />
       </Link>
     </header>
   );
