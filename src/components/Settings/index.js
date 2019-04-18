@@ -145,7 +145,7 @@ export default function Repos() {
               disabled={ isFetchingRepos }/>
           </div>
           { isFetchingRepos && (
-            <div className='centered-content tac'>
+            <div className='centered-content tac mb1'>
               <Loading showLogo={ false } message='Loading repositories. Please wait.'/>
             </div>
           ) }

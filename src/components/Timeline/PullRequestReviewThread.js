@@ -10,6 +10,7 @@ import roger from '../../jolly-roger';
 import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
 import Horn from '../Horn';
+import unDim from './unDim';
 
 function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim }) {
   const [ profile ] = roger.useState('profile');
@@ -130,7 +131,9 @@ ThreadItem.propTypes = {
 
 export default function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
   let [ isBodyVisible, bodyVisibility ] = useState(expanded);
+  const [ unDimComponent, isDimmed ] = unDim(dim);
   const { postman } = roger.useContext();
+  const showBody = isDimmed ? false : isBodyVisible;
 
   const comments = event.comments.map((comment, i) => {
     return (
@@ -138,33 +141,38 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
         event={ event }
         index={ i }
         key={ comment.id }
-        isBodyVisible={ isBodyVisible && !dim }
+        isBodyVisible={ showBody }
         bodyVisibility={ bodyVisibility }
         repoURL={ repo.url }
         context={ context }
         repo={ repo }
         pr={ pr }
-        dim={ dim }/>
+        dim={ isDimmed }/>
     );
   });
 
   return (
-    <div className={ `relative ${ dim ? 'dim' : ''}` }>
+    <div className={ `relative ${ isDimmed ? 'dim' : ''}` }>
       { comments }
-      { (isBodyVisible && !dim) &&
+      { showBody &&
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }>
           <Postman
             resetOnSave
             handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) } />
         </div> }
-      { (isBodyVisible && context === 'timeline' && !dim) &&
+      { (showBody && context === 'timeline') &&
         <div className='ml2 mb1 mt05'>
           <ResolveThread
             key={ event.id + '_' + event.isResolved }
             event={ event }
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
-      { !isBodyVisible && <Horn events={ event.comments }/> }
+      { !showBody && (
+        <React.Fragment>
+          <Horn events={ event.comments }/>
+          { unDimComponent }
+        </React.Fragment>
+      ) }
     </div>
   );
 };

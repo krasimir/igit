@@ -5,9 +5,11 @@ import Date from '../utils/Date';
 import { EDIT } from '../Icons';
 import trim from '../utils/trim';
 import Horn from '../Horn';
+import unDim from './unDim';
 
 export default function RenamedTitleEvent({ event, dim }) {
-  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
+  const [ unDimComponent, isDimmed ] = unDim(dim);
+  const cls = `timeline-thread-comment media small relative ${ isDimmed ? 'dim' : ''}`;
 
   return (
     <div className={ cls } id={ event.id }>
@@ -18,6 +20,7 @@ export default function RenamedTitleEvent({ event, dim }) {
         { trim(`renamed to ${ event.currentTitle }`) }
       </div>
       <Horn events={ [ event ] }/>
+      { unDimComponent }
     </div>
   );
 };

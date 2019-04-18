@@ -5,9 +5,11 @@ import Date from '../utils/Date';
 import { MESSAGE } from '../Icons';
 import trim from '../utils/trim';
 import Horn from '../Horn';
+import unDim from './unDim';
 
 export default function Reference({ event, dim }) {
-  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
+  const [ unDimComponent, isDimmed ] = unDim(dim);
+  const cls = `timeline-thread-comment media small relative ${ isDimmed ? 'dim' : ''}`;
 
   return (
     <div className={ cls } id={ event.id }>
@@ -19,6 +21,7 @@ export default function Reference({ event, dim }) {
         <a href={ event.target.url } target='_blank'>{ trim(`${ event.target.title }`, 40) }</a>
       </div>
       <Horn events={ [ event ] }/>
+      { unDimComponent }
     </div>
   );
 };

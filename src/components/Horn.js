@@ -13,9 +13,11 @@ function Horn({ events }) {
   const unread = events.filter(event => isItANewEvent(event, notifications));
 
   if (unread.length === 0) {
-    return <div className='horn read' onClick={ () => markAsUnread(events.map(({ id }) => id)) }>
-      { events.length }
-    </div>;
+    return (
+      <div className='horn read' onClick={ () => markAsUnread(events.map(({ id }) => id)) }>
+        { events.length }
+      </div>
+    );
   }
 
   return (

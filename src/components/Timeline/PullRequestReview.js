@@ -7,8 +7,10 @@ import { MESSAGE, CHECK_CIRCLE, STORM, CLIPBOARD } from '../Icons';
 import SubmitPullRequestReview from './SubmitPullRequestReview';
 import flattenToPRReviewComments from '../../api/utils/flattenToPRReviewComments';
 import Horn from '../Horn';
+import unDim from './unDim';
 
 export default function PullRequestReview({ event, pr, repo, dim }) {
+  const [ unDimComponent, isDimmed ] = unDim(dim);
   let StateIcon = MESSAGE;
   let stateLabel = '';
 
@@ -35,7 +37,7 @@ export default function PullRequestReview({ event, pr, repo, dim }) {
 
   const reviewComments = flattenToPRReviewComments(pr, event.id);
 
-  if (dim && event.state !== 'PENDING') {
+  if (isDimmed && event.state !== 'PENDING') {
     return (
       <div className={ `timeline-review timeline-review-${ event.state } relative dim` } id={ event.id }>
         <div className='media small'>
@@ -47,6 +49,7 @@ export default function PullRequestReview({ event, pr, repo, dim }) {
           </div>
         </div>
         <Horn events={ [ event ] } />
+        { unDimComponent }
       </div>
     );
   }
@@ -83,6 +86,7 @@ export default function PullRequestReview({ event, pr, repo, dim }) {
       </div> }
       { event.state === 'PENDING' && <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/> }
       <Horn events={ [ event ] } />
+      { event.state !== 'PENDING' && unDimComponent }
     </div>
   );
 };

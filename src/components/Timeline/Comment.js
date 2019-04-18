@@ -7,15 +7,17 @@ import roger from '../../jolly-roger';
 import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
 import Horn from '../Horn';
+import unDim from './unDim';
 
 export default function Comment({ event, repo, pr, dim }) {
+  const [ unDimComponent, isDimmed ] = unDim(dim);
   const [ isBodyVisible, bodyVisibility ] = useState(true);
   const [ isEditing, edit ] = useState(false);
   const [ profile ] = roger.useState('profile');
   const { postman } = roger.useContext();
   const allowEdit = event.author.login === profile.login && isBodyVisible;
 
-  if (dim) {
+  if (isDimmed) {
     return (
       <div className='timeline-thread-comment relative dim'>
         <div className='media small' id={ event.id }>
@@ -27,6 +29,7 @@ export default function Comment({ event, repo, pr, dim }) {
           </div>
         </div>
         <Horn events={ [ event ] }/>
+        { unDimComponent }
       </div>
     );
   }
@@ -61,6 +64,7 @@ export default function Comment({ event, repo, pr, dim }) {
           showAvatar={ false }/> }
       </div>
       <Horn events={ [ event ] }/>
+      { unDimComponent }
     </div>
   );
 };

@@ -637,6 +637,19 @@ header .logo {
   color: black;
   border: solid 1px black;
 }
+.horn.view {
+  background: none;
+  top: -6px;
+  right: -32px;
+}
+.horn.view svg {
+  stroke: #e2e2e2;
+  opacity: .5;
+}
+.horn.view svg:hover {
+  stroke: black;
+  opacity: 1;
+}
 
 /* ---------------------------------------- placeholder */
 

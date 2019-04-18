@@ -6,9 +6,11 @@ import Date from '../utils/Date';
 import { GIT_COMMIT } from '../Icons';
 import trim from '../utils/trim';
 import Horn from '../Horn';
+import unDim from './unDim';
 
 export default function Commit({ event, dim }) {
-  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
+  const [ unDimComponent, isDimmed ] = unDim(dim);
+  const cls = `timeline-thread-comment media small relative ${ isDimmed ? 'dim' : ''}`;
 
   return (
     <div className={ cls } id={ event.id }>
@@ -25,6 +27,7 @@ export default function Commit({ event, dim }) {
         <Diff data={ event } className='opa5'/>
       </div>
       <Horn events={ [ event ] }/>
+      { unDimComponent }
     </div>
   );
 };
