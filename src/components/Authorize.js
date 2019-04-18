@@ -26,8 +26,8 @@ export default function Authorize() {
                   <input type='text' disabled value='Verifying your token. Please wait.' key='verifying'/> :
                   <input type='text' onKeyUp={ handleKeyUp } key='input' autoFocus/>
               }
-              <p className='tac'>IGit is a single page app that communicates only with GitHub. The data is stored <strong>only</strong> locally in your browser in a <a href='https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API' target='_blank'>IndexedDB</a> database. There is no remote tracking in any sense. This means that the token that you paste here lives only in your browser and it is used only to communicate via GitHub's API. There are no calls to third parties. This sounds good from a security point of view but also means that if you purge the data of your browser you'll lose all the work done in IGit. <br />This is intentional and by design.</p>
-              <p>IGit is open source. For feedback and contributions go <a href='https://github.com/krasimir/IGit' target='_blank'>here</a>.</p>
+              <p className='tac'>IGit is a single page app that communicates only with GitHub. The data is stored <strong>only</strong> locally in your browser in a <a href='https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API' target='_blank'>IndexedDB</a> database. There is no remote tracking in any sense. This means that the token that you paste here lives only in your browser and it is used only to communicate via GitHub's API. There are no calls to third parties.</p>
+              <p className='tac'>IGit is open source. For feedback and contributions go <a href='https://github.com/krasimir/IGit' target='_blank'>here</a>.</p>
             </div>
           );
         }
