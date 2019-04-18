@@ -9,8 +9,7 @@ import ReviewDiff from '../utils/ReviewDiff';
 import roger from '../../jolly-roger';
 import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
-import Horn from '../Horn';
-import unDim from './unDim';
+import Horn, { unDim } from '../Horn';
 
 function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim }) {
   const [ profile ] = roger.useState('profile');
@@ -36,7 +35,8 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
             <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
             <div>
               <Date event={ event.comments[totalComments - 1] } />&nbsp;
-              <MESSAGE size={ 18 }/>&nbsp;
+              <MESSAGE size={ 18 }/>
+              { !isBodyVisible && <small>{ str }</small> }&nbsp;
               ({ totalComments })
             </div>
           </div>
@@ -129,10 +129,14 @@ ThreadItem.propTypes = {
   dim: PropTypes.bool
 };
 
-export default function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
-  let [ isBodyVisible, bodyVisibility ] = useState(expanded);
-  const [ unDimComponent, isDimmed ] = unDim(dim);
+function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
   const { postman } = roger.useContext();
+  const [ isBodyVisible, bodyVisibility ] = useState(expanded);
+  const [ undimComponent, isDimmed ] = unDim(dim, (undimmed) => {
+    if (undimmed && dim) {
+      bodyVisibility(true);
+    }
+  });
   const showBody = isDimmed ? false : isBodyVisible;
 
   const comments = event.comments.map((comment, i) => {
@@ -168,10 +172,9 @@ export default function PullRequestReviewThread({ event, repo, pr, context, expa
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
       { !showBody && (
-        <React.Fragment>
-          <Horn events={ event.comments }/>
-          { unDimComponent }
-        </React.Fragment>
+        <Horn events={ event.comments }>
+          { undimComponent }
+        </Horn>
       ) }
     </div>
   );
@@ -189,3 +192,5 @@ PullRequestReviewThread.defaultProps = {
   context: 'timeline',
   expanded: false
 };
+
+export default PullRequestReviewThread;

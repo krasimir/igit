@@ -6,30 +6,24 @@ import Date from '../utils/Date';
 import roger from '../../jolly-roger';
 import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
-import Horn from '../Horn';
-import unDim from './unDim';
+import { withHorn } from '../Horn';
 
-export default function Comment({ event, repo, pr, dim }) {
-  const [ unDimComponent, isDimmed ] = unDim(dim);
+function Comment({ event, repo, pr, dim }) {
   const [ isBodyVisible, bodyVisibility ] = useState(true);
   const [ isEditing, edit ] = useState(false);
   const [ profile ] = roger.useState('profile');
   const { postman } = roger.useContext();
   const allowEdit = event.author.login === profile.login && isBodyVisible;
 
-  if (isDimmed) {
+  if (dim) {
     return (
       <div className='timeline-thread-comment relative dim'>
         <div className='media small' id={ event.id }>
           <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
-          <div>
-            <Date event={ event } />&nbsp;
-            <MESSAGE size={ 18 }/>
-            Comment
-          </div>
+          <div
+            className='markdown'
+            dangerouslySetInnerHTML={ { __html: marked(event.body, repo) } } />
         </div>
-        <Horn events={ [ event ] }/>
-        { unDimComponent }
       </div>
     );
   }
@@ -63,8 +57,6 @@ export default function Comment({ event, repo, pr, dim }) {
           onSave={ () => edit(false) }
           showAvatar={ false }/> }
       </div>
-      <Horn events={ [ event ] }/>
-      { unDimComponent }
     </div>
   );
 };
@@ -75,3 +67,5 @@ Comment.propTypes = {
   repo: PropTypes.object.isRequired,
   dim: PropTypes.bool
 };
+
+export default withHorn(Comment);

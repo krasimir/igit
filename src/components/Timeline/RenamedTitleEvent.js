@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import Date from '../utils/Date';
 import { EDIT } from '../Icons';
 import trim from '../utils/trim';
-import Horn from '../Horn';
-import unDim from './unDim';
+import { withHorn } from '../Horn';
 
-export default function RenamedTitleEvent({ event, dim }) {
-  const [ unDimComponent, isDimmed ] = unDim(dim);
-  const cls = `timeline-thread-comment media small relative ${ isDimmed ? 'dim' : ''}`;
+function RenamedTitleEvent({ event, dim }) {
+  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
 
   return (
     <div className={ cls } id={ event.id }>
@@ -19,8 +17,6 @@ export default function RenamedTitleEvent({ event, dim }) {
         <EDIT size={ 18 }/>
         { trim(`renamed to ${ event.currentTitle }`) }
       </div>
-      <Horn events={ [ event ] }/>
-      { unDimComponent }
     </div>
   );
 };
@@ -29,3 +25,5 @@ RenamedTitleEvent.propTypes = {
   event: PropTypes.object.isRequired,
   dim: PropTypes.bool
 };
+
+export default withHorn(RenamedTitleEvent);

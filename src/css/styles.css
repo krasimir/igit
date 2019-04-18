@@ -606,8 +606,11 @@ header .logo {
 /* ---------------------------------------- horn */
 .horn {
   position: absolute;
-  top: -4px;
-  right: -7px;
+  top: -9px;
+  right: -48px;
+  width: 60px;
+}
+.horn .count {
   text-align: center;
   width: 20px;
   height: 20px;
@@ -617,36 +620,32 @@ header .logo {
   font-size: 10px;
   line-height: 21px;
   z-index: 999;
-  cursor: pointer;
-  transition: transform 200ms ease-out;
-  -webkit-transition: transform 200ms ease-out;
-}
-.horn:hover {
   cursor: grab;
-  transform: scale(1.2);
-  -webkit-transform: scale(1.2);
+  display: inline-block;
 }
-.horn.read {
+.horn .count.read {
   background: white;
   opacity: 1;
   color: #e2e2e2;
   cursor: pointer;
   line-height: 19px;
 }
-.horn.read:hover {
+.horn .count.read:hover {
   color: black;
   border: solid 1px black;
 }
-.horn.view {
+.horn .view {
+  cursor: pointer;
   background: none;
-  top: -6px;
-  right: -32px;
+  display: inline-block;
+  margin-left: 4px;
+  transform: translateY(2px);
 }
-.horn.view svg {
-  stroke: #e2e2e2;
-  opacity: .5;
+.horn .view svg {
+  stroke: #999;
+  opacity: .6;
 }
-.horn.view svg:hover {
+.horn .view svg:hover {
   stroke: black;
   opacity: 1;
 }

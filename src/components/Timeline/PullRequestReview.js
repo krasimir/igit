@@ -6,11 +6,9 @@ import Date from '../utils/Date';
 import { MESSAGE, CHECK_CIRCLE, STORM, CLIPBOARD } from '../Icons';
 import SubmitPullRequestReview from './SubmitPullRequestReview';
 import flattenToPRReviewComments from '../../api/utils/flattenToPRReviewComments';
-import Horn from '../Horn';
-import unDim from './unDim';
+import { withHorn } from '../Horn';
 
-export default function PullRequestReview({ event, pr, repo, dim }) {
-  const [ unDimComponent, isDimmed ] = unDim(dim);
+function PullRequestReview({ event, pr, repo, dim }) {
   let StateIcon = MESSAGE;
   let stateLabel = '';
 
@@ -37,7 +35,7 @@ export default function PullRequestReview({ event, pr, repo, dim }) {
 
   const reviewComments = flattenToPRReviewComments(pr, event.id);
 
-  if (isDimmed && event.state !== 'PENDING') {
+  if (dim && event.state !== 'PENDING') {
     return (
       <div className={ `timeline-review timeline-review-${ event.state } relative dim` } id={ event.id }>
         <div className='media small'>
@@ -48,8 +46,6 @@ export default function PullRequestReview({ event, pr, repo, dim }) {
             <small>{ stateLabel }</small>
           </div>
         </div>
-        <Horn events={ [ event ] } />
-        { unDimComponent }
       </div>
     );
   }
@@ -78,15 +74,12 @@ export default function PullRequestReview({ event, pr, repo, dim }) {
                 <div
                   className='markdown mb05 fz9 opa7'
                   dangerouslySetInnerHTML={ { __html: marked(comment.body, repo) } } />
-                <Horn events={ [ comment ] } />
               </div>
             );
           })
         }
       </div> }
       { event.state === 'PENDING' && <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/> }
-      <Horn events={ [ event ] } />
-      { event.state !== 'PENDING' && unDimComponent }
     </div>
   );
 };
@@ -97,3 +90,5 @@ PullRequestReview.propTypes = {
   repo: PropTypes.object.isRequired,
   dim: PropTypes.bool
 };
+
+export default withHorn(PullRequestReview);

@@ -111,9 +111,9 @@ roger.context({
   },
   setTotalUnread(number) {
     if (number === 0) {
-      document.title = '✔ I Git';
+      document.title = '✔';
     } else {
-      document.title = `(${ number }) I Git`;
+      document.title = `(${ number })`;
     }
   },
   async mergePR({ id, repo }, { replacePR }) {

@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import Date from '../utils/Date';
 import { MESSAGE } from '../Icons';
 import trim from '../utils/trim';
-import Horn from '../Horn';
-import unDim from './unDim';
+import { withHorn } from '../Horn';
 
-export default function Reference({ event, dim }) {
-  const [ unDimComponent, isDimmed ] = unDim(dim);
-  const cls = `timeline-thread-comment media small relative ${ isDimmed ? 'dim' : ''}`;
+function Reference({ event, dim }) {
+  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
 
   return (
     <div className={ cls } id={ event.id }>
@@ -20,8 +18,6 @@ export default function Reference({ event, dim }) {
         <small>mentioned at</small>&nbsp;
         <a href={ event.target.url } target='_blank'>{ trim(`${ event.target.title }`, 40) }</a>
       </div>
-      <Horn events={ [ event ] }/>
-      { unDimComponent }
     </div>
   );
 };
@@ -30,3 +26,5 @@ Reference.propTypes = {
   event: PropTypes.object.isRequired,
   dim: PropTypes.bool
 };
+
+export default withHorn(Reference);

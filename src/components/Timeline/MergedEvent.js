@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 
 import Date from '../utils/Date';
 import { GIT_MERGE } from '../Icons';
-import Horn from '../Horn';
-import unDim from './unDim';
+import { withHorn } from '../Horn';
 
-export default function MergedEvent({ event, dim }) {
-  const [ unDimComponent, isDimmed ] = unDim(dim);
-  const cls = `timeline-thread-comment media small relative ${ isDimmed ? 'dim' : ''}`;
+function MergedEvent({ event, dim }) {
+  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
 
   return (
     <div className={ cls } id={ event.id }>
@@ -18,8 +16,6 @@ export default function MergedEvent({ event, dim }) {
         <GIT_MERGE size={ 18 }/>
         <small>merged to</small> <span className='branch'>{ event.ref }</span>
       </div>
-      <Horn events={ [ event ] }/>
-      { unDimComponent }
     </div>
   );
 };
@@ -28,3 +24,5 @@ MergedEvent.propTypes = {
   event: PropTypes.object.isRequired,
   dim: PropTypes.bool
 };
+
+export default withHorn(MergedEvent);
