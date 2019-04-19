@@ -7,6 +7,7 @@ import Loading from '../Loading';
 import roger from '../../jolly-roger';
 import Header from '../Header';
 import useDimSeenEvents from './useDimSeenEvents';
+import PullingInterval from './PullingInterval';
 
 export default function Repos() {
   const textInput = useRef(null);
@@ -111,6 +112,7 @@ export default function Repos() {
           { selectedRepos.length > 0 &&
             <div className='mb2'>
               <h3 className='mb1'>Selected repositories</h3>
+              { selectedRepos.length > 0 && <p>You have { selectedRepos.length } selected { selectedRepos.length > 1 ? 'repositories' : 'repository'}. Go to the <Link to='/'>dashboard</Link> to manage your pull requests.</p>}
               { selectedRepos }
             </div>
           }
@@ -170,6 +172,8 @@ export default function Repos() {
         <div className='mt2 pr-card-light'>
           <h3 className='mb1'>Other settings</h3>
           { dimSeenEventsComponent }
+          <hr />
+          <PullingInterval />
         </div>
       </div>
     </div>

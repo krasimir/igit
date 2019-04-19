@@ -228,6 +228,10 @@ hr {
   padding-left: 1em;
   padding-right: 1em;
 }
+.px05 {
+  padding-left: .5em;
+  padding-right: .5em;
+}
 .py1 {
   padding-top: 1em;
   padding-bottom: 1em;

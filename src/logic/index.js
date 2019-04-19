@@ -109,11 +109,11 @@ roger.context({
     await api.markAsUnread(id);
     setNotifications(await api.getNotifications());
   },
-  setTotalUnread(number) {
-    if (number === 0) {
-      document.title = '✔';
+  setTotalUnread({ totalUnread }) {
+    if (totalUnread === 0) {
+      document.title = '✔ Well done ';
     } else {
-      document.title = `(${ number })`;
+      document.title = `${ totalUnread } unread`;
     }
   },
   async mergePR({ id, repo }, { replacePR }) {

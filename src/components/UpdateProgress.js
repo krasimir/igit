@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { PULLING } from '../constants';
+import { getPullingInterval } from './Settings/PullingInterval';
 
 function now() {
   return new Date().getTime();
@@ -17,7 +17,7 @@ export default function UpdateProgress({ fetchDataInterval }) {
     clearInterval(loadingInterval);
     start = now();
     setLoadingInterval(setInterval(() => {
-      setPercent(Math.ceil((now() - start) / PULLING * 100));
+      setPercent(Math.ceil((now() - start) / getPullingInterval() * 100));
     }, 1000));
   }, [ fetchDataInterval ]);
 

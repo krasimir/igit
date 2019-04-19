@@ -18,6 +18,9 @@ body, html {
 .mt2 {
   margin-top: 2em;
 }
+.mt1 {
+  margin-top: 1em;
+}
 .tac {
   text-align: center;
 }
@@ -62,4 +65,38 @@ h1 strong {
 }
 .cta:hover {
   background: #93d893;
+}
+hr {
+  border-top: none;
+  border-bottom: solid 1px #999;
+  max-width: 550px;
+  margin: 3em auto;
+}
+.feature {
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 650px 1fr;
+  column-gap: 1em;
+}
+@media all and (max-width: 950px) {
+  .feature {
+    max-width: 100%;
+    padding: 0 1em;
+    display: block;
+  }
+  .feature img {
+    display: block;
+    max-width: 650px;
+    margin: 1em auto 0 auto;
+  }
+}
+.feature img {
+  max-width: 100%;
+}
+h2 {
+  font-size: 1.7em;
+  line-height: 1.3em;
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
 }

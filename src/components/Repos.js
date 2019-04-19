@@ -12,6 +12,7 @@ import FakePR from './FakePR';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import { PULLING } from '../constants';
+import { getPullingInterval } from './Settings/PullingInterval';
 import isItANewEvent from './utils/isItANewEvent';
 import UpdateProgress from './UpdateProgress';
 
@@ -53,7 +54,7 @@ export default function Repos({ match }) {
         () => {
           setFetchingPRs(false);
           if (PULLING) {
-            setFetchDataInterval(setTimeout(f, PULLING));
+            setFetchDataInterval(setTimeout(f, getPullingInterval()));
           }
         },
         error => {
@@ -100,7 +101,7 @@ export default function Repos({ match }) {
     );
   });
 
-  setTotalUnread(totalUnread);
+  setTotalUnread({ totalUnread });
 
   return (
     <div>
