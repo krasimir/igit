@@ -1,5 +1,5 @@
 /* eslint-disable max-len, camelcase */
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 import PropTypes from 'prop-types';
 
 function VerifyToken({ children }) {

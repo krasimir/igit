@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { CLOSE, CHECK, MORE_HORIZONTAL, CIRCLE } from './Icons';
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 import { LoadingAnimation } from './Loading';
 import Reviewers from './Reviewers';
 

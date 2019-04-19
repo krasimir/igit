@@ -7,7 +7,7 @@ import { PULL_REQUEST } from './Icons';
 import Suggestions from './Suggestions';
 import setCaretPosition from './utils/setCaretPosition';
 import { LoadingAnimation } from './Loading';
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 
 function errorsReducer(state, error) {
   if (error === null) return {};

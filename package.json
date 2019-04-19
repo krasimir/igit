@@ -46,6 +46,7 @@
     "eslint-plugin-react": "7.12.4",
     "gitdiff-parser": "0.1.2",
     "jest": "24.1.0",
+    "jolly-roger": "0.4.4",
     "markdown-it": "8.4.2",
     "markdown-it-mentions": "1.0.0",
     "onchange": "5.2.0",

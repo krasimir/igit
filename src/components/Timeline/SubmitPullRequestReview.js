@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { LoadingAnimation } from '../Loading';
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 
 export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }) {
   const textareaEl = useRef(null);

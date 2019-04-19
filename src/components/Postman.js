@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 import { LoadingAnimation } from './Loading';
 import Suggestions from './Suggestions';
 import setCaretPosition from './utils/setCaretPosition';

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 import isItANewEvent from './utils/isItANewEvent';
 import { EYE } from './Icons';
 

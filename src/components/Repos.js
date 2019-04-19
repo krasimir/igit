@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Header from './Header';
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 import PRs from './PRs';
 import PR from './PR';
 import { CHEVRON_RIGHT, CHEVRON_DOWN, ARROW_RIGHT_CIRCLE } from './Icons';

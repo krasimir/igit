@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 import Header from '../Header';
 import useDimSeenEvents from './useDimSeenEvents';
 import PullingInterval from './PullingInterval';

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import diffParser from 'gitdiff-parser';
 
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 import Loading from '../Loading';
 import { getHunkFiles, getDiffItemType } from '../utils/ReviewDiff';
 import PullRequestReviewThread from '../Timeline/PullRequestReviewThread';

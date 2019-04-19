@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { CHECK } from '../Icons';
 import { LoadingAnimation } from '../Loading';
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 
 export default function ResolveThread({ event, onSuccess }) {
   const { resolveThread, unresolveThread } = roger.useContext();

@@ -1,4 +1,4 @@
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 
 import api from '../api';
 

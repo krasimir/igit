@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { PLUS } from './Icons';
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 import emojis from '../emoji.json';
 
 const pushUser = (arr, user) => {

@@ -6,7 +6,7 @@ import marked from '../utils/marked';
 import Date from '../utils/Date';
 import { MESSAGE, CLOSE } from '../Icons';
 import ReviewDiff from '../utils/ReviewDiff';
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
 import Horn, { unDim } from '../Horn';

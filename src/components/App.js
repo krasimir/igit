@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Redirect, Switch, Route } from 'react-router-dom';
+import roger from 'jolly-roger';
 
 import Loading from './Loading';
 import Authorize from './Authorize';
 import Settings from './Settings';
 import { BASE_PATH, NO_TOKEN } from '../constants';
-import roger from '../jolly-roger';
 import '../logic';
 import Repos from './Repos';
 

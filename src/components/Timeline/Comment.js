@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import marked from '../utils/marked';
 import Date from '../utils/Date';
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
 import { withHorn } from '../Horn';

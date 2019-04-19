@@ -1,4 +1,4 @@
-import roger from '../jolly-roger';
+import roger from 'jolly-roger';
 
 import api from '../api';
 import { PRINT_PRS } from '../constants';
@@ -138,6 +138,9 @@ roger.context({
 });
 
 roger.useReducer('repos', {
+  setRepos(oldRepos, newRepos) {
+    return newRepos;
+  },
   toggleRepo(repos, toggledRepo) {
     return repos.map(repo => {
       if (repo.repoId === toggledRepo.repoId) {
@@ -301,5 +304,23 @@ roger.useReducer('repos', {
       }
       return r;
     });
+  }
+});
+
+roger.useReducer('profile', {
+  setProfile(oldProfile, newProfile) {
+    return newProfile;
+  }
+});
+
+roger.useReducer('notifications', {
+  setNotifications(oldNotifications, newNotifications) {
+    return newNotifications;
+  }
+});
+
+roger.useReducer('verification', {
+  setVerification(oldV, newV) {
+    return newV;
   }
 });

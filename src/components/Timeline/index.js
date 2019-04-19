@@ -12,7 +12,7 @@ import Reference from './Reference';
 import Review from './Review';
 import flattenUsers from '../../api/utils/flattenUsers';
 import Postman from '../Postman';
-import roger from '../../jolly-roger';
+import roger from 'jolly-roger';
 import isItANewEvent from '../utils/isItANewEvent';
 import useDimSeenEvents from '../Settings/useDimSeenEvents';
 
