@@ -610,3 +610,19 @@ mutation {
   }
 }
 `;
+
+export const MUTATION_CREATE_PR = (repoId, title, body, base, head) => `
+mutation {
+  createPullRequest(input: {
+    repositoryId: "${ repoId }",
+    title: "${ title }",
+    baseRefName: "${ base }",
+    headRefName: "${ head }",
+    body: "${ body }"
+  }) {
+    pullRequest {
+      ${ PULL_REQUEST }
+    }
+  }
+}
+`;

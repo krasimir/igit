@@ -72,7 +72,7 @@ export default function PROps({ pr, repo }) {
         <CLOSE size={ 18 } />&nbsp;Close pull request
       </button>
       <button
-        className={ `brand right ${ isLastCheckOk ? 'cta' : 'delete' }` }
+        className={ `brand right ${ isLastCheckOk && pr.mergeable !== 'CONFLICTING' ? 'cta' : 'delete' }` }
         disabled={ submitted || pr.mergeable !== 'MERGEABLE' }
         onClick={ () => merge() }>
         <CHECK size={ 18 } />&nbsp;

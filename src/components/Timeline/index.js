@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Commit from './Commit';

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 
 import ls from '../../api/localStorage';
 

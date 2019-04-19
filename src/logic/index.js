@@ -126,6 +126,12 @@ roger.context({
 
     replacePR({ pr });
   },
+  async createPR({ repo, title, body, base, head }, { addPR }) {
+    const pr = await api.createPR(repo, title, body, base, head);
+
+    addPR({ repo, pr });
+    return pr;
+  },
   getPRStatuses({ prNumber, repo }) {
     return api.getPRStatuses(prNumber, repo);
   }
@@ -285,6 +291,14 @@ roger.useReducer('repos', {
         }
         return p;
       });
+      return r;
+    });
+  },
+  addPR(repos, { repo, pr }) {
+    return repos.map(r => {
+      if (r.repoId === repo.repoId) {
+        r.prs.push(pr);
+      }
       return r;
     });
   }

@@ -8,7 +8,8 @@ import roger from '../jolly-roger';
 import PRs from './PRs';
 import PR from './PR';
 import { CHEVRON_RIGHT, CHEVRON_DOWN, ARROW_RIGHT_CIRCLE } from './Icons';
-import FakePR from './FakePR';
+import PRFake from './PRFake';
+import PRNew from './PRNew';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import { PULLING } from '../constants';
@@ -50,7 +51,11 @@ export default function Repos({ match }) {
   useEffect(() => {
     const f = () => {
       setFetchingPRs(true);
-      fetchData({ repos: subscribedRepos, repoName: name, prNumber }).then(
+      fetchData({
+        repos: subscribedRepos,
+        repoName: name,
+        prNumber: prNumber !== 'new' ? prNumber : undefined
+      }).then(
         () => {
           setFetchingPRs(false);
           if (PULLING) {
@@ -122,7 +127,14 @@ export default function Repos({ match }) {
           </Link>
         </aside>
         <section className='pt1'>
-          { pr ? <PR pr={ pr } url={ match.url } repo={ repo } /> : <FakePR /> }
+          { pr ?
+            <PR pr={ pr } url={ match.url } repo={ repo } /> :
+            (
+              prNumber === 'new' ?
+                <PRNew repo={ repo } owner={ owner }/> :
+                <PRFake />
+            )
+          }
         </section>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LoadingAnimation } from './Loading';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
+import { PLUS } from './Icons';
 
 export default function PRs({ prs, owner, name, prNumber, loading }) {
   if (!prs) {
@@ -42,6 +43,11 @@ export default function PRs({ prs, owner, name, prNumber, loading }) {
             </Link>
           ))
       }
+      <Link
+        to={ `/repo/${ owner }/${ name }/new` }
+        className='as-link tac list-link dimmed'>
+        <PLUS size={ 14 } style={ { transform: 'translateY(2px)'} }/>New pull request
+      </Link>
     </div>
   );
 }

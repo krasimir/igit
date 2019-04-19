@@ -55,6 +55,12 @@ a.default-link:hover {
   background: none;
   color: #4a4a4a;
 }
+a.dimmed {
+  opacity: .5;
+}
+a.dimmed:hover {
+  opacity: 1;
+}
 p {
   margin: 0 0 1em 0;
   padding: 0;
@@ -324,6 +330,9 @@ textarea.type {
 }
 textarea:disabled {
   opacity: .5;
+}
+textarea.as-input {
+  border: solid 2px rgb(201, 201, 201);
 }
 
 /* ---------------------------------------- select */

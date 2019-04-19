@@ -19,7 +19,8 @@ import {
   MUTATION_UNRESOLVE_THREAD,
   MUTATION_MERGE_PR,
   MUTATION_CLOSE_PR,
-  QUERY_GET_PR_STATUSES
+  QUERY_GET_PR_STATUSES,
+  MUTATION_CREATE_PR
 } from './graphql';
 import {
   createOrganization,
@@ -300,6 +301,12 @@ function createAPI() {
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.closePullRequest.pullRequest, repo.owner.login);
+  };
+  api.createPR = async function (repo, title, body, base, head) {
+    const q = MUTATION_CREATE_PR(repo.repoId, title, body, base, head);
+    const { data } = await requestGraphQL(q);
+
+    return createPRDetails(data.createPullRequest.pullRequest, repo.owner.login);
   };
   api.getPRStatuses = async function (prNumber, repo) {
     const q = QUERY_GET_PR_STATUSES(prNumber, repo.name, repo.owner);
