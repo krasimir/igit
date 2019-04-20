@@ -37,17 +37,6 @@ export default function Repos({ match }) {
   const [ fetchDataInterval, setFetchDataInterval ] = useState(null);
   const [ fetchingPRs, setFetchingPRs ] = useState(false);
 
-  if (subscribedRepos.length === 0) {
-    return (
-      <div className='layout'>
-        <aside>
-          <p className='tac mt3'>You have no selected repositories. Do it <Link to='/settings'>here</Link>.</p>
-        </aside>
-        <section>...</section>
-      </div>
-    );
-  }
-
   useEffect(() => {
     const f = () => {
       setFetchingPRs(true);
@@ -119,6 +108,9 @@ export default function Repos({ match }) {
             Dashboard
           </Link>
           <div className='pl05'>
+           { subscribedRepos.length === 0 && (
+              <div className='ml1'>You have no selected repositories. To select some click <Link to='/settings'>here</Link>.</div>
+            ) }
             { reposList }
           </div>
           <Link to='/settings' className='list-link'>

@@ -4032,10 +4032,10 @@ jest@24.1.0:
     import-local "^2.0.0"
     jest-cli "^24.1.0"
 
-jolly-roger@0.4.4:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/jolly-roger/-/jolly-roger-0.4.4.tgz#e4059e5c31af0247d8826f39ebb7a0389bdaeb4f"
-  integrity sha512-H6gETHZLdaaxMPBfoN981b8t+3/2/Ox4Rlhu6VEBVb1B0bc6IphiOcdwyGCW8CnAX63XBMUYjTQoPXVPniixzg==
+jolly-roger@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/jolly-roger/-/jolly-roger-1.0.1.tgz#3038b93b5d11001486ec7b19bad833c6ed1b9be4"
+  integrity sha512-R088S44M3Pw2iSX5ehGJuZsUYESJuf39zWMXvusfsEZSithqG10wpECUYUsGIp+HBikLN3xuvRNhSJbMpQauCA==
 
 js-levenshtein@^1.1.3:
   version "1.1.6"

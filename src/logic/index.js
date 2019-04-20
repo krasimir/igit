@@ -41,8 +41,9 @@ roger.context({
 
     return repos;
   },
-  toggleRepo(repo) {
+  toggleRepo(repo, { toggleRepos }) {
     api.toggleRepo(repo);
+    toggleRepos(repo);
   },
   getPRFiles({ repo, prNumber }) {
     return api.fetchPRFiles(repo, prNumber);
@@ -141,7 +142,7 @@ roger.useReducer('repos', {
   setRepos(oldRepos, newRepos) {
     return newRepos;
   },
-  toggleRepo(repos, toggledRepo) {
+  toggleRepos(repos, toggledRepo) {
     return repos.map(repo => {
       if (repo.repoId === toggledRepo.repoId) {
         repo.selected = !repo.selected;
