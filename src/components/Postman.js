@@ -83,12 +83,14 @@ export default function Postman({
           value={ text ? text : '' }
           placeholder={ placeholder }
           className={ textareaClassName }
-          onClick={ () => type(text || '') }
           disabled={ submitted }
           onChange={ onTextChange }
           onFocus={ () => enableSuggestions(true) }
           onBlur={ () => setTimeout(() => enableSuggestions(false), 200) }
-          onClick={ (e) => setTextareaPosition(e.target.selectionStart) } />
+          onClick={ (e) => {
+            setTextareaPosition(e.target.selectionStart);
+            setTextAreaClassName('type');
+          } } />
       </div>
       { (isEditing && !submitted) && <div className={ showAvatar ? 'left mt05 ml2' : 'left mt05' }>
         <button className='light' onClick={ () => {

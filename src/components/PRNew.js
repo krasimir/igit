@@ -1,4 +1,4 @@
-/* eslint-disable max-len, consistent-return */
+/* eslint-disable max-len, consistent-return, handle-callback-err */
 import React, { useState, useRef, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
@@ -26,10 +26,12 @@ function valuesReducer(state, data) {
 export default function PRNew({ repo, owner }) {
   const headInput = useRef(null);
   const bodyTextarea = useRef(null);
-  const { createPR } = roger.useContext();
+  const { createPR, getPRFile } = roger.useContext();
   const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);
   const [ newPR, setNewPR ] = useState(null);
+  const [ gettingTemplateInProgress, gettingTemplate ] = useState(true);
+  const [ textareaPlaceholder, setTextareaPlaceholder ] = useState(`Getting the pull request template for ${ repo.nameWithOwner }...`);
   const [ errors, setError ] = useReducer(errorsReducer, {});
   const [ values, setValue ] = useReducer(valuesReducer, {
     base: 'master',
@@ -40,6 +42,17 @@ export default function PRNew({ repo, owner }) {
 
   useEffect(() => {
     headInput.current.focus();
+    getPRFile({ repo, path: '.github/PULL_REQUEST_TEMPLATE.md'}).then(
+      prTemplate => {
+        setValue({ value: prTemplate, key: 'body' });
+        gettingTemplate(false);
+        setTextareaPlaceholder('body');
+      },
+      error => {
+        gettingTemplate(false);
+        setTextareaPlaceholder('body');
+      }
+    );
   }, []);
 
   const onBodyChange = (e) => {
@@ -94,7 +107,6 @@ export default function PRNew({ repo, owner }) {
   };
 
   if (newPR) {
-    console.log(JSON.stringify(newPR, null, 2));
     return <Redirect to={ `/repo/${ owner }/${ repo.name }/${ newPR.number }` }/>;
   }
 
@@ -137,10 +149,11 @@ export default function PRNew({ repo, owner }) {
         <textarea
           ref={ bodyTextarea }
           className={ 'block my1 type as-input' }
-          placeholder='body'
+          placeholder={ textareaPlaceholder }
           value={ values.body }
-          disabled={ submitted }
-          onChange={ onBodyChange } />
+          disabled={ submitted || gettingTemplateInProgress }
+          onChange={ onBodyChange }
+          style={ { height: '570px' } }/>
         { errors.body && <div className='error'>{ errors.body }</div> }
         { !submitted && <Suggestions visible onSelect={ addToText } /> }
       </div>

@@ -200,8 +200,8 @@ function createAPI() {
   };
   api.fetchPRFile = function (repo, path, commit) {
     return request(
-      `/repos/${ repo.owner }/${ repo.name }/contents/${ path }?ref=${ commit }`,
-      true,
+      `/repos/${ repo.owner }/${ repo.name }/contents/${ path }${ commit ? `?ref=${ commit }` : '' }`,
+      false,
       { 'Accept': 'application/vnd.github.v3.raw' }
     );
   };

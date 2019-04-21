@@ -21,8 +21,17 @@ body, html {
 .mt1 {
   margin-top: 1em;
 }
+.my2 {
+  margin: 2em 0;
+}
 .tac {
   text-align: center;
+}
+.fz08 {
+  font-size: .8em;
+}
+.opa05 {
+  opacity: .5;
 }
 header > img {
   display: block;

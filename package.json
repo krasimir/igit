@@ -1,14 +1,14 @@
 {
   "name": "igit.dev",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "description": "An app for managing GitHub pull requests",
   "main": "index.js",
   "scripts": {
     "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development",
     "dev": "yarn minify-css && concurrently \"onchange ./src/css/*.css -- yarn minify-css\" \"yarn dev-server\"",
-    "dev-site": "now-lambda",
+    "dev-site": "now-lambda --port=8080",
     "minify-css": "cat ./src/css/diff2html.min.css ./src/css/custom.diff2html.min.css ./src/css/github.markdown.css ./src/css/styles_generic.css ./src/css/styles.css | uglifycss > ./dist/styles.css",
-    "release": "webpack --config ./webpack.prod.js --mode production && now && now alias",
+    "release": "node ./scripts/version.js && webpack --config ./webpack.prod.js --mode production && now && now alias",
     "lint": "./node_modules/.bin/eslint --ext .js src",
     "test": "./node_modules/.bin/jest",
     "test-watch": "./node_modules/.bin/jest --watch --verbose false"
