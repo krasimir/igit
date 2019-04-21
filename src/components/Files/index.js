@@ -169,11 +169,12 @@ export default function Files({ pr, repo, className }) {
 
     return (
       <div className={ `hunk ${ className ? className : '' }` } key={ key }>
-        <div className='header'>
+        <div className='header relative'>
           <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
           <button onClick={ () => collapse({ path }) }>{ path }</button>
           { (threads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && <span>({ threads.length })</span>}
           { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
+          { <ReviewProgress percents={ Math.ceil(collapsed.length / parsedDiff.length * 100) } /> }
         </div>
         { isCollapsed && items.map((item, i) => {
             if (item.__table) {
@@ -242,3 +243,7 @@ Files.propTypes = {
   repo: PropTypes.object.isRequired,
   className: PropTypes.string
 };
+
+function ReviewProgress({ percents }) {
+  return <div className='files-review'>{ percents }%</div>;
+}

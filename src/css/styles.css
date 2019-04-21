@@ -396,6 +396,16 @@ header .logo {
 .pr-edit:hover {
   color: black;
 }
+.loc-bar {
+  height: 1px;
+  display: grid;
+}
+.loc-bar div:nth-child(1) {
+  background: #00de3e;
+}
+.loc-bar div:nth-child(2) {
+  background: red;
+}
 
 /* ---------------------------------------- pr-status */
 
@@ -469,6 +479,16 @@ header .logo {
 }
 .hunk + .hunk {
   margin-top: .2em;
+}
+.files-review {
+  position: absolute;
+  top: 4px;
+  right: -48px;
+  width: 40px;
+  opacity: 0;
+}
+.files .hunk:hover .files-review {
+  opacity: .7;
 }
 
 /* ---------------------------------------- filter */

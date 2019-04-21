@@ -19,6 +19,7 @@ const isPending = (status) => {
 };
 
 export default function PROps({ pr, repo }) {
+  const [ closingAreYouSure, areYouSure ] = useState(false);
   const { mergePR, closePR, getPRStatuses } = roger.useContext();
   const [ submitted, setSubmitted ] = useState(false);
   const [ statuses, setStatuses ] = useState(null);
@@ -41,6 +42,10 @@ export default function PROps({ pr, repo }) {
   }
 
   async function close() {
+    if (!closingAreYouSure) {
+      areYouSure(true);
+      return;
+    }
     setSubmitted(`Closing <code>${ pr.title }</code> pull request.`);
     await closePR({ id: pr.id, repo });
     setSubmitted(false);
@@ -68,8 +73,9 @@ export default function PROps({ pr, repo }) {
       <button
         className='brand'
         disabled={ submitted }
-        onClick={ () => close() }>
-        <CLOSE size={ 18 } />&nbsp;Close pull request
+        onClick={ close }>
+        <CLOSE size={ 18 } />&nbsp;
+        { !closingAreYouSure ? 'Close pull request' : 'Closing. Are you sure?' }
       </button>
       <button
         className={ `brand right ${ isLastCheckOk && pr.mergeable !== 'CONFLICTING' ? 'cta' : 'delete' }` }

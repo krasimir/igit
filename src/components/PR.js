@@ -13,6 +13,7 @@ import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import PROps from './PROps';
 import { EDIT } from './Icons';
+import LoCBar from './LoCBar';
 
 const formatBranchLabels = (base, head) => {
   if (base.owner === head.owner) {
@@ -49,6 +50,7 @@ export default function PR({ url, pr, repo }) {
 
   return (
     <div className='pr-details'>
+      <LoCBar add={ pr.additions } del={ pr.deletions }/>
       <div className='pr-card cf'>
         <div className='media'>
           <a href={ pr.author.url } target='_blank' className='no-hover'>
