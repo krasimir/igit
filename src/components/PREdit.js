@@ -23,37 +23,17 @@ function valuesReducer(state, data) {
   return { ...state };
 }
 
-export default function PRNew({ repo, owner, pr }) {
-  const headInput = useRef(null);
+export default function PREdit({ repo, owner, pr }) {
   const bodyTextarea = useRef(null);
-  const { createPR, getPRFile } = roger.useContext();
+  const { editPR } = roger.useContext();
   const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);
-  const [ newPR, setNewPR ] = useState(null);
-  const [ gettingTemplateInProgress, gettingTemplate ] = useState(true);
-  const [ textareaPlaceholder, setTextareaPlaceholder ] = useState(`Getting the pull request template for ${ repo.nameWithOwner }...`);
   const [ errors, setError ] = useReducer(errorsReducer, {});
+  const [ isEdited, edited ] = useState(null);
   const [ values, setValue ] = useReducer(valuesReducer, {
-    base: 'master',
-    head: '',
-    title: '',
-    body: ''
+    title: pr.title,
+    body: pr.body
   });
-
-  useEffect(() => {
-    headInput.current.focus();
-    getPRFile({ repo, path: '.github/PULL_REQUEST_TEMPLATE.md'}).then(
-      prTemplate => {
-        setValue({ value: prTemplate, key: 'body' });
-        gettingTemplate(false);
-        setTextareaPlaceholder('body');
-      },
-      error => {
-        gettingTemplate(false);
-        setTextareaPlaceholder('body');
-      }
-    );
-  }, []);
 
   const onBodyChange = (e) => {
     setValue({ value: e.target.value, key: 'body' });
@@ -71,17 +51,9 @@ export default function PRNew({ repo, owner, pr }) {
 
     setTimeout(() => setCaretPosition(bodyTextarea.current, newPosition), 10);
   };
-  const create = async () => {
+  const edit = async () => {
     let valid = true;
 
-    if (values.base === '') {
-      setError({ value: '"base" can not be empty.', key: 'base' });
-      valid = false;
-    }
-    if (values.head === '') {
-      setError({ value: '"head" can not be empty.', key: 'head' });
-      valid = false;
-    }
     if (values.title === '') {
       setError({ value: '"title" can not be empty.', key: 'title' });
       valid = false;
@@ -90,15 +62,13 @@ export default function PRNew({ repo, owner, pr }) {
       submit(true);
       setError(null);
       try {
-        const pr = await createPR({
+        await editPR({
           repo,
           title: values.title,
           body: values.body,
-          base: values.base,
-          head: values.head
+          prId: pr.id
         });
-
-        setNewPR(pr);
+        edited(true);
       } catch (error) {
         submit(false);
         setError({ value: error.message ? error.message : error.toString(), key: 'request' });
@@ -106,35 +76,14 @@ export default function PRNew({ repo, owner, pr }) {
     }
   };
 
-  if (newPR) {
-    return <Redirect to={ `/repo/${ owner }/${ repo.name }/${ newPR.number }` }/>;
+  if (isEdited) {
+    return <Redirect to={ `/repo/${ owner }/${ repo.name }/${ pr.number }` }/>;
   }
 
   return (
     <div className='pr-card cf'>
-      <h1><PULL_REQUEST /> { repo.name }: new pull request</h1>
+      <h1><PULL_REQUEST /> { repo.name }: { pr.title }</h1>
       <hr />
-      <div>
-        <input
-          className={ 'block my1' + (errors.base ? ' error' : '') }
-          type='text'
-          placeholder='base'
-          value={ values.base }
-          disabled={ submitted }
-          onChange={ (e) => setValue({ value: e.target.value, key: 'base' }) } />
-        { errors.base && <div className='error'>{ errors.base }</div> }
-      </div>
-      <div>
-        <input
-          ref={ headInput }
-          className={ 'block my1' + (errors.head ? ' error' : '') }
-          type='text'
-          placeholder='head'
-          value={ values.head }
-          disabled={ submitted }
-          onChange={ (e) => setValue({ value: e.target.value, key: 'head' }) } />
-        { errors.head && <div className='error'>{ errors.head }</div> }
-      </div>
       <div>
         <input
           className={ 'block my1' + (errors.title ? ' error' : '') }
@@ -149,9 +98,9 @@ export default function PRNew({ repo, owner, pr }) {
         <textarea
           ref={ bodyTextarea }
           className={ 'block my1 type as-input' }
-          placeholder={ textareaPlaceholder }
+          placeholder='body'
           value={ values.body }
-          disabled={ submitted || gettingTemplateInProgress }
+          disabled={ submitted }
           onChange={ onBodyChange }
           onBlur={ (e) => setTextareaPosition(e.target.selectionStart) }
           style={ { height: '570px' } }/>
@@ -161,13 +110,13 @@ export default function PRNew({ repo, owner, pr }) {
       <hr />
       { submitted ?
         <LoadingAnimation className='right mt1'/> :
-        <button className='brand right' onClick={ create }>Create</button> }
+        <button className='brand right' onClick={ edit }>Edit</button> }
       { errors.request && <div className='cf'><div className='error mt1'>{ errors.request }</div></div> }
     </div>
   );
 }
 
-PRNew.propTypes = {
+PREdit.propTypes = {
   repo: PropTypes.object.isRequired,
   owner: PropTypes.string.isRequired,
   pr: PropTypes.object

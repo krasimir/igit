@@ -20,7 +20,8 @@ import {
   MUTATION_MERGE_PR,
   MUTATION_CLOSE_PR,
   QUERY_GET_PR_STATUSES,
-  MUTATION_CREATE_PR
+  MUTATION_CREATE_PR,
+  MUTATION_EDIT_PR
 } from './graphql';
 import {
   createOrganization,
@@ -307,6 +308,12 @@ function createAPI() {
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.createPullRequest.pullRequest, repo.owner.login);
+  };
+  api.editPR = async function (repo, title, body, prId) {
+    const q = MUTATION_EDIT_PR(title, body, prId);
+    const { data } = await requestGraphQL(q);
+
+    return createPRDetails(data.updatePullRequest.pullRequest, repo.owner.login);
   };
   api.getPRStatuses = async function (prNumber, repo) {
     const q = QUERY_GET_PR_STATUSES(prNumber, repo.name, repo.owner);

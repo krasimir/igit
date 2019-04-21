@@ -12,6 +12,7 @@ import { formatDate } from '../utils';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import PROps from './PROps';
+import { EDIT } from './Icons';
 
 const formatBranchLabels = (base, head) => {
   if (base.owner === head.owner) {
@@ -88,6 +89,11 @@ export default function PR({ url, pr, repo }) {
           </React.Fragment>
         ) }/>
       </Switch>
+      <Link
+        className='as-link pr-edit dimmed no-hover'
+        to={ `/repo/${ repo.nameWithOwner }/${ pr.number }/edit` }>
+        <EDIT size={ 18 }/>
+      </Link>
       <Horn events={ flattenPREvents(pr) } />
     </div>
   );

@@ -615,10 +615,24 @@ export const MUTATION_CREATE_PR = (repoId, title, body, base, head) => `
 mutation {
   createPullRequest(input: {
     repositoryId: "${ repoId }",
-    title: "${ title }",
+    title: ${ JSON.stringify(title) },
     baseRefName: "${ base }",
     headRefName: "${ head }",
-    body: "${ body }"
+    body: ${ JSON.stringify(body) }
+  }) {
+    pullRequest {
+      ${ PULL_REQUEST }
+    }
+  }
+}
+`;
+
+export const MUTATION_EDIT_PR = (title, body, prId) => `
+mutation {
+  updatePullRequest(input: {
+    pullRequestId: "${ prId }",
+    title: ${ JSON.stringify(title) },
+    body: ${ JSON.stringify(body) }
   }) {
     pullRequest {
       ${ PULL_REQUEST }

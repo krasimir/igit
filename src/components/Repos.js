@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import roger from 'jolly-roger';
 
 import Header from './Header';
-import roger from 'jolly-roger';
 import PRs from './PRs';
 import PR from './PR';
 import { CHEVRON_RIGHT, CHEVRON_DOWN, ARROW_RIGHT_CIRCLE } from './Icons';
 import PRFake from './PRFake';
 import PRNew from './PRNew';
+import PREdit from './PREdit';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import { PULLING } from '../constants';
@@ -30,7 +31,7 @@ export default function Repos({ match }) {
   const { fetchData, setTotalUnread } = roger.useContext();
   const [ profile ] = roger.useState('profile', null);
   const [ notifications ] = roger.useState('notifications');
-  const { owner, name, prNumber } = match.params;
+  const { owner, name, prNumber, op } = match.params;
   const [ repos ] = roger.useState('repos', []);
   const subscribedRepos = repos.filter(repo => repo.selected);
   const [ error, setError ] = useState(null);
@@ -43,7 +44,7 @@ export default function Repos({ match }) {
       fetchData({
         repos: subscribedRepos,
         repoName: name,
-        prNumber: prNumber !== 'new' ? prNumber : undefined
+        prNumber: prNumber !== 'new' && op !== 'edit' ? prNumber : undefined
       }).then(
         () => {
           setFetchingPRs(false);
@@ -97,6 +98,18 @@ export default function Repos({ match }) {
 
   setTotalUnread({ totalUnread });
 
+  let PRComponent;
+
+  if (pr && op === 'edit') {
+    PRComponent = <PREdit pr={ pr } repo={ repo } owner={ owner }/>;
+  } else if (pr) {
+    PRComponent = <PR pr={ pr } url={ match.url } repo={ repo } />;
+  } else if (prNumber === 'new') {
+    PRComponent = <PRNew repo={ repo } owner={ owner }/>;
+  } else {
+    PRComponent = <PRFake />;
+  }
+
   return (
     <div>
       <UpdateProgress fetchDataInterval={ fetchDataInterval }/>
@@ -118,16 +131,7 @@ export default function Repos({ match }) {
             Settings
           </Link>
         </aside>
-        <section className='pt1'>
-          { pr ?
-            <PR pr={ pr } url={ match.url } repo={ repo } /> :
-            (
-              prNumber === 'new' ?
-                <PRNew repo={ repo } owner={ owner }/> :
-                <PRFake />
-            )
-          }
-        </section>
+        <section className='pt1'>{ PRComponent }</section>
       </div>
     </div>
   );

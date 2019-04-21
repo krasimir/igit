@@ -9,6 +9,7 @@ import Settings from './Settings';
 import { BASE_PATH, NO_TOKEN } from '../constants';
 import '../logic';
 import Repos from './Repos';
+import PREdit from './PREdit';
 
 export default function App() {
   const { initialize } = roger.useContext();
@@ -36,6 +37,7 @@ export default function App() {
         <Switch>
           <Route path='/settings' component={ Settings } />
           { repos.length === 0 && <Redirect to='/settings' /> }
+          <Route path='/repo/:owner/:name/:prNumber/:op' component={ Repos } />
           <Route path='/repo/:owner/:name/:prNumber/files' component={ Repos } />
           <Route path='/repo/:owner/:name/:prNumber' component={ Repos } />
           <Route path='/repo/:owner/:name' component={ Repos } />

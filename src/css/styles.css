@@ -388,6 +388,14 @@ header .logo {
 .code-diff {
   width: 100%;
 }
+.pr-edit {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+}
+.pr-edit:hover {
+  color: black;
+}
 
 /* ---------------------------------------- pr-status */
 

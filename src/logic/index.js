@@ -133,6 +133,12 @@ roger.context({
     addPR({ repo, pr });
     return pr;
   },
+  async editPR({ repo, title, body, prId }, { replacePR }) {
+    const pr = await api.editPR(repo, title, body, prId);
+
+    replacePR({ pr });
+    return pr;
+  },
   getPRStatuses({ prNumber, repo }) {
     return api.getPRStatuses(prNumber, repo);
   }
