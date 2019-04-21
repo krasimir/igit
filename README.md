@@ -1,6 +1,4 @@
-# I Git
-
-:rocket: [https://igit.dev/](https://igit.dev/)
+# :rocket: [https://igit.dev/](https://igit.dev/)
 
 ![I Git](https://igit.dev/img/logo_full.png)
 
