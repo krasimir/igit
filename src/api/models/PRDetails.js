@@ -213,7 +213,13 @@ function filesToTree(tree) {
     file.path = parts.join('/');
 
     if (!content[p]) {
-      content[p] = { path: p, items: parts.length === 0 ? null : [ file ] };
+      content[p] = Object.assign(
+        {
+          path: p,
+          items: parts.length === 0 ? null : [ file ]
+        },
+        parts.length === 0 && { additions: file.additions, deletions: file.deletions }
+      );
     } else {
       content[p].items.push(file);
     }

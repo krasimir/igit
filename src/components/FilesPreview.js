@@ -1,11 +1,27 @@
-/* eslint-disable max-len */
+/* eslint-disable max-len, react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { CHEVRON_RIGHT, CHEVRON_DOWN } from './Icons';
+import Diff from './utils/Diff';
 
-export default function Reviewers({ pr }) {
-  const [ expanded, expand ] = useState(pr.reviewers.length > 0);
+const INDENT_STEP = 4;
+
+function Directory({ dir, indent }) {
+  const isFile = dir.items === null;
+
+  return (
+    <div style={ { paddingLeft: `${ indent }px` } } className={ isFile ? 'is-file' : 'is-dir' }>
+      { dir.path }
+      { isFile ?
+        <Diff data={ { additions: dir.additions, deletions: dir.deletions } } /> : '' }
+      { !isFile && dir.items.map(item => <Directory dir={ item } indent={ indent + INDENT_STEP } key={ item.path }/>)}
+    </div>
+  );
+}
+
+export default function FilesPreview({ pr }) {
+  const [ expanded, expand ] = useState(false);
 
   return (
     <div className='mt1 fz8'>
@@ -14,19 +30,11 @@ export default function Reviewers({ pr }) {
         Files changed ({ pr.files.total })
       </button>
       {
-        (expanded && pr.reviewers.length > 0) && (
-          <div className='pl1 bl1 ml1'>
-          {
-            pr.reviewers.map(reviewer => (
-              <div key={ reviewer.avatar }>
-                <img
-                  src={ reviewer.avatar }
-                  alt={ reviewer.name || reviewer.login }
-                  className='avatar tiny'/>&nbsp;
-                { reviewer.name || reviewer.login }
-              </div>
-            ))
-          }
+        expanded && (
+          <div className='pl1 bl1 ml1 files-preview'>
+            {
+              pr.files.tree.items.map(item => <Directory dir={ item } indent={ INDENT_STEP } key={ item.path }/>)
+            }
           </div>
         )
       }
@@ -34,6 +42,6 @@ export default function Reviewers({ pr }) {
   );
 }
 
-Reviewers.propTypes = {
+FilesPreview.propTypes = {
   pr: PropTypes.object.isRequired
 };
