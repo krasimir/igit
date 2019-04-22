@@ -188,5 +188,14 @@ export default function createPRDetails(pr, baseRepoOwner) {
     return normalizeUser(node.requestedReviewer);
   });
 
+  o.files = {
+    total: pr.files.totalCount,
+    items: pr.files.edges.map(({ node }) => ({
+      path: node.path,
+      additions: node.additions,
+      deletions: node.deletions
+    }))
+  };
+
   return o;
 }
