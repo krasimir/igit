@@ -1,0 +1,89 @@
+{
+  "path": "/",
+  "items": [
+    {
+      "path": "dist",
+      "items": [
+        {
+          "path": "bundle.js",
+          "items": null,
+          "additions": 1,
+          "deletions": 1
+        }
+      ]
+    },
+    {
+      "path": "package.json",
+      "items": null,
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "path": "site",
+      "items": [
+        {
+          "path": "index.html",
+          "items": null,
+          "additions": 1,
+          "deletions": 1
+        }
+      ]
+    },
+    {
+      "path": "src",
+      "items": [
+        {
+          "path": "api",
+          "items": [
+            {
+              "path": "graphql.js",
+              "items": null,
+              "additions": 10,
+              "deletions": 0
+            },
+            {
+              "path": "models",
+              "items": [
+                {
+                  "path": "PRDetails.js",
+                  "items": null,
+                  "additions": 9,
+                  "deletions": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "path": "components",
+          "items": [
+            {
+              "path": "FilesPreview.js",
+              "items": null,
+              "additions": 47,
+              "deletions": 0
+            },
+            {
+              "path": "PR.js",
+              "items": null,
+              "additions": 4,
+              "deletions": 0
+            },
+            {
+              "path": "PROps.js",
+              "items": null,
+              "additions": 0,
+              "deletions": 2
+            }
+          ]
+        },
+        {
+          "path": "constants.js",
+          "items": null,
+          "additions": 1,
+          "deletions": 1
+        }
+      ]
+    }
+  ]
+}

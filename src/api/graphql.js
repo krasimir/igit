@@ -228,6 +228,16 @@ reviewRequests(first: 50) {
     }
   }
 }
+files(first: 100) {
+  totalCount,
+  edges {
+      node {
+          path,
+          additions,
+          deletions
+      }
+  }
+}
 `;
 
 export const QUERY_GET_REPOS_OF_ORG = (query, perPage, cursor) => `

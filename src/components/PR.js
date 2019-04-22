@@ -14,6 +14,8 @@ import flattenPREvents from '../api/utils/flattenPREvents';
 import PROps from './PROps';
 import { EDIT } from './Icons';
 import LoCBar from './LoCBar';
+import Reviewers from './Reviewers';
+import FilesPreview from './FilesPreview';
 
 const formatBranchLabels = (base, head) => {
   if (base.owner === head.owner || typeof base.owner === 'undefined' || typeof head.owner === 'undefined') {
@@ -70,6 +72,8 @@ export default function PR({ url, pr, repo }) {
         <hr />
         <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body, repo) } } />
         { (!pr.merged && !pr.closed) && <PROps pr={ pr } repo={ repo }/> }
+        <Reviewers pr={ pr }/>
+        <FilesPreview pr={ pr }/>
       </div>
       <Switch>
         <Route path={ url + '/files' } render={ () => (

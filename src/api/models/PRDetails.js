@@ -188,5 +188,49 @@ export default function createPRDetails(pr, baseRepoOwner) {
     return normalizeUser(node.requestedReviewer);
   });
 
+  o.files = {
+    total: pr.files.totalCount,
+    tree: filesToTree({
+      path: '/',
+      items: pr.files.edges.map(({ node }) => ({
+        path: node.path,
+        additions: node.additions,
+        deletions: node.deletions
+      }))
+    })
+  };
+
   return o;
+}
+
+function filesToTree(tree) {
+  const content = {};
+
+  tree.items.forEach(file => {
+    const parts = file.path.split('/');
+    const p = parts.shift();
+
+    file.path = parts.join('/');
+
+    if (!content[p]) {
+      content[p] = Object.assign(
+        {
+          path: p,
+          items: parts.length === 0 ? null : [ file ]
+        },
+        parts.length === 0 && { additions: file.additions, deletions: file.deletions }
+      );
+    } else {
+      content[p].items.push(file);
+    }
+  });
+
+  tree.items = [];
+  Object.keys(content).forEach(path => {
+    tree.items.push(content[path]);
+    if (content[path].items !== null) {
+      filesToTree(content[path]);
+    }
+  });
+  return tree;
 }

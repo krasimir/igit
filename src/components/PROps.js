@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { CLOSE, CHECK, MORE_HORIZONTAL, CIRCLE } from './Icons';
 import roger from 'jolly-roger';
 import { LoadingAnimation } from './Loading';
-import Reviewers from './Reviewers';
 
 const isStatusSuccessful = (status) => {
   if (status === null) return true;
@@ -98,7 +97,6 @@ export default function PROps({ pr, repo }) {
           <LoadingAnimation className='m0'/>
         </div>
       ) }
-      <Reviewers pr={ pr }/>
     </div>
   );
 };

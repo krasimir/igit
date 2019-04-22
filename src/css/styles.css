@@ -406,6 +406,12 @@ header .logo {
 .loc-bar div:nth-child(1) {
   background: red;
 }
+.files-preview {
+  line-height: 1.4em;
+}
+.files-preview .is-file {
+  opacity: .7;
+}
 
 /* ---------------------------------------- pr-status */
 

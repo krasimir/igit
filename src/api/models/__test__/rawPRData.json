@@ -1,0 +1,183 @@
+{
+    "id": "MDExOlB1bGxSZXF1ZXN0MjcyMzU1MDk1",
+    "number": 1,
+    "title": "Files preview",
+    "baseRefName": "master",
+    "headRefName": "files-preview",
+    "headRepository": {
+        "owner": {
+            "login": "krasimir"
+        }
+    },
+    "createdAt": "2019-04-22T11:59:52Z",
+    "updatedAt": "2019-04-22T12:01:07Z",
+    "permalink": "https://github.com/krasimir/igit/pull/1",
+    "author": {
+        "login": "krasimir",
+        "avatarUrl": "https://avatars2.githubusercontent.com/u/528677?v=4",
+        "url": "https://github.com/krasimir"
+    },
+    "changedFiles": 9,
+    "additions": 74,
+    "deletions": 6,
+    "mergeable": "MERGEABLE",
+    "body": "Previewing the files in a pull request.",
+    "timeline": {
+        "totalCount": 2,
+        "edges": [
+            {
+                "cursor": "MQ",
+                "node": {
+                    "__typename": "Commit",
+                    "oid": "7469a4f71383523714f7782bb3dd155acf4839f3",
+                    "author": {
+                        "name": "Krasimir Tsonev",
+                        "avatarUrl": "https://avatars2.githubusercontent.com/u/528677?v=4",
+                        "user": {
+                            "login": "krasimir"
+                        }
+                    },
+                    "message": "Working on the files preview",
+                    "additions": 74,
+                    "deletions": 6,
+                    "url": "https://github.com/krasimir/igit/commit/7469a4f71383523714f7782bb3dd155acf4839f3",
+                    "committedDate": "2019-04-22T11:56:16Z"
+                }
+            },
+            {
+                "cursor": "Mg",
+                "node": {
+                    "__typename": "PullRequestReview",
+                    "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MjI5MDM5MzMz",
+                    "author": {
+                        "avatarUrl": "https://avatars2.githubusercontent.com/u/528677?v=4",
+                        "login": "krasimir"
+                    },
+                    "body": "",
+                    "submittedAt": "2019-04-22T12:01:07Z",
+                    "state": "COMMENTED"
+                }
+            }
+        ]
+    },
+    "reviewThreads": {
+        "totalCount": 2,
+        "edges": [
+            {
+                "node": {
+                    "isResolved": false,
+                    "resolvedBy": null,
+                    "comments": {
+                        "totalCount": 1,
+                        "edges": [
+                            {
+                                "node": {
+                                    "publishedAt": "2019-04-22T12:01:07Z",
+                                    "author": {
+                                        "login": "krasimir",
+                                        "avatarUrl": "https://avatars2.githubusercontent.com/u/528677?v=4"
+                                    },
+                                    "body": "Do we need `additions` and `deletions`?",
+                                    "diffHunk": "@@ -228,6 +228,16 @@ reviewRequests(first: 50) {\n     }\n   }\n }\n+files(first: 100) {\n+  totalCount,\n+  edges {\n+      node {\n+          path,\n+          additions,\n+          deletions"
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "node": {
+                    "isResolved": false,
+                    "resolvedBy": null,
+                    "comments": {
+                        "totalCount": 1,
+                        "edges": [
+                            {
+                                "node": {
+                                    "publishedAt": "2019-04-22T12:01:07Z",
+                                    "author": {
+                                        "login": "krasimir",
+                                        "avatarUrl": "https://avatars2.githubusercontent.com/u/528677?v=4"
+                                    },
+                                    "body": "This needs to be changed so it shows the files.",
+                                    "diffHunk": "@@ -0,0 +1,47 @@\n+/* eslint-disable max-len */\n+import React, { useState } from 'react';\n+import PropTypes from 'prop-types';\n+\n+import { CHEVRON_RIGHT, CHEVRON_DOWN } from './Icons';\n+\n+function filesToDirs(files) {\n+  console.log(files);\n+\n+}\n+\n+export default function Reviewers({ pr }) {\n+  const [ expanded, expand ] = useState(pr.reviewers.length > 0);\n+  const files = filesToDirs(pr.files.items);\n+\n+  console.log(JSON.stringify(files, null, 2));\n+\n+  return (\n+    <div className='mt1 fz8'>\n+      <button className='as-link' onClick={ () => expand(!expanded) }>\n+        { expanded ? <CHEVRON_DOWN size={ 14 } /> : <CHEVRON_RIGHT size={ 14 } /> }\n+        Files changed ({ pr.files.total })\n+      </button>\n+      {\n+        (expanded && pr.reviewers.length > 0) && (\n+          <div className='pl1 bl1 ml1'>\n+          {\n+            pr.reviewers.map(reviewer => (\n+              <div key={ reviewer.avatar }>\n+                <img\n+                  src={ reviewer.avatar }\n+                  alt={ reviewer.name || reviewer.login }\n+                  className='avatar tiny'/>&nbsp;\n+                { reviewer.name || reviewer.login }\n+              </div>"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    "reviewRequests": {
+        "edges": []
+    },
+    "files": {
+        "totalCount": 9,
+        "edges": [
+            {
+                "node": {
+                    "path": "dist/bundle.js",
+                    "additions": 1,
+                    "deletions": 1
+                }
+            },
+            {
+                "node": {
+                    "path": "package.json",
+                    "additions": 1,
+                    "deletions": 1
+                }
+            },
+            {
+                "node": {
+                    "path": "site/index.html",
+                    "additions": 1,
+                    "deletions": 1
+                }
+            },
+            {
+                "node": {
+                    "path": "src/api/graphql.js",
+                    "additions": 10,
+                    "deletions": 0
+                }
+            },
+            {
+                "node": {
+                    "path": "src/api/models/PRDetails.js",
+                    "additions": 9,
+                    "deletions": 0
+                }
+            },
+            {
+                "node": {
+                    "path": "src/components/FilesPreview.js",
+                    "additions": 47,
+                    "deletions": 0
+                }
+            },
+            {
+                "node": {
+                    "path": "src/components/PR.js",
+                    "additions": 4,
+                    "deletions": 0
+                }
+            },
+            {
+                "node": {
+                    "path": "src/components/PROps.js",
+                    "additions": 0,
+                    "deletions": 2
+                }
+            },
+            {
+                "node": {
+                    "path": "src/constants.js",
+                    "additions": 1,
+                    "deletions": 1
+                }
+            }
+        ]
+    }
+}
