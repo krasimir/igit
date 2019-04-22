@@ -16,7 +16,7 @@ import { EDIT } from './Icons';
 import LoCBar from './LoCBar';
 
 const formatBranchLabels = (base, head) => {
-  if (base.owner === head.owner) {
+  if (base.owner === head.owner || typeof base.owner === 'undefined' || typeof head.owner === 'undefined') {
     return [ base.ref, head.ref ];
   }
   return [ base.owner + ':' + base.ref, head.owner + ':' + head.ref ];

@@ -4,7 +4,7 @@ import mentions from 'markdown-it-mentions';
 import emojis from '../../emoji.json';
 
 const shaRe = new RegExp(/ \b[0-9a-f]{5,40}\b/, 'gm');
-const prOrIssueNumber = new RegExp(/#[0-9]\b/gm);
+const prOrIssueNumber = new RegExp(/#[0-9]+\b/gm);
 const emojiRe = new RegExp(':[a-zA-Z]+:', 'gm');
 
 const md = new MarkdownIt({

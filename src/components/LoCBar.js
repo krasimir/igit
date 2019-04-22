@@ -5,7 +5,7 @@ export default function LoCBar({ add, del }) {
   const totalLines = add + del;
   const delPercents = Math.ceil(del / totalLines * 100);
   const style = {
-    gridTemplateColumns: `${ 100 - delPercents }% ${ delPercents }%`
+    gridTemplateColumns: `${ delPercents }% ${ 100 - delPercents }%`
   };
 
   return (

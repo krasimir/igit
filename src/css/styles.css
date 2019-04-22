@@ -400,10 +400,10 @@ header .logo {
   height: 1px;
   display: grid;
 }
-.loc-bar div:nth-child(1) {
+.loc-bar div:nth-child(2) {
   background: #00de3e;
 }
-.loc-bar div:nth-child(2) {
+.loc-bar div:nth-child(1) {
   background: red;
 }
 
