@@ -4,16 +4,8 @@ import PropTypes from 'prop-types';
 
 import { CHEVRON_RIGHT, CHEVRON_DOWN } from './Icons';
 
-function filesToDirs(files) {
-  console.log(files);
-
-}
-
 export default function Reviewers({ pr }) {
   const [ expanded, expand ] = useState(pr.reviewers.length > 0);
-  const files = filesToDirs(pr.files.items);
-
-  console.log(JSON.stringify(files, null, 2));
 
   return (
     <div className='mt1 fz8'>

@@ -190,12 +190,41 @@ export default function createPRDetails(pr, baseRepoOwner) {
 
   o.files = {
     total: pr.files.totalCount,
-    items: pr.files.edges.map(({ node }) => ({
-      path: node.path,
-      additions: node.additions,
-      deletions: node.deletions
-    }))
+    tree: filesToTree({
+      path: '/',
+      items: pr.files.edges.map(({ node }) => ({
+        path: node.path,
+        additions: node.additions,
+        deletions: node.deletions
+      }))
+    })
   };
 
   return o;
+}
+
+function filesToTree(tree) {
+  const content = {};
+
+  tree.items.forEach(file => {
+    const parts = file.path.split('/');
+    const p = parts.shift();
+
+    file.path = parts.join('/');
+
+    if (!content[p]) {
+      content[p] = { path: p, items: parts.length === 0 ? null : [ file ] };
+    } else {
+      content[p].items.push(file);
+    }
+  });
+
+  tree.items = [];
+  Object.keys(content).forEach(path => {
+    tree.items.push(content[path]);
+    if (content[path].items !== null) {
+      filesToTree(content[path]);
+    }
+  });
+  return tree;
 }
