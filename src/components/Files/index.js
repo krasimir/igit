@@ -169,6 +169,7 @@ export default function Files({ pr, repo, className }) {
 
     return (
       <div className={ `hunk ${ className ? className : '' }` } key={ key }>
+        <a name={ path } />
         <div className='header relative'>
           <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
           <button onClick={ () => collapse({ path }) }>{ path }</button>

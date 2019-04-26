@@ -178,14 +178,16 @@ roger.useReducer('repos', {
   },
   replaceEvent(repos, { event }) {
     return repos.map(r => {
-      r.prs.forEach(p => {
-        p.events = p.events.map(e => {
-          if (e.id === event.id) {
-            return event;
-          }
-          return e;
+      if (r.prs && r.prs.length > 0) {
+        r.prs.forEach(p => {
+          p.events = p.events.map(e => {
+            if (e.id === event.id) {
+              return event;
+            }
+            return e;
+          });
         });
-      });
+      }
       return r;
     });
   },

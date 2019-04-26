@@ -12,7 +12,7 @@ function Directory({ dir, indent }) {
 
   return (
     <div style={ { paddingLeft: `${ indent }px` } } className={ isFile ? 'is-file' : 'is-dir' }>
-      { dir.path }
+      <a href={ `#${ dir.fullPath }` }>{ dir.path }</a>
       { isFile ?
         <Diff data={ { additions: dir.additions, deletions: dir.deletions } } /> : '' }
       { !isFile && dir.items.map(item => <Directory dir={ item } indent={ indent + INDENT_STEP } key={ item.path }/>)}

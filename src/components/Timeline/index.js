@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Commit from './Commit';
@@ -39,12 +39,13 @@ export default function Timeline({ pr, repo }) {
   const { postman } = roger.useContext();
   const [ notifications ] = roger.useState('notifications');
   const users = flattenUsers(pr).map(({ login }) => login);
+  const [ allUsers, showAllUsers ] = useState(true);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
   const { dimKnownEvents, component: dimKnownEventsComponent } = useDimSeenEvents();
 
   const events = pr.events
     .filter(event => {
-      if (filterByAuthor.length > 0) {
+      if (filterByAuthor.length > 0 && !allUsers) {
         if (event.author) {
           return filterByAuthor.find(u => u === event.author.login);
         } else if (event.type === 'PullRequestReviewThread') {
@@ -85,8 +86,16 @@ export default function Timeline({ pr, repo }) {
     <div className='timeline'>
       <section className='filter mb1 cf'>
         { dimKnownEventsComponent }
+        <label key='all-users'>
+          <input
+            type='checkbox'
+            checked={ allUsers }
+            onChange={ () => showAllUsers(!allUsers) }
+            />
+          All users
+        </label>
         {
-          users.map(user => (
+          !allUsers && users.map(user => (
             <label key={ user }>
               <input
                 type='checkbox'

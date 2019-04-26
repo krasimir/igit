@@ -3,9 +3,11 @@
   "items": [
     {
       "path": "dist",
+      "fullPath": "dist/bundle.js",
       "items": [
         {
           "path": "bundle.js",
+          "fullPath": "dist/bundle.js",
           "items": null,
           "additions": 1,
           "deletions": 1
@@ -14,15 +16,18 @@
     },
     {
       "path": "package.json",
+      "fullPath": "package.json",
       "items": null,
       "additions": 1,
       "deletions": 1
     },
     {
       "path": "site",
+      "fullPath": "site/index.html",
       "items": [
         {
           "path": "index.html",
+          "fullPath": "site/index.html",
           "items": null,
           "additions": 1,
           "deletions": 1
@@ -31,21 +36,26 @@
     },
     {
       "path": "src",
+      "fullPath": "src/api/graphql.js",
       "items": [
         {
           "path": "api",
+          "fullPath": "src/api/graphql.js",
           "items": [
             {
               "path": "graphql.js",
+              "fullPath": "src/api/graphql.js",
               "items": null,
               "additions": 10,
               "deletions": 0
             },
             {
               "path": "models",
+              "fullPath": "src/api/models/PRDetails.js",
               "items": [
                 {
                   "path": "PRDetails.js",
+                  "fullPath": "src/api/models/PRDetails.js",
                   "items": null,
                   "additions": 9,
                   "deletions": 0
@@ -56,21 +66,25 @@
         },
         {
           "path": "components",
+          "fullPath": "src/components/FilesPreview.js",
           "items": [
             {
               "path": "FilesPreview.js",
+              "fullPath": "src/components/FilesPreview.js",
               "items": null,
               "additions": 47,
               "deletions": 0
             },
             {
               "path": "PR.js",
+              "fullPath": "src/components/PR.js",
               "items": null,
               "additions": 4,
               "deletions": 0
             },
             {
               "path": "PROps.js",
+              "fullPath": "src/components/PROps.js",
               "items": null,
               "additions": 0,
               "deletions": 2
@@ -79,6 +93,7 @@
         },
         {
           "path": "constants.js",
+          "fullPath": "src/constants.js",
           "items": null,
           "additions": 1,
           "deletions": 1

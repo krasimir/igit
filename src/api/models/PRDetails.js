@@ -207,15 +207,18 @@ function filesToTree(tree) {
   const content = {};
 
   tree.items.forEach(file => {
+    const fullPath = file.fullPath || file.path;
     const parts = file.path.split('/');
     const p = parts.shift();
 
     file.path = parts.join('/');
+    file.fullPath = fullPath;
 
     if (!content[p]) {
       content[p] = Object.assign(
         {
           path: p,
+          fullPath,
           items: parts.length === 0 ? null : [ file ]
         },
         parts.length === 0 && { additions: file.additions, deletions: file.deletions }
