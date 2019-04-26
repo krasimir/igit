@@ -12,7 +12,7 @@ function Directory({ dir, indent }) {
 
   return (
     <div style={ { paddingLeft: `${ indent }px` } } className={ isFile ? 'is-file' : 'is-dir' }>
-      <a href={ `#${ dir.fullPath }` }>{ dir.path }</a>
+      { isFile ? <a href={ `#${ dir.fullPath }` }>{ dir.path }</a> : dir.path }
       { isFile ?
         <Diff data={ { additions: dir.additions, deletions: dir.deletions } } /> : '' }
       { !isFile && dir.items.map(item => <Directory dir={ item } indent={ indent + INDENT_STEP } key={ item.path }/>)}
@@ -33,7 +33,7 @@ export default function FilesPreview({ pr }) {
         expanded && (
           <div className='pl1 bl1 ml1 files-preview'>
             {
-              pr.files.tree.items.map(item => <Directory dir={ item } indent={ INDENT_STEP } key={ item.path }/>)
+              pr.files.tree.items.map(item => <Directory dir={ item } indent={ INDENT_STEP } key={ item.path } />)
             }
           </div>
         )

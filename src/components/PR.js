@@ -73,7 +73,7 @@ export default function PR({ url, pr, repo }) {
         <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body, repo) } } />
         { (!pr.merged && !pr.closed) && <PROps pr={ pr } repo={ repo }/> }
         <Reviewers pr={ pr }/>
-        <FilesPreview pr={ pr }/>
+        <FilesPreview pr={ pr } />
       </div>
       <Switch>
         <Route path={ url + '/files' } render={ () => (
