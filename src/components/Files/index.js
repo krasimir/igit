@@ -57,9 +57,11 @@ export default function Files({ pr, repo, className }) {
         getPRFiles({repo, prNumber: pr.number})
             .then(setDiff)
             .then(() => {
-                const elements = document.getElementsByName(location.hash.substring(1)); // Remove hash
+                if (location.hash) {
+                    const elements = document.getElementsByName(location.hash.substring(1)); // Remove hash
 
-                if (elements.length === 1) elements[0].parentElement.scrollIntoView();
+                    if (elements.length === 1) elements[0].parentElement.scrollIntoView();
+                }
             })
             .catch(error => {
                 console.log(error);
