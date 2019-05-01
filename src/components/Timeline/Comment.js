@@ -20,6 +20,7 @@ function Comment({ event, repo, pr, dim }) {
       <div className='timeline-thread-comment relative dim'>
         <div className='media small' id={ event.id }>
           <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
+          { event.author.login }&nbsp;
           <div
             className='markdown'
             dangerouslySetInnerHTML={ { __html: marked(event.body, repo) } } />
@@ -33,6 +34,7 @@ function Comment({ event, repo, pr, dim }) {
       <div className='media small' id={ event.id }>
         <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
         <div>
+          { event.author.login }&nbsp;
           <Date event={ event } />&nbsp;
           <MESSAGE size={ 18 }/>
           { (event.body !== '' && !isBodyVisible) &&
