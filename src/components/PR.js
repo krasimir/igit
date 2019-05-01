@@ -47,10 +47,7 @@ export default function PR({ url, pr, repo }) {
   }
 
   const [ base, head ] = formatBranchLabels(pr.base, pr.head);
-
-  const nonNormalizedUrl = url;
-
-  url = normalizeURL(url);
+  const normalizedUrl = normalizeURL(url);
 
   return (
     <div className='pr-details'>
@@ -75,23 +72,23 @@ export default function PR({ url, pr, repo }) {
         <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body, repo) } } />
         { (!pr.merged && !pr.closed) && <PROps pr={ pr } repo={ repo }/> }
         <Reviewers pr={ pr }/>
-        <FilesPreview pr={ pr } url={ nonNormalizedUrl } />
+        <FilesPreview pr={ pr } url={ url } />
       </div>
       <Switch>
-        <Route path={ url + '/files' } render={ () => (
+        <Route path={ normalizedUrl + '/files' } render={ () => (
           <React.Fragment>
             <nav>
-              <Link to={ url }>Timeline</Link>
-              <Link to={ url + '/files' } className='selected'>Files</Link>
+              <Link to={ normalizedUrl }>Timeline</Link>
+              <Link to={ normalizedUrl + '/files' } className='selected'>Files</Link>
             </nav>
             <Files pr={ pr } repo={ repo }/>
           </React.Fragment>
         ) }/>
-        <Route path={ url + '/' } render={ () => (
+        <Route path={ normalizedUrl + '/' } render={ () => (
           <React.Fragment>
             <nav>
-              <Link to={ url } className='selected'>Timeline</Link>
-              <Link to={ url + '/files' }>Files</Link>
+              <Link to={ normalizedUrl } className='selected'>Timeline</Link>
+              <Link to={ normalizedUrl + '/files' }>Files</Link>
             </nav>
             <Timeline pr={ pr } repo={ repo }/>
           </React.Fragment>

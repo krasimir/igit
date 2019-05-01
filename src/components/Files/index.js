@@ -53,20 +53,20 @@ export default function Files({ pr, repo, className }) {
   const [ toComment, openComment ] = useReducer(toCommentReducer, []);
 
     useEffect(() => {
-        setDiff(null);
-        getPRFiles({repo, prNumber: pr.number})
-            .then(setDiff)
-            .then(() => {
-                if (location.hash) {
-                    const elements = document.getElementsByName(location.hash.substring(1)); // Remove hash
+      setDiff(null);
+      getPRFiles({repo, prNumber: pr.number})
+        .then(setDiff)
+        .then(() => {
+          if (location.hash) {
+            const elements = document.getElementsByName(location.hash.substring(1)); // Remove hash
 
-                    if (elements.length === 1) elements[0].parentElement.scrollIntoView();
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                setError(error);
-            });
+            if (elements.length === 1) elements[0].parentElement.scrollIntoView();
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          setError(error);
+        });
     }, [pr.id]);
 
   if (error) {
