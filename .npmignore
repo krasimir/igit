@@ -1,5 +1,5 @@
-now.json
 _assets
 src
+scripts
 node_modules
-.nowignore
+dist/mocks
