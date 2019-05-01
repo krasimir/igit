@@ -6,7 +6,6 @@
   "scripts": {
     "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development",
     "dev": "yarn minify-css && concurrently \"onchange ./src/css/*.css -- yarn minify-css\" \"yarn dev-server\"",
-    "dev-site": "now-lambda --port=8080",
     "minify-css": "cat ./src/css/diff2html.min.css ./src/css/custom.diff2html.min.css ./src/css/github.markdown.css ./src/css/styles_generic.css ./src/css/styles.css | uglifycss > ./dist/styles.css",
     "make": "node ./scripts/verify.js && node ./scripts/version.js && webpack --config ./webpack.prod.js --mode production",
     "release": "yarn make && now && now alias",
