@@ -14,6 +14,7 @@ function Commit({ event, dim }) {
     <div className={ cls } id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
+        { event.author.login }&nbsp;
         <Date event={ event }/>&nbsp;
         <span className='iblock'>
           <GIT_COMMIT size={ 18 }/>

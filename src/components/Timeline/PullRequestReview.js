@@ -41,6 +41,7 @@ function PullRequestReview({ event, pr, repo, dim }) {
         <div className='media small'>
           <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
           <div>
+            { event.author.login }&nbsp;
             <Date event={ event } />&nbsp;
             <StateIcon size={ 18 }/>
             <small>{ stateLabel }</small>
@@ -55,6 +56,7 @@ function PullRequestReview({ event, pr, repo, dim }) {
       <div className='media small'>
         <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
         <div>
+          { event.author.login }&nbsp;
           <Date event={ event } />&nbsp;
           <StateIcon size={ 18 }/>
           <small>{ stateLabel }</small>
