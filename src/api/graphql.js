@@ -302,7 +302,7 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
 
 export const QUERY_GET_PR = (name, owner, prNumber) => `
   query {
-    repository(name: "${ name }", owner: ${ owner }) {
+    repository(name: "${ name }", owner: "${ owner }") {
       name,
       owner {
           login
@@ -316,7 +316,7 @@ export const QUERY_GET_PR = (name, owner, prNumber) => `
 
 export const QUERY_GET_PR_STATUSES = (prNumber, name, owner) => `
   query {
-    repository(name: "${ name }", owner: ${ owner }) {
+    repository(name: "${ name }", owner: "${ owner }") {
       name,
       owner {
         login
