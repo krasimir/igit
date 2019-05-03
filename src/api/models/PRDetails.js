@@ -156,7 +156,7 @@ export default function createPRDetails(pr, baseRepoOwner) {
   };
   o.head = {
     ref: pr.headRefName,
-    owner: pr.headRepository.owner.login
+    owner: pr.headRepository && pr.headRepository.owner ? pr.headRepository.owner.login : 'unknown'
   };
   o.createdAt = pr.createdAt;
   o.updatedAt = pr.updatedAt;
