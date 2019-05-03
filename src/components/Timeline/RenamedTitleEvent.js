@@ -13,6 +13,7 @@ function RenamedTitleEvent({ event, dim }) {
     <div className={ cls } id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
+        { event.author.login }&nbsp;
         <Date event={ event } />&nbsp;
         <EDIT size={ 18 }/>
         { trim(`renamed to ${ event.currentTitle }`) }

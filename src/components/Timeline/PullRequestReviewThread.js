@@ -34,6 +34,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
           <div className='media small'>
             <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
             <div>
+              { comment.author.login }&nbsp;
               <Date event={ event.comments[totalComments - 1] } />&nbsp;
               <MESSAGE size={ 18 }/>
               { !isBodyVisible && <small>{ str }</small> }&nbsp;
@@ -59,6 +60,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
         <div className='media small'>
           <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
           <div>
+            { comment.author.login }&nbsp;
             <Date event={ event.comments[totalComments - 1] } />&nbsp;
             <MESSAGE size={ 18 }/>
             { !isBodyVisible && <small>{ str }</small> }
@@ -97,6 +99,7 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
       <div className='media small'>
         <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
         <div>
+          { comment.author.login }&nbsp;
           <Date event={ comment } />
           { allowEdit && <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
           { review && review.state === 'PENDING' && <span className='tag'>pending</span> }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { renderToString } from 'react-dom/server';
 
 import marked from '../utils/marked';
 import Date from '../utils/Date';
@@ -16,13 +17,15 @@ function Comment({ event, repo, pr, dim }) {
   const allowEdit = event.author.login === profile.login && isBodyVisible;
 
   if (dim) {
+    const dateMarkdown = renderToString(<Date event={ event } />);
+
     return (
       <div className='timeline-thread-comment relative dim'>
         <div className='media small' id={ event.id }>
           <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
           <div
             className='markdown'
-            dangerouslySetInnerHTML={ { __html: marked(event.body, repo) } } />
+            dangerouslySetInnerHTML={ { __html: `<p>${ event.author.login }&nbsp;` + dateMarkdown + '</p>' + marked(event.body, repo) } } />
         </div>
       </div>
     );
@@ -33,6 +36,7 @@ function Comment({ event, repo, pr, dim }) {
       <div className='media small' id={ event.id }>
         <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
         <div>
+          { event.author.login }&nbsp;
           <Date event={ event } />&nbsp;
           <MESSAGE size={ 18 }/>
           { (event.body !== '' && !isBodyVisible) &&

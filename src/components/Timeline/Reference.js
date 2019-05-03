@@ -13,6 +13,7 @@ function Reference({ event, dim }) {
     <div className={ cls } id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
+        { event.author.login }&nbsp;
         <Date event={ event } />&nbsp;
         <MESSAGE size={ 18 }/>
         <small>mentioned at</small>&nbsp;

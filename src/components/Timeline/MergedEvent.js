@@ -12,6 +12,7 @@ function MergedEvent({ event, dim }) {
     <div className={ cls } id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
+        { event.author.login }&nbsp;
         <Date event={ event } />&nbsp;
         <GIT_MERGE size={ 18 }/>
         <small>merged to</small> <span className='branch'>{ event.ref }</span>
