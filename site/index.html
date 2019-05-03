@@ -5,24 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>I Git</title>
-  <link rel="shortcut icon" type="image/png" href="/img/favicon.png"/>
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;subset=cyrillic" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Fira+Mono" rel="stylesheet">
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <link rel="stylesheet" href="/site.css">
+  <link rel="stylesheet" href="site.css">
 </head>
 <body>
   <header class="mt3">
-    <img src="/img/logo_full.png" alt="I Git" />
+    <img src="img/logo_full.png" alt="I Git" />
   </header>
   <h1 class="mt2 tac">Because <strong>I Git</strong> everyday.</h1>
   <section class="mt2">
     <p class="tac">IGit is a tool for managing pull requests. It works with GitHub's API and provides mechanisms for keeping you in the loop. Stop checking your PRs over and over again from top to bottom. IGit will give you the feel of control because it shows you exactly what's new.</p>
   </section>
-  <a href="/app" alt="To the app" class="cta tac mt2">Show me the app&nbsp;&nbsp;🚀</a>
+
+  <div class="my2">
+    <a href="/app" alt="To the app" class="cta tac mt2">Show me the app&nbsp;&nbsp;🚀</a>
+  </div>
+
+  <section class="tac" style="margin-top: 8em;">
+    <p>IGit is <a href="https://github.com/krasimir/igit" target="_blank">open source</a>. If you like it please give it a star or share it in Twitter.</p>
+    <!-- Place this tag where you want the button to render. -->
+    <a class="github-button" href="https://github.com/krasimir/igit" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star krasimir/igit on GitHub">Star</a>&nbsp;&nbsp;&nbsp;
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Because I Git everyday 👉" data-url="https://igit.dev" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </section>
 
   <section class="feature" style="margin-top: 13em;">
-    <img src="/img/site/igit.jpg" alt="IGit app"/>
+    <img src="img/igit.jpg" alt="IGit app"/>
     <div>
       <h2 class="mt1">The app gives you <strong>quick access</strong> to all of your repositories and their open pull requests.</h2>
       <p class="mt2">That was always an issue for me. I am working actively on three repositories and have to changes pages all the time. If not that I have to keep bunch of tabs open which is a little bit frustrated for a person that loves to have just a few opened.</p>
@@ -32,7 +42,7 @@
   <hr />
 
   <section class="feature">
-    <img src="/img/site/igit.gif" alt="IGit app"/>
+    <img src="img/igit.gif" alt="IGit app"/>
     <div>
       <h2 class="mt1">A smart indication on what's new with an option to leave it unseen.</h2>
       <p class="mt2">I bet it happens to you every day - you open a pull request, you review it and then some changes comes in. You have to again scan the PR, the comments and the new commits to understand what is actually new. IGit remembers what you checked and compares it to the incoming events. Then it sets a red marker on the new stuff. You are free to leave them unseen which I'm very often doing as a reminder that I have some work to do.</p>
@@ -42,17 +52,17 @@
   <hr />
 
   <section class="feature">
-    <img src="/img/site/igit_review.gif" alt="IGit app"/>
+    <img src="img/igit_review.gif" alt="IGit app"/>
     <div>
       <h2 class="mt1">Similar experience.</h2>
-      <p class="mt2">Although there are bunch of things which I'm missing in GitHub's UI they still provide some slick interaction patterns. I mimic most of them here in IGit.</p>
+      <p class="mt2">Although there are bunch of things which I'm missing in GitHub's UI it still provides some slick interaction patterns. I mimic most of them here in IGit.</p>
     </div>
   </section>
 
   <hr />
 
   <footer class="tac fz08 my2 opa05">
-    <span id="version">v.0.1.25</span>
+    <span id="version">v.0.1.26</span>
   </footer>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -64,5 +74,8 @@
 
     gtag('config', 'UA-1621908-13');
   </script>
+
+  <!-- Place this tag in your head or just before your close body tag. -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

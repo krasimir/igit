@@ -55,6 +55,13 @@ h1 strong {
   font-weight: 700;
   color: black;
 }
+a {
+  color: #000;
+  text-decoration: underline;
+}
+a:hover {
+  color: #296f9c;
+}
 .cta {
   display: block;
   color: black;
@@ -62,7 +69,6 @@ h1 strong {
   width: 280px;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 2em;
   font-size: 1.3em;
   border-left: solid 2px #e2e2e2;
   border-top: solid 2px #e2e2e2;
@@ -73,6 +79,7 @@ h1 strong {
   background: #e1efe1;
 }
 .cta:hover {
+  color: #000;
   background: #93d893;
 }
 hr {
