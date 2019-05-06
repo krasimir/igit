@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useReducer } from 'react';
+import React, { useState, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import roger from 'jolly-roger';
 
 import { getDiffItemType } from '../utils/ReviewDiff';
 import getFileLines from './getFileLines';
+import fillMissingLines from './fillMissingLines';
+import { ARROW_UP_RIGHT, MAXIMIZE, MORE_HORIZONTAL } from '../Icons';
 
 const toCommentReducer = function (state, { path, line, diffLine }) {
   if (state.find(({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === diffLine))) {
@@ -25,17 +27,18 @@ export default function File({
   repo,
   pr
 }) {
+  const [ fullFileContent, setFullFileContent ] = useState({ state: 'idle', value: null });
   const [ toComment, openComment ] = useReducer(toCommentReducer, []);
-  const { postman } = roger.useContext();
+  const { postman, getPRFile } = roger.useContext();
 
-  let viewFileUrl, totalDiffLines = -1;
+  let viewFileUrl;
   const threads = events.filter(event => {
     if (event.comments[0].path === diffItem.newPath || event.comments[0].path === diffItem.oldPath) {
       return true;
     }
     return false;
   });
-  const { items, totalDiffLines: updatedTotalDiffLines } = getFileLines(
+  const items = getFileLines(
     diffItem,
     path,
     toComment,
@@ -44,14 +47,26 @@ export default function File({
     pr,
     repo,
     openComment,
-    postman,
-    totalDiffLines
+    postman
   );
 
-  totalDiffLines = updatedTotalDiffLines;
+  if (fullFileContent.state === 'loaded') {
+    fillMissingLines(items, fullFileContent.value, path);
+  }
 
   if (lastCommit) {
     viewFileUrl = `${ repo.url }/blob/${ lastCommit.oid }/${ diffItem.newPath }`;
+  }
+
+  async function getFullFile() {
+    if (fullFileContent.state === 'idle') {
+      setFullFileContent({ state: 'loading', value: null });
+
+      const file = await getPRFile({ repo, path, commit: lastCommit.oid });
+      const lines = file.split('\n');
+
+      setFullFileContent({ state: 'loaded', value: lines });
+    }
   }
 
   return (
@@ -61,7 +76,17 @@ export default function File({
         <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
         <button onClick={ onPathClick }>{ path }</button>
         { (showComments && threads.length > 0) && <span>({ threads.length })</span>}
-        { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right' title="view file">↗</a> }
+        { viewFileUrl && (
+          <a href={ viewFileUrl } target='_blank' className='right' title="view file">
+            <ARROW_UP_RIGHT size={ 16 } />
+          </a>
+        ) }
+        <button onClick={ getFullFile } className='right'>
+          {
+            fullFileContent.state === 'idle' ? <MAXIMIZE size={ 16 } /> :
+              fullFileContent.state === 'loading' ? <MORE_HORIZONTAL size={ 16 } /> : null
+          }
+        </button>
         { <ReviewProgress percents={ progressPercent } /> }
       </div>
       { isCollapsed && items.map((item, i) => {

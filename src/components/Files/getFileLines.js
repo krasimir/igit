@@ -12,11 +12,11 @@ export default function getFileItemLines(
   pr,
   repo,
   openComment,
-  postman,
-  totalDiffLines
+  postman
 ) {
-  const items = [];
+  let items = [];
   let table = { rows: [], __table: true };
+  let totalDiffLines = -1;
 
   diffItem.hunks.forEach((hunk, i) => {
     hunk.changes.forEach((change, j) => {
@@ -43,6 +43,7 @@ export default function getFileItemLines(
         content: change.content
       });
 
+      // listing comments
       if (lineThreads && lineThreads.length > 0 && showComments) {
         items.push(table);
         table = { rows: [], __table: true };
@@ -59,6 +60,7 @@ export default function getFileItemLines(
           )
         );
       }
+      // create a comment
       if (toCommentUI) {
         items.push(table);
         table = { rows: [], __table: true };
@@ -84,5 +86,5 @@ export default function getFileItemLines(
     items.push(table);
   }
 
-  return { items, totalDiffLines };
+  return items;
 }
