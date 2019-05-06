@@ -5,10 +5,9 @@ import diffParser from 'gitdiff-parser';
 
 import roger from 'jolly-roger';
 import Loading from '../Loading';
-import { getHunkFiles, getDiffItemType } from '../utils/ReviewDiff';
-import PullRequestReviewThread from '../Timeline/PullRequestReviewThread';
-import Postman from '../Postman';
+import { getHunkFiles } from '../utils/ReviewDiff';
 import Review from '../Timeline/Review';
+import File from './File';
 
 const SHOW_COMMENTS = 'SHOW_COMMENTS';
 
@@ -26,12 +25,6 @@ const expandedReducer = function (state, { path }) {
   }
   return [ ...state, path ];
 };
-const toCommentReducer = function (state, { path, line, diffLine }) {
-  if (state.find(({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === diffLine))) {
-    return state.filter(({ path: p, line: l, diffLine: dl }) => (p !== path && l !== line && dl !== diffLine));
-  }
-  return [ ...state, { path, line, diffLine } ];
-};
 const FilterOption = function ({ filter, dispatch, label, option }) {
   return (
     <label>
@@ -44,30 +37,29 @@ const FilterOption = function ({ filter, dispatch, label, option }) {
   );
 };
 
-export default function Files({ pr, repo, className }) {
-  const { getPRFiles, postman } = roger.useContext();
+export default function Files({ pr, repo }) {
+  const { getPRFiles } = roger.useContext();
   const [ diff, setDiff ] = useState(null);
   const [ error, setError ] = useState(false);
   const [ filter, dispatch ] = useReducer(filterReducer, [SHOW_COMMENTS]);
   const [ collapsed, collapse ] = useReducer(expandedReducer, []);
-  const [ toComment, openComment ] = useReducer(toCommentReducer, []);
 
-    useEffect(() => {
-      setDiff(null);
-      getPRFiles({repo, prNumber: pr.number})
-        .then(setDiff)
-        .then(() => {
-          if (location.hash) {
-            const elements = document.getElementsByName(location.hash.substring(1)); // Remove hash
+  useEffect(() => {
+    setDiff(null);
+    getPRFiles({repo, prNumber: pr.number})
+      .then(setDiff)
+      .then(() => {
+        if (location.hash) {
+          const elements = document.getElementsByName(location.hash.substring(1)); // Remove hash
 
-            if (elements.length === 1) elements[0].parentElement.scrollIntoView();
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          setError(error);
-        });
-    }, [pr.id]);
+          if (elements.length === 1) elements[0].parentElement.scrollIntoView();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        setError(error);
+      });
+  }, [pr.id]);
 
   if (error) {
     return (
@@ -88,137 +80,29 @@ export default function Files({ pr, repo, className }) {
       comments.length > 0 &&
       comments[0].outdated === false
   ));
+  const showComments = isFiltering(filter, SHOW_COMMENTS);
   const paths = [];
 
   const files = parsedDiff.map((diffItem, key) => {
     let path = getHunkFiles(diffItem.oldPath, diffItem.newPath);
-    let viewFileUrl, totalDiffLines = -1;
     const isCollapsed = !(collapsed.indexOf(path) >= 0);
-    const threads = events.filter(event => {
-      if (event.comments[0].path === diffItem.newPath || event.comments[0].path === diffItem.oldPath) {
-        return true;
-      }
-      return false;
-    });
 
     paths.push(path);
 
-    if (lastCommit) {
-      viewFileUrl = `${ repo.url }/blob/${ lastCommit.oid }/${ diffItem.newPath }`;
-    }
+    const FileComponentProps = {
+      lastCommit,
+      events,
+      path,
+      diffItem,
+      onPathClick: () => collapse({ path }),
+      showComments,
+      progressPercent: Math.ceil(collapsed.length / parsedDiff.length * 100),
+      isCollapsed,
+      repo,
+      pr
+    };
 
-    const items = [];
-    let table = { rows: [], __table: true };
-
-    diffItem.hunks.forEach((hunk, i) => {
-      hunk.changes.forEach((change, j) => {
-        let lineThreads;
-        const line = change.newLineNumber || change.lineNumber;
-        const toCommentUI = toComment.find(
-          ({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === j)
-        );
-
-        totalDiffLines += 1;
-        if (threads.length > 0) {
-          lineThreads = threads.filter(
-            ({ comments }) => {
-              return comments[0].position - 1 === totalDiffLines + i;
-            }
-          );
-        }
-
-        table.rows.push({
-          type: change.type,
-          path,
-          line,
-          diffLine: j,
-          content: change.content
-        });
-
-        if ((lineThreads && lineThreads.length > 0 && isFiltering(filter, SHOW_COMMENTS))) {
-          items.push(table);
-          table = { rows: [], __table: true };
-          items.push(
-            lineThreads.map(
-              (lt, key) =>
-                <PullRequestReviewThread
-                  key={ key }
-                  expanded
-                  event={ lt }
-                  pr={ pr }
-                  repo={ repo }
-                  context='files' />
-            )
-          );
-        }
-        if (toCommentUI) {
-          items.push(table);
-          table = { rows: [], __table: true };
-          items.push(
-            <div className='px1 bt1 bb1' key={ path + '_' + line }>
-              <Postman
-                className='py05'
-                onSave={ () => openComment({ path, line, diffLine: j }) }
-                handler={
-                  postman({ repo, pr }).newPullRequestReviewThread({
-                    path,
-                    position: totalDiffLines + 1 + i
-                  })
-                }
-                focus />
-            </div>
-          );
-        }
-      });
-    });
-
-    if (table.rows.length > 0) {
-      items.push(table);
-    }
-
-    return (
-      <div className={ `hunk ${ className ? className : '' }` } key={ key }>
-        <a name={ path } />
-        <div className='header relative'>
-          <span className='tag'>{ getDiffItemType(diffItem.type) }</span>
-          <button onClick={ () => collapse({ path }) }>{ path }</button>
-          { (threads.length > 0 && isFiltering(filter, SHOW_COMMENTS)) && <span>({ threads.length })</span>}
-          { viewFileUrl && <a href={ viewFileUrl } target='_blank' className='right'>↗</a> }
-          { <ReviewProgress percents={ Math.ceil(collapsed.length / parsedDiff.length * 100) } /> }
-        </div>
-        { isCollapsed && items.map((item, i) => {
-            if (item.__table) {
-              return (
-                <div className='lines' key={ i }>
-                  <table className='lines-wrapper'>
-                    <tbody>
-                      {
-                        item.rows.map((row, j) => (
-                          <tr className={
-                            `code-line ${ row.diffLine === 0 ? 'code-line-start' : ''} ${ row.type }`
-                          } key={ j }>
-                          <td>
-                            <button className='as-link'
-                              onClick={ () =>
-                                openComment({ path: row.path, line: row.line, diffLine: row.diffLine })
-                              }>
-                              <small className='opa5'>{ row.line }</small>
-                            </button>
-                          </td>
-                          <td><pre>{ row.content }</pre></td>
-                        </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              );
-            }
-            return item;
-          })
-        }
-      </div>
-    );
+    return <File { ...FileComponentProps } key={ key }/>;
   });
 
   return (
@@ -253,7 +137,3 @@ Files.propTypes = {
   repo: PropTypes.object.isRequired,
   className: PropTypes.string
 };
-
-function ReviewProgress({ percents }) {
-  return <div className='files-review'>{ percents }%</div>;
-}

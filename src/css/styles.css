@@ -543,7 +543,7 @@ header .logo {
   display: inline-block;
   line-height: 1.4em;
 }
-.hunk .header button {
+.hunk .header button, .hunk .header a {
   border: none;
   outline: none;
   background: none;
@@ -554,9 +554,12 @@ header .logo {
   max-width: 80%;
   text-align: left;
 }
-.hunk .header button:hover {
-  background: black;
-  color: white;
+.hunk .header button:hover, .hunk .header a:hover {  
+  color: #0056ff;
+}
+.hunk .header button svg, .hunk .header a svg {
+  transform: translateY(5px);
+  -webkit-transform: translateY(5px);
 }
 .hunk .timeline-thread-comment {
   padding: 1em;
@@ -592,6 +595,9 @@ header .logo {
 }
 .code-line.insert {
   background: #e6ffed;
+}
+.code-line.full-content {
+  opacity: .6;
 }
 .code-line-start {
   border-top: solid 1px #e2e2e2;
