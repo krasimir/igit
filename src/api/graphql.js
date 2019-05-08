@@ -43,6 +43,24 @@ comments(first: 50) {
   }
 }`;
 
+const COMMIT = `
+__typename
+oid
+id
+author {
+  name
+  avatarUrl
+  user {
+    login
+  }
+}
+message
+additions
+deletions
+url
+committedDate
+`;
+
 const PULL_REQUEST = `
 id
 number
@@ -79,20 +97,7 @@ timeline(first: 100) {
     node {
       __typename
       ... on Commit {
-        oid
-        id
-        author {
-          name
-          avatarUrl
-          user {
-            login
-          }
-        }
-        message
-        additions
-        deletions
-        url
-        committedDate
+        ${ COMMIT }
       }
       ... on RenamedTitleEvent {
         id
@@ -342,6 +347,27 @@ export const QUERY_GET_PR_STATUSES = (prNumber, name, owner) => `
                     description,
                     state
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const QUERY_GET_PR_COMMITS = (name, owner, branch) => `
+  query {
+    repository(name: "${ name }", owner: "${ owner }") {
+      ref(qualifiedName: "${ branch }") {
+        target {
+          ... on Commit {
+            id
+            history(first: 5) {
+              edges {
+                node {
+                  ${ COMMIT }
                 }
               }
             }

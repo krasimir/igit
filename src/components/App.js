@@ -9,7 +9,7 @@ import Settings from './Settings';
 import { BASE_PATH, NO_TOKEN } from '../constants';
 import '../logic';
 import Repos from './Repos';
-import PREdit from './PREdit';
+import Playground from './Playground';
 
 export default function App() {
   const { initialize } = roger.useContext();
@@ -35,6 +35,7 @@ export default function App() {
     <Router basename={ BASE_PATH }>
       <Fragment>
         <Switch>
+          <Route path='/playground' component={ Playground } />
           <Route path='/settings' component={ Settings } />
           { repos.length === 0 && <Redirect to='/settings' /> }
           <Route path='/repo/:owner/:name/:prNumber/:op' component={ Repos } />

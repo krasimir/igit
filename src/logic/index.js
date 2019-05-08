@@ -51,6 +51,9 @@ roger.context({
   getPRFile({ repo, path, commit }) {
     return api.fetchPRFile(repo, path, commit);
   },
+  getFileHistory({ repo, pr, path }) {
+    return api.getFileHistory(repo, pr, path);
+  },
   async fetchData({ repos, repoName, prNumber }, { registerPRs }) {
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i];

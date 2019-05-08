@@ -6,7 +6,7 @@ import roger from 'jolly-roger';
 import { getDiffItemType } from '../utils/ReviewDiff';
 import getFileLines from './getFileLines';
 import fillMissingLines from './fillMissingLines';
-import { ARROW_UP_RIGHT, MAXIMIZE, MORE_HORIZONTAL } from '../Icons';
+import { ARROW_UP_RIGHT, MAXIMIZE, MORE_HORIZONTAL, FILM } from '../Icons';
 
 const toCommentReducer = function (state, { path, line, diffLine }) {
   if (state.find(({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === diffLine))) {
@@ -29,7 +29,7 @@ export default function File({
 }) {
   const [ fullFileContent, setFullFileContent ] = useState({ state: 'idle', value: null });
   const [ toComment, openComment ] = useReducer(toCommentReducer, []);
-  const { postman, getPRFile } = roger.useContext();
+  const { postman, getPRFile, getFileHistory } = roger.useContext();
 
   let viewFileUrl;
   const threads = events.filter(event => {
@@ -69,6 +69,10 @@ export default function File({
     }
   }
 
+  async function getHistory() {
+    const history = await getFileHistory({ repo, pr, path });
+  }
+
   return (
     <div className='hunk'>
       <a name={ path } />
@@ -86,6 +90,9 @@ export default function File({
             fullFileContent.state === 'idle' ? <MAXIMIZE size={ 16 } /> :
               fullFileContent.state === 'loading' ? <MORE_HORIZONTAL size={ 16 } /> : null
           }
+        </button>
+        <button onClick={ getHistory } className='right'>
+          <FILM size={ 16 }/>
         </button>
         { <ReviewProgress percents={ progressPercent } /> }
       </div>

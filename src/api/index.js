@@ -6,6 +6,7 @@ import {
   QUERY_GET_ORGANIZATIONS,
   QUERY_GET_PRS,
   QUERY_GET_PR,
+  QUERY_GET_PR_COMMITS,
   MUTATION_ADD_COMMENT,
   MUTATION_EDIT_COMMENT,
   MUTATION_DELETE_COMMENT,
@@ -205,6 +206,21 @@ function createAPI() {
       false,
       { 'Accept': 'application/vnd.github.v3.raw' }
     );
+  };
+  api.getFileHistory = async function (repo, pr, path) {
+    const q = QUERY_GET_PR_COMMITS(repo.name, repo.owner, pr.head.ref, path);
+    const { data } = await requestGraphQL(q);
+    const repoData = data.repository;
+    const commits = repoData.ref.target.history.edges.map(normalizeTimelineEvent);
+    const content = await Promise.all(commits.map(({ oid }) => api.fetchPRFile(repo, path, oid)));
+    const history = commits.map((commit, i) => {
+      return {
+        message: commit.message,
+        content: content[i]
+      };
+    });
+
+    console.log(JSON.stringify(history, null, 2));
   };
   api.addComment = async function (subjectId, body) {
     const q = MUTATION_ADD_COMMENT(subjectId, body);
