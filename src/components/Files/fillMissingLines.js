@@ -2,23 +2,13 @@ import min from 'lodash/min';
 import max from 'lodash/max';
 import range from 'lodash/range';
 
-const createLine = (path, lineNumber, content) => {
-  const row = {
-    type: 'full-content',
-    path,
-    line: lineNumber,
-    diffLine: 0,
-    content
-  };
-
-  return row;
-};
+import { createLine, isCodeItem } from './Lines';
 
 const getLineNumbers = ({ line }) => line;
 const removeDeletions = ({ type }) => type !== 'delete';
 
 export default function fillMissingLines(items, fullContent, path) {
-  const codeItems = items.filter(item => item.__table);
+  const codeItems = items.filter(isCodeItem);
 
   // filling the gaps inside the items
   codeItems.forEach(item => {

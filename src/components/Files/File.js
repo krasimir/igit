@@ -7,6 +7,7 @@ import { getDiffItemType } from '../utils/ReviewDiff';
 import getFileLines from './getFileLines';
 import fillMissingLines from './fillMissingLines';
 import { ARROW_UP_RIGHT, MAXIMIZE, MORE_HORIZONTAL, FILM } from '../Icons';
+import Lines from './Lines';
 
 const toCommentReducer = function (state, { path, line, diffLine }) {
   if (state.find(({ path: p, line: l, diffLine: dl }) => (path === p && line === l && dl === diffLine))) {
@@ -96,37 +97,7 @@ export default function File({
         </button>
         { <ReviewProgress percents={ progressPercent } /> }
       </div>
-      { isCollapsed && items.map((item, i) => {
-          if (item.__table) {
-            return (
-              <div className='lines' key={ i }>
-                <table className='lines-wrapper'>
-                  <tbody>
-                    {
-                      item.rows.map((row, j) => (
-                        <tr className={
-                          `code-line ${ row.diffLine === 0 ? 'code-line-start' : ''} ${ row.type }`
-                        } key={ j }>
-                        <td>
-                          <button className='as-link'
-                            onClick={ () =>
-                              openComment({ path: row.path, line: row.line, diffLine: row.diffLine })
-                            }>
-                            <small className='opa5'>{ row.line }</small>
-                          </button>
-                        </td>
-                        <td><pre>{ row.content }</pre></td>
-                      </tr>
-                      ))
-                    }
-                  </tbody>
-                </table>
-              </div>
-            );
-          }
-          return item;
-        })
-      }
+      { isCollapsed && <Lines items={ items } openComment={ openComment } /> }
     </div>
   );
 }

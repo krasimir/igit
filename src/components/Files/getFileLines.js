@@ -2,6 +2,7 @@ import React from 'react';
 
 import PullRequestReviewThread from '../Timeline/PullRequestReviewThread';
 import Postman from '../Postman';
+import { createLine, createTable } from './Lines';
 
 export default function getFileItemLines(
   diffItem,
@@ -15,7 +16,7 @@ export default function getFileItemLines(
   postman
 ) {
   let items = [];
-  let table = { rows: [], __table: true };
+  let table = createTable();
   let totalDiffLines = -1;
 
   diffItem.hunks.forEach((hunk, i) => {
@@ -35,18 +36,18 @@ export default function getFileItemLines(
         );
       }
 
-      table.rows.push({
-        type: change.type,
+      table.rows.push(createLine(
         path,
         line,
-        diffLine: j,
-        content: change.content
-      });
+        change.content,
+        change.type,
+        j
+      ));
 
       // listing comments
       if (lineThreads && lineThreads.length > 0 && showComments) {
         items.push(table);
-        table = { rows: [], __table: true };
+        table = createTable();
         items.push(
           lineThreads.map(
             (lt, key) =>
@@ -63,7 +64,7 @@ export default function getFileItemLines(
       // create a comment
       if (toCommentUI) {
         items.push(table);
-        table = { rows: [], __table: true };
+        table = createTable();
         items.push(
           <div className='px1 bt1 bb1' key={ path + '_' + line }>
             <Postman
