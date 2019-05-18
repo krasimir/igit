@@ -211,12 +211,14 @@ function createAPI() {
     const q = QUERY_GET_PR_COMMITS(repo.name, repo.owner, pr.head.ref, path);
     const { data } = await requestGraphQL(q);
     const repoData = data.repository;
-    const commits = repoData.ref.target.history.edges.map(normalizeTimelineEvent);
+    const commits = repoData.ref.target.history.edges.map(normalizeTimelineEvent).reverse();
     const content = await Promise.all(commits.map(({ oid }) => api.fetchPRFile(repo, path, oid)));
     const history = commits.map((commit, i) => {
       return {
         message: commit.message,
-        content: content[i]
+        content: content[i],
+        author: commit.author,
+        date: commit.date
       };
     });
 

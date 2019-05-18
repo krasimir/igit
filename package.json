@@ -41,6 +41,7 @@
     "babel-loader": "^8.0.4",
     "concurrently": "4.0.1",
     "dexie": "2.0.4",
+    "diff": "4.0.1",
     "diff2html": "2.7.0",
     "eslint": "4.12.1",
     "eslint-plugin-react": "7.12.4",

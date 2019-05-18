@@ -6,7 +6,7 @@ import Film from '../Files/Film';
 import fileHistory from './mocks/fileHistory.json';
 
 const FilmPlayground = () => (
-  <div style={ { width: '765px' } }>
+  <div>
     <Film history={ fileHistory } />
   </div>
 );

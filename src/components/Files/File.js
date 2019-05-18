@@ -72,6 +72,7 @@ export default function File({
 
   async function getHistory() {
     const history = await getFileHistory({ repo, pr, path });
+    // console.log(JSON.stringify(history, null, 2));
   }
 
   return (
