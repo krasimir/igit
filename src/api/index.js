@@ -78,8 +78,8 @@ function createAPI() {
     const resultData = await res.json();
 
     if (resultData.errors) {
-      console.error(resultData.errors);
-      throw new Error(resultData.errors.map(({ message }) => message));
+      console.warn('There are errors while requesting ' + endpointGraphQL);
+      console.warn(resultData.errors.map(({ message }) => message));
     }
     return resultData;
   };

@@ -192,7 +192,7 @@ export default function createPRDetails(pr, baseRepoOwner) {
     total: pr.files.totalCount,
     tree: filesToTree({
       path: '/',
-      items: pr.files.edges.map(({ node }) => ({
+      items: pr.files.edges.filter(({ node }) => node !== null).map(({ node }) => ({
         path: node.path,
         additions: node.additions,
         deletions: node.deletions
