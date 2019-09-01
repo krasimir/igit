@@ -27,7 +27,8 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     hot: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    port: 9000
   },
   optimization: {
     minimizer: [new TerserPlugin()]

@@ -1,16 +1,21 @@
 /* eslint-disable max-len, camelcase */
-import roger from 'jolly-roger';
-import PropTypes from 'prop-types';
+import riew from 'riew/react';
+import { verify } from '../logic';
 
-function VerifyToken({ children }) {
-  const { verify } = roger.useContext();
-  const [ { error, verifying } ] = roger.useState('verification', { error: null, verifying: false });
-
-  return children(verify, verifying, error);
-}
-
-VerifyToken.propTypes = {
-  children: PropTypes.func.isRequired
-};
+const VerifyToken = riew(
+  ({ children, verify, verifying, error }) => {
+    return children(verify, verifying, error);
+  },
+  ({ render }) => ({
+    async verify(token) {
+      render({ error: null, verifying: true });
+      try {
+        await verify(token);
+      } catch (error) {
+        render({ error, verifying: false });
+      }
+    }
+  })
+).withState({ error: null, verifying: false });
 
 export default VerifyToken;

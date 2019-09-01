@@ -1,15 +1,30 @@
 import roger from 'jolly-roger';
+import { state, serial } from 'riew';
 
 import api from '../api';
 import { PRINT_PRS } from '../constants';
 import './postman';
 
+const profile = state(null);
+const repos = state(null);
+const notifications = state([]);
+
+export const initialize = serial(
+  profile.mutate(async () => await api.getProfile()),
+  repos.mutate(async () => await api.getLocalRepos()),
+  repos.mutate(async () => await api.getNotifications())
+);
+export const getProfile = profile.map();
+export const getRepos = repos.map();
+
+export const verify = async (token) => {
+  api.setToken(token);
+  return profile.set(await api.verify());
+};
+
+/* ---- old ---- */
+
 roger.context({
-  async initialize(action, { setProfile, setRepos, setNotifications }) {
-    setProfile(await api.getProfile());
-    setRepos(await api.getLocalRepos());
-    setNotifications(await api.getNotifications());
-  },
   async verify(token, { setVerification, setProfile }) {
     setVerification({ verifying: true, error: null });
 
