@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import riew from 'riew/react';
+
+import { getProfile } from '../../logic';
 
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
@@ -9,7 +12,29 @@ import Header from '../Header';
 import useDimSeenEvents from './useDimSeenEvents';
 import PullingInterval from './PullingInterval';
 
-export default function Repos() {
+export default riew(
+  function () {
+    return 'settings';
+  },
+  async function ({ api, searchQuery }) {
+    console.log(api);
+    const orgs = await api.fetchOrganizations();
+    const profile = getProfile();
+
+    searchQuery.set([
+      { label: 'My repositories', param: `user:${ profile.login }`, selected: true },
+      ...orgs.map(org => ({
+        label: `Repositories in "${ org.name }" organization`,
+        param: `org:${ org.login }`,
+        selected: false
+      }))
+    ]);
+  }
+).with('api').withState({
+  searchQuery: []
+});
+
+function Settings() {
   const textInput = useRef(null);
   const { fetchOrganizations, fetchAllRepos, toggleRepo } = roger.useContext();
   const [ repos, setRepos ] = roger.useState('repos');

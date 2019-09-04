@@ -15,26 +15,12 @@ export const initialize = serial(
   repos.mutate(async () => await api.getNotifications())
 );
 export const getProfile = profile.map();
+export const setProfile = profile.mutate();
 export const getRepos = repos.map();
-
-export const verify = async (token) => {
-  api.setToken(token);
-  return profile.set(await api.verify());
-};
 
 /* ---- old ---- */
 
 roger.context({
-  async verify(token, { setVerification, setProfile }) {
-    setVerification({ verifying: true, error: null });
-
-    api.setToken(token);
-    try {
-      setProfile(await api.verify());
-    } catch (error) {
-      setVerification({ verifying: false, error });
-    }
-  },
   async fetchOrganizations() {
     return api.fetchOrganizations();
   },
