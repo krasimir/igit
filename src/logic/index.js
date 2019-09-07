@@ -5,18 +5,15 @@ import api from '../api';
 import { PRINT_PRS } from '../constants';
 import './postman';
 
-const profile = state(null);
-const repos = state(null);
-const notifications = state([]);
+const [ profile ] = state(null).export('profile');
+const [ repos ] = state(null).export('repos');
+const [ notifications ] = state([]).export('notifications');
 
 export const initialize = serial(
   profile.mutate(async () => await api.getProfile()),
   repos.mutate(async () => await api.getLocalRepos()),
   repos.mutate(async () => await api.getNotifications())
 );
-export const getProfile = profile.map();
-export const setProfile = profile.mutate();
-export const getRepos = repos.map();
 
 /* ---- old ---- */
 

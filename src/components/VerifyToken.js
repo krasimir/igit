@@ -1,24 +1,30 @@
 /* eslint-disable max-len, camelcase */
 import riew from 'riew/react';
-import { setProfile } from '../logic';
 
-const VerifyToken = riew(
-  ({ children, verify, verifying, error }) => {
-    return children(verify, verifying, error);
-  },
-  function VerifyTokenController({ render, api }) {
-    return {
-      async verify(token) {
-        render({ error: null, verifying: true });
-        try {
-          api.setToken(token);
-          setProfile(await api.verify());
-        } catch (error) {
-          render({ error, verifying: false });
-        }
+const View = ({ children, verify, verifying, error }) => {
+  return children(verify, verifying, error);
+};
+
+const effect = ({ render, state, api, profile }) => {
+  const [ error, setError ] = state(null);
+  const [ verifying, setVerifying ] = state(false);
+  const [ , setProfile ] = profile;
+
+  render({
+    error,
+    verifying,
+    async verify(token) {
+      setError(null);
+      setVerifying(true);
+      try {
+        api.setToken(token);
+        setProfile(await api.verify());
+      } catch (err) {
+        setError(err);
+        setVerifying(false);
       }
-    };
-  }
-).withState({ error: null, verifying: false }, 'api');
+    }
+  });
+};
 
-export default VerifyToken;
+export default riew(View, effect).with('api', 'profile');

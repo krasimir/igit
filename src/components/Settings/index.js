@@ -3,8 +3,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import riew from 'riew/react';
 
-import { getProfile } from '../../logic';
-
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
 import roger from 'jolly-roger';
@@ -12,59 +10,50 @@ import Header from '../Header';
 import useDimSeenEvents from './useDimSeenEvents';
 import PullingInterval from './PullingInterval';
 
-export default riew(
-  function () {
-    return 'settings';
-  },
-  async function ({ api, searchQuery }) {
-    console.log(api);
-    const orgs = await api.fetchOrganizations();
-    const profile = getProfile();
+const effect = async function ({ render, state, api, profile, repos }) {
+  const [ searchQuery, setSearchQuery ] = state([]);
+  const [ , setError ] = state(null);
+  const [ getProfile ] = profile;
+  const [ , setRepos ] = repos;
 
-    searchQuery.set([
-      { label: 'My repositories', param: `user:${ profile.login }`, selected: true },
+  render({
+    searchQuery,
+    setError,
+    setRepos,
+    initializationDone: false
+  });
+
+  try {
+    const orgs = await api.fetchOrganizations();
+
+    setSearchQuery([
+      { label: 'My repositories', param: `user:${ getProfile().login }`, selected: true },
       ...orgs.map(org => ({
         label: `Repositories in "${ org.name }" organization`,
         param: `org:${ org.login }`,
         selected: false
       }))
     ]);
+    render({ initializationDone: true });
+  } catch (error) {
+    console.log(error);
+    setError(new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
   }
-).with('api').withState({
-  searchQuery: []
-});
+};
 
-function Settings() {
+function Settings({ searchQuery, error, repos, profile, setRepos, setError, initializationDone }) {
   const textInput = useRef(null);
-  const { fetchOrganizations, fetchAllRepos, toggleRepo } = roger.useContext();
-  const [ repos, setRepos ] = roger.useState('repos');
-  const [ profile ] = roger.useState('profile');
-  const [ searchQuery, setSearchQuery ] = useState([]);
+  const { fetchAllRepos, toggleRepo } = roger.useContext();
   const [ filter, setFilter ] = useState('');
-  const [ error, setError ] = useState(null);
   const [ isFetchingRepos, setFetchingRepos ] = useState(false);
   const [ noRepos, setNoRepos ] = useState(false);
   const { component: dimSeenEventsComponent } = useDimSeenEvents();
 
   useEffect(() => {
-    fetchOrganizations().then(
-      orgs => {
-        setSearchQuery([
-          { label: 'My repositories', param: `user:${ profile.login }`, selected: true },
-          ...orgs.map(org => ({
-            label: `Repositories in "${ org.name }" organization`,
-            param: `org:${ org.login }`,
-            selected: false
-          }))
-        ]);
-        textInput.current.focus();
-      },
-      error => {
-        console.log(error);
-        setError(new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
-      }
-    );
-  }, []);
+    if (initializationDone) {
+      textInput.current.focus();
+    }
+  }, [ initializationDone ]);
 
   const handleKeyUp = e => {
     if (e.key === 'Enter' && e.target.value !== '') {
@@ -204,3 +193,5 @@ function Settings() {
     </div>
   );
 }
+
+export default riew(Settings, effect).with('api', 'profile', 'repos');

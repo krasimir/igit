@@ -7,7 +7,7 @@ import Loading from './Loading';
 import Authorize from './Authorize';
 import Settings from './Settings';
 import { BASE_PATH, NO_TOKEN } from '../constants';
-import { initialize, getProfile, getRepos } from '../logic';
+import { initialize } from '../logic';
 import Repos from './Repos';
 
 const App = riew(
@@ -38,9 +38,7 @@ const App = riew(
       </Router>
     );
   },
-  async function () {
-    await initialize();
-  }
-).with({ profile: getProfile, repos: getRepos });
+  initialize
+).with('profile', 'repos');
 
 export default App;
