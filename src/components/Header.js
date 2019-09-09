@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import Logo from './Logo';
 
-export default function Header({ profile }) {
+export default function Header() {
   return (
     <header>
       <Link to='/' className='p0 no-hover'>
@@ -13,7 +12,3 @@ export default function Header({ profile }) {
     </header>
   );
 }
-
-Header.propTypes = {
-  profile: PropTypes.object.isRequired
-};

@@ -6061,10 +6061,10 @@ ret@~0.1.10:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
-riew@0.81.0:
-  version "0.81.0"
-  resolved "https://registry.yarnpkg.com/riew/-/riew-0.81.0.tgz#d409b7235a31d679647bfbe3e0e14144c95a3312"
-  integrity sha512-zfNblO40EXNKCEsqGhyK8C6i8HyZDilUnD4iT7+d86wkz9og2TJX6Sdv3gwlRkx0Cj+UIYtSSbZar09PxYSEcQ==
+riew@0.83.0:
+  version "0.83.0"
+  resolved "https://registry.yarnpkg.com/riew/-/riew-0.83.0.tgz#e02b08d51e98fb9839c9765033ab81a68b8bf8ec"
+  integrity sha512-uOHJjTcr7dFvcy/wZ+Hz4IlVK6cLAuegusS/fYXKiLYZ8qMM7LOPM85ojLo1u955yGAIMR24yXHDrj5dh2y8AA==
   dependencies:
     fast-deep-equal "2.0.1"
 

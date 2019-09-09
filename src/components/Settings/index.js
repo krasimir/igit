@@ -1,51 +1,31 @@
-/* eslint-disable max-len */
+/* eslint-disable max-len, react/prop-types */
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import riew from 'riew/react';
 
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
-import roger from 'jolly-roger';
 import Header from '../Header';
 import useDimSeenEvents from './useDimSeenEvents';
 import PullingInterval from './PullingInterval';
+import initEffect from './effects/initEffect';
+import fetchAllReposEffect from './effects/fetchAllReposEffect';
 
-const effect = async function ({ render, state, api, profile, repos }) {
-  const [ searchQuery, setSearchQuery ] = state([]);
-  const [ , setError ] = state(null);
-  const [ getProfile ] = profile;
-  const [ , setRepos ] = repos;
-
-  render({
-    searchQuery,
-    setError,
-    setRepos,
-    initializationDone: false
-  });
-
-  try {
-    const orgs = await api.fetchOrganizations();
-
-    setSearchQuery([
-      { label: 'My repositories', param: `user:${ getProfile().login }`, selected: true },
-      ...orgs.map(org => ({
-        label: `Repositories in "${ org.name }" organization`,
-        param: `org:${ org.login }`,
-        selected: false
-      }))
-    ]);
-    render({ initializationDone: true });
-  } catch (error) {
-    console.log(error);
-    setError(new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
-  }
-};
-
-function Settings({ searchQuery, error, repos, profile, setRepos, setError, initializationDone }) {
+function Settings({
+  searchQuery,
+  searchIn,
+  error,
+  repos,
+  profile,
+  setRepos,
+  setError,
+  initializationDone,
+  fetchAllRepos,
+  toggleRepo,
+  isFetchingRepos
+}) {
   const textInput = useRef(null);
-  const { fetchAllRepos, toggleRepo } = roger.useContext();
   const [ filter, setFilter ] = useState('');
-  const [ isFetchingRepos, setFetchingRepos ] = useState(false);
   const [ noRepos, setNoRepos ] = useState(false);
   const { component: dimSeenEventsComponent } = useDimSeenEvents();
 
@@ -57,10 +37,10 @@ function Settings({ searchQuery, error, repos, profile, setRepos, setError, init
 
   const handleKeyUp = e => {
     if (e.key === 'Enter' && e.target.value !== '') {
-      setFetchingRepos(true);
       setNoRepos(false);
-      fetchAllRepos(`${ filter } in:name ` + searchQuery
-        .filter(({ selected }) => selected)
+      fetchAllRepos(
+        `${ filter } in:name ` +
+        searchQuery.filter(({ selected }) => selected)
         .map(({ param }) => param)
         .join(' ')
       ).then(
@@ -69,13 +49,11 @@ function Settings({ searchQuery, error, repos, profile, setRepos, setError, init
             setNoRepos(true);
           }
           setRepos(allRepos);
-          setFetchingRepos(false);
           textInput.current.focus();
         },
         error => {
           console.log(error);
           setError(new Error('IGit can not fetch repositories.'));
-          setFetchingRepos(false);
         }
       );
     }
@@ -136,14 +114,7 @@ function Settings({ searchQuery, error, repos, profile, setRepos, setError, init
               searchQuery.map(criteria => {
                 return (
                   <label key={ criteria.param }>
-                    <input type='checkbox' checked={ criteria.selected } onChange={
-                      () => setSearchQuery(searchQuery.map(c => {
-                        if (c === criteria) {
-                          c.selected = !c.selected;
-                        }
-                        return c;
-                      }))
-                    }/>
+                    <input type='checkbox' checked={ criteria.selected } onChange={ () => searchIn(criteria) }/>
                     <span>{ criteria.label }</span>
                   </label>
                 );
@@ -194,4 +165,4 @@ function Settings({ searchQuery, error, repos, profile, setRepos, setError, init
   );
 }
 
-export default riew(Settings, effect).with('api', 'profile', 'repos');
+export default riew(Settings, initEffect, fetchAllReposEffect).with('api', 'profile', 'repos', 'toggleRepo');

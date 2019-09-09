@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import riew from 'riew/react';
 import roger from 'jolly-roger';
 
 import Header from './Header';
@@ -17,6 +18,7 @@ import { PULLING } from '../constants';
 import { getPullingInterval } from './Settings/PullingInterval';
 import isItANewEvent from './utils/isItANewEvent';
 import UpdateProgress from './UpdateProgress';
+import fetchingPRs from './effects/fetchingPRs';
 
 const flattenPRsEvents = allPRs => {
   if (allPRs && allPRs.length > 0) {
@@ -27,35 +29,25 @@ const flattenPRsEvents = allPRs => {
   return [];
 };
 
-export default function Repos({ match }) {
+function Repos({ match, profile, fetchingPRs, error }) {
   const { fetchData, setTotalUnread } = roger.useContext();
-  const [ profile ] = roger.useState('profile', null);
   const [ notifications ] = roger.useState('notifications');
   const { owner, name, prNumber, op } = match.params;
   const [ repos ] = roger.useState('repos', []);
   const subscribedRepos = repos.filter(repo => repo.selected);
-  const [ error, setError ] = useState(null);
   const [ fetchDataInterval, setFetchDataInterval ] = useState(null);
-  const [ fetchingPRs, setFetchingPRs ] = useState(false);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const f = () => {
-      setFetchingPRs(true);
       fetchData({
         repos: subscribedRepos,
         repoName: name,
         prNumber: prNumber !== 'new' && op !== 'edit' ? prNumber : undefined
       }).then(
         () => {
-          setFetchingPRs(false);
           if (PULLING) {
             setFetchDataInterval(setTimeout(f, getPullingInterval()));
           }
-        },
-        error => {
-          setFetchingPRs(false);
-          console.error(error);
-          setError(error);
         }
       );
     };
@@ -65,7 +57,7 @@ export default function Repos({ match }) {
     return () => {
       clearTimeout(fetchDataInterval);
     };
-  }, []);
+  }, []);*/
 
   const repo = repos.find(
     ({ owner: repoOwner, name: repoName }) => owner === repoOwner && name === repoName
@@ -138,5 +130,10 @@ export default function Repos({ match }) {
 }
 
 Repos.propTypes = {
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  fetchingPRs: PropTypes.bool,
+  error: PropTypes.object
 };
+
+export default riew(Repos, fetchingPRs).with('api', 'profile', 'subscribedRepos');

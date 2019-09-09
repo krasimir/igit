@@ -12,32 +12,25 @@ const [ notifications ] = state([]).export('notifications');
 export const initialize = serial(
   profile.mutate(async () => await api.getProfile()),
   repos.mutate(async () => await api.getLocalRepos()),
-  repos.mutate(async () => await api.getNotifications())
+  notifications.mutate(async () => await api.getNotifications())
 );
+
+repos.mutate((list, { repoId }) => {
+  return list.map(r => ({
+    ...r,
+    selected: r.repoId === repoId ? !r.selected : r.selected
+  }));
+}).pipe((list, { repoId }) => {
+  api.toggleRepo(list.find(r => r.repoId === repoId));
+}).export('toggleRepo');
+
+repos.filter(repo => repo.selected).export('subscribedRepos');
 
 /* ---- old ---- */
 
 roger.context({
   async fetchOrganizations() {
     return api.fetchOrganizations();
-  },
-  async fetchAllRepos(query) {
-    const remoteRepos = await api.fetchRemoteRepos(query);
-    const localRepos = await api.getLocalRepos();
-    let repos = [];
-
-    repos = repos.concat(localRepos);
-    remoteRepos.forEach(remoteRepo => {
-      const found = repos.find(r => r.repoId === remoteRepo.repoId);
-
-      if (found) {
-        found.selected = true;
-      } else {
-        repos.push(remoteRepo);
-      }
-    });
-
-    return repos;
   },
   toggleRepo(repo, { toggleRepos }) {
     api.toggleRepo(repo);
@@ -145,14 +138,6 @@ roger.context({
 roger.useReducer('repos', {
   setRepos(oldRepos, newRepos) {
     return newRepos;
-  },
-  toggleRepos(repos, toggledRepo) {
-    return repos.map(repo => {
-      if (repo.repoId === toggledRepo.repoId) {
-        repo.selected = !repo.selected;
-      }
-      return repo;
-    });
   },
   registerPRs(repos, { repo, prs }) {
     return repos.map(r => {
