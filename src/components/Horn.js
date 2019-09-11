@@ -7,6 +7,7 @@ import isItANewEvent from './utils/isItANewEvent';
 import { EYE } from './Icons';
 
 function Horn({ events, children }) {
+  return null;
   const { markAsRead, markAsUnread } = roger.useContext();
   const [ notifications ] = roger.useState('notifications');
   const [ otherOptions, showOtherOptions ] = useState(false);

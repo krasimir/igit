@@ -25,6 +25,17 @@ repos.mutate((list, { repoId }) => {
 }).export('toggleRepo');
 
 repos.filter(repo => repo.selected).export('subscribedRepos');
+repos.mutate((list, { repo, prs }) => {
+  return list.map(r => {
+    if (r.repoId === repo.repoId) {
+      return {
+        ...r,
+        prs
+      };
+    }
+    return r;
+  });
+}).export('registerPRs');
 
 /* ---- old ---- */
 
@@ -32,40 +43,40 @@ roger.context({
   async fetchOrganizations() {
     return api.fetchOrganizations();
   },
-  toggleRepo(repo, { toggleRepos }) {
-    api.toggleRepo(repo);
-    toggleRepos(repo);
-  },
+  // toggleRepo(repo, { toggleRepos }) {
+  //   api.toggleRepo(repo);
+  //   toggleRepos(repo);
+  // },
   getPRFiles({ repo, prNumber }) {
     return api.fetchPRFiles(repo, prNumber);
   },
   getPRFile({ repo, path, commit }) {
     return api.fetchPRFile(repo, path, commit);
   },
-  async fetchData({ repos, repoName, prNumber }, { registerPRs }) {
-    for (let i = 0; i < repos.length; i++) {
-      const repo = repos[i];
-      const prs = await api.fetchRemotePRs(repo);
+  // async fetchData({ repos, repoName, prNumber }, { registerPRs }) {
+  //   for (let i = 0; i < repos.length; i++) {
+  //     const repo = repos[i];
+  //     const prs = await api.fetchRemotePRs(repo);
 
-      if (PRINT_PRS) {
-        console.log(repo.name, JSON.stringify(prs, null, 2));
-      }
+  //     if (PRINT_PRS) {
+  //       console.log(repo.name, JSON.stringify(prs, null, 2));
+  //     }
 
-      if (
-        prNumber &&
-        repo.name === repoName &&
-        prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
-      ) {
-        const otherPR = await api.fetchRemotePR(repo, prNumber);
+  //     if (
+  //       prNumber &&
+  //       repo.name === repoName &&
+  //       prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
+  //     ) {
+  //       const otherPR = await api.fetchRemotePR(repo, prNumber);
 
-        if (otherPR) {
-          prs.push(otherPR);
-        }
-      }
+  //       if (otherPR) {
+  //         prs.push(otherPR);
+  //       }
+  //     }
 
-      registerPRs({ repo, prs });
-    }
-  },
+  //     registerPRs({ repo, prs });
+  //   }
+  // },
   async submitReview({ reviewId, event, body }, { replaceEvent, markAsRead }) {
     const review = await api.submitReview(reviewId, event, body);
 
@@ -100,13 +111,6 @@ roger.context({
   async markAsUnread(id, { setNotifications }) {
     await api.markAsUnread(id);
     setNotifications(await api.getNotifications());
-  },
-  setTotalUnread({ totalUnread }) {
-    if (totalUnread === 0) {
-      document.title = '✔ Well done ';
-    } else {
-      document.title = `${ totalUnread } unread`;
-    }
   },
   async mergePR({ id, repo }, { replacePR }) {
     const pr = await api.mergePR(id, repo);

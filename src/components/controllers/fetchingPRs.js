@@ -1,7 +1,7 @@
 import { getPullingInterval } from '../Settings/PullingInterval';
 import { PRINT_PRS, PULLING } from '../../constants';
 
-export default function fetchingPRs({ api, render, state, subscribedRepos, props }) {
+export default function fetchingPRs({ api, render, state, subscribedRepos, props, registerPRs }) {
   const [ fetchingPRs, setFetchingPRs ] = state(false);
   const [ error, setError ] = state(null);
   const [ fetchDataInterval, setFetchDataInterval ] = state(null);

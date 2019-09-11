@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import riew from 'riew/react';
-import roger from 'jolly-roger';
 
 import Header from './Header';
 import PRs from './PRs';
@@ -13,53 +12,16 @@ import PRFake from './PRFake';
 import PRNew from './PRNew';
 import PREdit from './PREdit';
 import Horn from './Horn';
-import flattenPREvents from '../api/utils/flattenPREvents';
-import { PULLING } from '../constants';
-import { getPullingInterval } from './Settings/PullingInterval';
-import isItANewEvent from './utils/isItANewEvent';
 import UpdateProgress from './UpdateProgress';
-import fetchingPRs from './effects/fetchingPRs';
+import flattenPRsEvents from './utils/flattenRPsEvens';
 
-const flattenPRsEvents = allPRs => {
-  if (allPRs && allPRs.length > 0) {
-    return allPRs.reduce((events, pr) => {
-      return events.concat(flattenPREvents(pr));
-    }, []);
-  }
-  return [];
-};
+import fetchingPRs from './controllers/fetchingPRs';
+import setTitle from './controllers/setTitle';
 
-function Repos({ match, profile, fetchingPRs, error }) {
-  const { fetchData, setTotalUnread } = roger.useContext();
-  const [ notifications ] = roger.useState('notifications');
+function Repos({ match, profile, fetchingPRs, subscribedRepos, error }) {
   const { owner, name, prNumber, op } = match.params;
-  const [ repos ] = roger.useState('repos', []);
-  const subscribedRepos = repos.filter(repo => repo.selected);
-  const [ fetchDataInterval, setFetchDataInterval ] = useState(null);
 
-  /*useEffect(() => {
-    const f = () => {
-      fetchData({
-        repos: subscribedRepos,
-        repoName: name,
-        prNumber: prNumber !== 'new' && op !== 'edit' ? prNumber : undefined
-      }).then(
-        () => {
-          if (PULLING) {
-            setFetchDataInterval(setTimeout(f, getPullingInterval()));
-          }
-        }
-      );
-    };
-
-    f();
-
-    return () => {
-      clearTimeout(fetchDataInterval);
-    };
-  }, []);*/
-
-  const repo = repos.find(
+  const repo = subscribedRepos.find(
     ({ owner: repoOwner, name: repoName }) => owner === repoOwner && name === repoName
   );
   let pr;
@@ -68,13 +30,11 @@ function Repos({ match, profile, fetchingPRs, error }) {
     pr = repo.prs.find(({ number }) => number.toString() === prNumber);
   }
 
-  let totalUnread = 0;
-  const reposList = repos.filter(({ selected }) => selected).map(repo => {
+  const reposList = subscribedRepos.map(repo => {
+    console.log(repo.prs);
     const expanded = repo.owner === owner && repo.name === name;
     const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
     const repoEvents = flattenPRsEvents(repo.prs);
-
-    totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications)).length;
 
     return (
       <div key={ repo.repoId } className='relative'>
@@ -87,8 +47,6 @@ function Repos({ match, profile, fetchingPRs, error }) {
       </div>
     );
   });
-
-  setTotalUnread({ totalUnread });
 
   let PRComponent;
 
@@ -104,7 +62,7 @@ function Repos({ match, profile, fetchingPRs, error }) {
 
   return (
     <div>
-      <UpdateProgress fetchDataInterval={ fetchDataInterval }/>
+      <UpdateProgress fetchDataInterval={ 0 }/>
       <div className='layout'>
         <aside>
           <Header profile={ profile } />
@@ -133,7 +91,9 @@ Repos.propTypes = {
   match: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   fetchingPRs: PropTypes.bool,
-  error: PropTypes.object
+  error: PropTypes.object,
+  subscribedRepos: PropTypes.array
 };
 
-export default riew(Repos, fetchingPRs).with('api', 'profile', 'subscribedRepos');
+export default riew(Repos, fetchingPRs, setTitle)
+  .with('api', 'profile', 'subscribedRepos', 'registerPRs', 'notifications');
