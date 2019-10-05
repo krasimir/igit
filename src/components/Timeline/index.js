@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useReducer, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { use } from 'riew';
 import riew from 'riew/react';
 
 import Commit from './Commit';

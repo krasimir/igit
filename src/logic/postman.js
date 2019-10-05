@@ -1,20 +1,17 @@
-import { register } from 'riew';
+import { use, register } from 'riew';
 
 import api from '../api';
 
 // this function needs other (potentially) registered deps
-register('postman', (
-  { repo, pr },
-  {
-    addEventToPR,
-    replaceEventInPR,
-    deleteEventFromPR,
-    addPRReviewComment,
-    replacePRReviewComment,
-    deletePRReviewComment,
-    markAsRead
-  }
-) => {
+register('postman', ({ repo, pr }) => {
+  const addEventToPR = use('addEventToPR');
+  const replaceEventInPR = use('replaceEventInPR');
+  const deleteEventFromPR = use('deleteEventFromPR');
+  const addPRReviewComment = use('addPRReviewComment');
+  const replacePRReviewComment = use('replacePRReviewComment');
+  const deletePRReviewComment = use('deletePRReviewComment');
+  const markAsRead = use('markAsRead');
+
   return {
     newTimelineComment: {
       async add(text) {

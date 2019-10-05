@@ -6,7 +6,7 @@ import './postman';
 
 const profile = state(null);
 const repos = state(null);
-const notifications = state([]);
+const [ notifications, setNotifications ] = state([]);
 
 register('profile', profile);
 register('repos', repos);
@@ -26,7 +26,6 @@ register('toggleRepo', repos.mutate((list, { repoId }) => {
 }).pipe((list, { repoId }) => {
   api.toggleRepo(list.find(r => r.repoId === repoId));
 }));
-
 register('subscribedRepos', repos.filter(repo => repo.selected));
 register('registerPRs', repos.mutate((list, { repo, prs }) => {
   return list.map(r => {
@@ -39,6 +38,118 @@ register('registerPRs', repos.mutate((list, { repo, prs }) => {
     return r;
   });
 }));
+register('addEventToPR', repos.mutate((repos, { repo, pr, event }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id }) => id === pr.id);
+
+      if (p) {
+        p.events.push(event);
+      }
+    }
+    return r;
+  });
+}));
+register('replaceEventInPR', repos.mutate((repos, { repo, pr, event }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id }) => id === pr.id);
+
+      if (p) {
+        p.events = p.events.map(e => {
+          if (e.id === event.id) {
+            return event;
+          }
+          return e;
+        });
+      }
+    }
+    return r;
+  });
+}));
+register('deleteEventFromPR', repos.mutate((repos, { repo, pr, id }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id }) => id === pr.id);
+
+      if (p) {
+        p.events = p.events.filter(e => e.id !== id);
+      }
+    }
+    return r;
+  });
+}));
+register('addPRReviewComment', repos.mutate((repos, { repo, pr, topComment, comment }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id }) => id === pr.id);
+
+      if (p) {
+        // add it to already existing review thread
+        if (topComment.id) {
+          p.events = p.events.map(e => {
+            if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
+              e.comments.push(comment);
+            }
+            return e;
+          });
+        // create a new thread
+        } else {
+          p.events.push({
+            type: 'PullRequestReviewThread',
+            isResolved: false,
+            date: comment.date,
+            comments: [ comment ]
+          });
+        }
+      }
+    }
+    return r;
+  });
+}));
+register('replacePRReviewComment', ((repos, { repo, pr, comment }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id }) => id === pr.id);
+
+      if (p) {
+        p.events = p.events.map(e => {
+          if (e.comments && e.comments.length > 0) {
+            e.comments = e.comments.map(c => {
+              if (c.id === comment.id) {
+                return comment;
+              }
+              return c;
+            });
+          }
+          return e;
+        });
+      }
+    }
+    return r;
+  });
+}));
+register('deletePRReviewComment', ((repos, { repo, pr, id }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id: prId }) => prId === pr.id);
+
+      if (p) {
+        p.events = p.events.map(e => {
+          if (e.comments && e.comments.length > 0) {
+            e.comments = e.comments.filter(c => c.id !== id);
+          }
+          return e;
+        });
+      }
+    }
+    return r;
+  });
+}));
+register('markAsRead', async (id) => {
+  await api.markAsRead(id);
+  setNotifications(await api.getNotifications());
+});
 
 /* ---- old ---- */
 
@@ -107,10 +218,10 @@ roger.context({
 
     replaceEvent({ event: thread });
   },
-  async markAsRead(id, { setNotifications }) {
-    await api.markAsRead(id);
-    setNotifications(await api.getNotifications());
-  },
+  // async markAsRead(id, { setNotifications }) {
+  //   await api.markAsRead(id);
+  //   setNotifications(await api.getNotifications());
+  // },
   async markAsUnread(id, { setNotifications }) {
     await api.markAsUnread(id);
     setNotifications(await api.getNotifications());
@@ -154,18 +265,18 @@ roger.useReducer('repos', {
       return r;
     });
   },
-  addEventToPR(repos, { repo, pr, event }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id }) => id === pr.id);
+  // addEventToPR(repos, { repo, pr, event }) {
+  //   return repos.map(r => {
+  //     if (r.repoId === repo.repoId) {
+  //       const p = r.prs.find(({ id }) => id === pr.id);
 
-        if (p) {
-          p.events.push(event);
-        }
-      }
-      return r;
-    });
-  },
+  //       if (p) {
+  //         p.events.push(event);
+  //       }
+  //     }
+  //     return r;
+  //   });
+  // },
   replaceEvent(repos, { event }) {
     return repos.map(r => {
       if (r.prs && r.prs.length > 0) {
@@ -189,102 +300,102 @@ roger.useReducer('repos', {
       return r;
     });
   },
-  replaceEventInPR(repos, { repo, pr, event }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id }) => id === pr.id);
+  // replaceEventInPR(repos, { repo, pr, event }) {
+  //   return repos.map(r => {
+  //     if (r.repoId === repo.repoId) {
+  //       const p = r.prs.find(({ id }) => id === pr.id);
 
-        if (p) {
-          p.events = p.events.map(e => {
-            if (e.id === event.id) {
-              return event;
-            }
-            return e;
-          });
-        }
-      }
-      return r;
-    });
-  },
-  deleteEventFromPR(repos, { repo, pr, id }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id }) => id === pr.id);
+  //       if (p) {
+  //         p.events = p.events.map(e => {
+  //           if (e.id === event.id) {
+  //             return event;
+  //           }
+  //           return e;
+  //         });
+  //       }
+  //     }
+  //     return r;
+  //   });
+  // },
+  // deleteEventFromPR(repos, { repo, pr, id }) {
+  //   return repos.map(r => {
+  //     if (r.repoId === repo.repoId) {
+  //       const p = r.prs.find(({ id }) => id === pr.id);
 
-        if (p) {
-          p.events = p.events.filter(e => e.id !== id);
-        }
-      }
-      return r;
-    });
-  },
-  addPRReviewComment(repos, { repo, pr, topComment, comment }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id }) => id === pr.id);
+  //       if (p) {
+  //         p.events = p.events.filter(e => e.id !== id);
+  //       }
+  //     }
+  //     return r;
+  //   });
+  // },
+  // addPRReviewComment(repos, { repo, pr, topComment, comment }) {
+  //   return repos.map(r => {
+  //     if (r.repoId === repo.repoId) {
+  //       const p = r.prs.find(({ id }) => id === pr.id);
 
-        if (p) {
-          // add it to already existing review thread
-          if (topComment.id) {
-            p.events = p.events.map(e => {
-              if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
-                e.comments.push(comment);
-              }
-              return e;
-            });
-          // create a new thread
-          } else {
-            p.events.push({
-              type: 'PullRequestReviewThread',
-              isResolved: false,
-              date: comment.date,
-              comments: [ comment ]
-            });
-          }
-        }
-      }
-      return r;
-    });
-  },
-  replacePRReviewComment(repos, { repo, pr, comment }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id }) => id === pr.id);
+  //       if (p) {
+  //         // add it to already existing review thread
+  //         if (topComment.id) {
+  //           p.events = p.events.map(e => {
+  //             if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
+  //               e.comments.push(comment);
+  //             }
+  //             return e;
+  //           });
+  //         // create a new thread
+  //         } else {
+  //           p.events.push({
+  //             type: 'PullRequestReviewThread',
+  //             isResolved: false,
+  //             date: comment.date,
+  //             comments: [ comment ]
+  //           });
+  //         }
+  //       }
+  //     }
+  //     return r;
+  //   });
+  // },
+  // replacePRReviewComment(repos, { repo, pr, comment }) {
+  //   return repos.map(r => {
+  //     if (r.repoId === repo.repoId) {
+  //       const p = r.prs.find(({ id }) => id === pr.id);
 
-        if (p) {
-          p.events = p.events.map(e => {
-            if (e.comments && e.comments.length > 0) {
-              e.comments = e.comments.map(c => {
-                if (c.id === comment.id) {
-                  return comment;
-                }
-                return c;
-              });
-            }
-            return e;
-          });
-        }
-      }
-      return r;
-    });
-  },
-  deletePRReviewComment(repos, { repo, pr, id }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id: prId }) => prId === pr.id);
+  //       if (p) {
+  //         p.events = p.events.map(e => {
+  //           if (e.comments && e.comments.length > 0) {
+  //             e.comments = e.comments.map(c => {
+  //               if (c.id === comment.id) {
+  //                 return comment;
+  //               }
+  //               return c;
+  //             });
+  //           }
+  //           return e;
+  //         });
+  //       }
+  //     }
+  //     return r;
+  //   });
+  // },
+  // deletePRReviewComment(repos, { repo, pr, id }) {
+  //   return repos.map(r => {
+  //     if (r.repoId === repo.repoId) {
+  //       const p = r.prs.find(({ id: prId }) => prId === pr.id);
 
-        if (p) {
-          p.events = p.events.map(e => {
-            if (e.comments && e.comments.length > 0) {
-              e.comments = e.comments.filter(c => c.id !== id);
-            }
-            return e;
-          });
-        }
-      }
-      return r;
-    });
-  },
+  //       if (p) {
+  //         p.events = p.events.map(e => {
+  //           if (e.comments && e.comments.length > 0) {
+  //             e.comments = e.comments.filter(c => c.id !== id);
+  //           }
+  //           return e;
+  //         });
+  //       }
+  //     }
+  //     return r;
+  //   });
+  // },
   replacePR(repos, { pr }) {
     return repos.map(r => {
       r.prs = r.prs.map(p => {

@@ -1,8 +1,8 @@
 /* eslint-disable no-sequences, no-use-before-define */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { use } from 'riew';
 
-import roger from 'jolly-roger';
 import { LoadingAnimation } from './Loading';
 import Suggestions from './Suggestions';
 import setCaretPosition from './utils/setCaretPosition';
@@ -20,7 +20,7 @@ export default function Postman({
   showAvatar
 }) {
   const textareaEl = useRef(null);
-  const [ profile ] = roger.useState('profile');
+  const profile = use('profile');
   const [ text, type ] = useState(value ? value.text : null);
   const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);

@@ -1,19 +1,19 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { use } from 'riew';
 
 import marked from '../utils/marked';
 import Date from '../utils/Date';
 import { MESSAGE, CLOSE } from '../Icons';
 import ReviewDiff from '../utils/ReviewDiff';
-import roger from 'jolly-roger';
 import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
 import Horn, { unDim } from '../Horn';
 
 function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim }) {
-  const [ profile ] = roger.useState('profile');
-  const { postman } = roger.useContext();
+  const profile = use('profile');
+  const postman = use('postman');
   const [ isEditing, edit ] = useState(false);
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
@@ -133,7 +133,7 @@ ThreadItem.propTypes = {
 };
 
 function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
-  const { postman } = roger.useContext();
+  const postman = use('postman');
   const [ isBodyVisible, bodyVisibility ] = useState(expanded);
   const [ undimComponent, isDimmed ] = unDim(dim, (undimmed) => {
     if (undimmed && dim) {
