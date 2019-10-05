@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useReducer, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { use } from 'riew';
+import riew from 'riew/react';
 
 import Commit from './Commit';
 import PullRequestReview from './PullRequestReview';
@@ -12,7 +14,6 @@ import Reference from './Reference';
 import Review from './Review';
 import flattenUsers from '../../api/utils/flattenUsers';
 import Postman from '../Postman';
-import roger from 'jolly-roger';
 import isItANewEvent from '../utils/isItANewEvent';
 import useDimSeenEvents from '../Settings/useDimSeenEvents';
 
@@ -35,9 +36,7 @@ const filterByUserReducer = function (state, { user }) {
   return [ ...state, user ];
 };
 
-export default function Timeline({ pr, repo }) {
-  const { postman } = roger.useContext();
-  const [ notifications ] = roger.useState('notifications');
+function Timeline({ pr, repo, postman, notifications }) {
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ allUsers, showAllUsers ] = useState(true);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
@@ -122,3 +121,5 @@ Timeline.propTypes = {
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired
 };
+
+export default riew(Timeline).with('postman', 'notifications');

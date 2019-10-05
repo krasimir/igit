@@ -2,7 +2,6 @@ import roger from 'jolly-roger';
 import { state, serial, register } from 'riew';
 
 import api from '../api';
-import { PRINT_PRS } from '../constants';
 import './postman';
 
 const profile = state(null);

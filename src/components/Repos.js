@@ -15,8 +15,8 @@ import Horn from './Horn';
 import UpdateProgress from './UpdateProgress';
 import flattenPRsEvents from './utils/flattenRPsEvens';
 
-import fetchingPRs from './controllers/fetchingPRs';
-import setTitle from './controllers/setTitle';
+import fetchingPRs from './effects/fetchingPRs';
+import setTitle from './effects/setTitle';
 
 function Repos({ match, profile, fetchingPRs, subscribedRepos, error }) {
   const { owner, name, prNumber, op } = match.params;
@@ -31,7 +31,6 @@ function Repos({ match, profile, fetchingPRs, subscribedRepos, error }) {
   }
 
   const reposList = subscribedRepos.map(repo => {
-    console.log(repo.prs);
     const expanded = repo.owner === owner && repo.name === name;
     const linkUrl = expanded ? `/repo/${ repo.owner }` : `/repo/${ repo.owner }/${ repo.name }`;
     const repoEvents = flattenPRsEvents(repo.prs);
