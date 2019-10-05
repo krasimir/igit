@@ -1,5 +1,5 @@
 /* eslint-disable camelcase, max-len, no-sequences */
-import { registry } from 'riew';
+import { register, use } from 'riew';
 import db from './db';
 import { NO_TOKEN, USE_MOCKS } from '../constants';
 import {
@@ -326,6 +326,6 @@ function createAPI() {
   return api;
 }
 
-registry.add('api', createAPI());
+register('api', createAPI());
 
-export default registry.get('api');
+export default use('api');

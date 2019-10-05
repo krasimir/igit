@@ -1,13 +1,17 @@
 import roger from 'jolly-roger';
-import { state, serial } from 'riew';
+import { state, serial, register } from 'riew';
 
 import api from '../api';
 import { PRINT_PRS } from '../constants';
 import './postman';
 
-const [ profile ] = state(null).export('profile');
-const [ repos ] = state(null).export('repos');
-const [ notifications ] = state([]).export('notifications');
+const profile = state(null);
+const repos = state(null);
+const notifications = state([]);
+
+register('profile', profile);
+register('repos', repos);
+register('notifications', notifications);
 
 export const initialize = serial(
   profile.mutate(async () => await api.getProfile()),
@@ -15,17 +19,17 @@ export const initialize = serial(
   notifications.mutate(async () => await api.getNotifications())
 );
 
-repos.mutate((list, { repoId }) => {
+register('toggleRepo', repos.mutate((list, { repoId }) => {
   return list.map(r => ({
     ...r,
     selected: r.repoId === repoId ? !r.selected : r.selected
   }));
 }).pipe((list, { repoId }) => {
   api.toggleRepo(list.find(r => r.repoId === repoId));
-}).export('toggleRepo');
+}));
 
-repos.filter(repo => repo.selected).export('subscribedRepos');
-repos.mutate((list, { repo, prs }) => {
+register('subscribedRepos', repos.filter(repo => repo.selected));
+register('registerPRs', repos.mutate((list, { repo, prs }) => {
   return list.map(r => {
     if (r.repoId === repo.repoId) {
       return {
@@ -35,7 +39,7 @@ repos.mutate((list, { repo, prs }) => {
     }
     return r;
   });
-}).export('registerPRs');
+}));
 
 /* ---- old ---- */
 

@@ -66,6 +66,6 @@
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
-    "riew": "0.86.0"
+    "riew": "0.90.0"
   }
 }
