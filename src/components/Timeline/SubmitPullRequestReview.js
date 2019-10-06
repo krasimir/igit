@@ -59,7 +59,7 @@ SubmitPullRequestReview.propTypes = {
   submitReview: PropTypes.func.isRequired,
   createReview: PropTypes.func.isRequired,
   deleteReview: PropTypes.func.isRequired,
-  profile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
   reviewId: PropTypes.string,
   prAuthor: PropTypes.object,
   repo: PropTypes.object,

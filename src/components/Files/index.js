@@ -45,7 +45,7 @@ function Files({ pr, repo, api }) {
 
   useEffect(() => {
     setDiff(null);
-    api.fetchPRFiles({repo, prNumber: pr.number})
+    api.fetchPRFiles(repo, pr.number)
       .then(setDiff)
       .then(() => {
         if (location.hash) {

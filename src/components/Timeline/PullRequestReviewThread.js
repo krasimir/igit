@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { use } from 'riew';
+import riew from 'riew/react';
 
 import marked from '../utils/marked';
 import Date from '../utils/Date';
@@ -11,9 +11,7 @@ import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
 import Horn, { unDim } from '../Horn';
 
-function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim }) {
-  const profile = use('profile');
-  const postman = use('postman');
+function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim, profile, postman }) {
   const [ isEditing, edit ] = useState(false);
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
@@ -129,11 +127,12 @@ ThreadItem.propTypes = {
   context: PropTypes.string.isRequired,
   repo: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  postman: PropTypes.func.isRequired,
   dim: PropTypes.bool
 };
 
-function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
-  const postman = use('postman');
+function PullRequestReviewThread({ event, repo, pr, context, expanded, dim, profile, postman }) {
   const [ isBodyVisible, bodyVisibility ] = useState(expanded);
   const [ undimComponent, isDimmed ] = unDim(dim, (undimmed) => {
     if (undimmed && dim) {
@@ -154,7 +153,9 @@ function PullRequestReviewThread({ event, repo, pr, context, expanded, dim }) {
         context={ context }
         repo={ repo }
         pr={ pr }
-        dim={ isDimmed }/>
+        dim={ isDimmed }
+        profile={ profile }
+        postman={ postman }/>
     );
   });
 
@@ -189,6 +190,8 @@ PullRequestReviewThread.propTypes = {
   pr: PropTypes.object.isRequired,
   context: PropTypes.string.isRequired,
   expanded: PropTypes.bool,
+  profile: PropTypes.object.isRequired,
+  postman: PropTypes.func.isRequired,
   dim: PropTypes.bool
 };
 PullRequestReviewThread.defaultProps = {
@@ -196,4 +199,4 @@ PullRequestReviewThread.defaultProps = {
   expanded: false
 };
 
-export default PullRequestReviewThread;
+export default riew(PullRequestReviewThread).with('profile', 'postman');

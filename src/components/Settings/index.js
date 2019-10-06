@@ -1,7 +1,8 @@
-/* eslint-disable max-len, react/prop-types */
+/* eslint-disable max-len */
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import riew from 'riew/react';
+import PropTypes from 'prop-types';
 
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
@@ -16,6 +17,7 @@ function Settings({
   searchIn,
   error,
   repos,
+  setRepos,
   profile,
   setError,
   initializationDone,
@@ -27,7 +29,6 @@ function Settings({
   const [ filter, setFilter ] = useState('');
   const [ noRepos, setNoRepos ] = useState(false);
   const { component: dimSeenEventsComponent } = useDimSeenEvents();
-  const [ , setRepos ] = repos;
 
   useEffect(() => {
     if (initializationDone) {
@@ -164,5 +165,19 @@ function Settings({
     </div>
   );
 }
+
+Settings.propTypes = {
+  searchQuery: PropTypes.array.isRequired,
+  searchIn: PropTypes.func.isRequired,
+  repos: PropTypes.array.isRequired,
+  setRepos: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
+  setError: PropTypes.func.isRequired,
+  initializationDone: PropTypes.bool.isRequired,
+  fetchAllRepos: PropTypes.func.isRequired,
+  toggleRepo: PropTypes.func.isRequired,
+  isFetchingRepos: PropTypes.bool.isRequired,
+  error: PropTypes.object
+};
 
 export default riew(Settings, initEffect, fetchAllReposEffect).with('api', 'profile', 'repos', 'toggleRepo');

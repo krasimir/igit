@@ -105,7 +105,7 @@ PROps.propTypes = {
   repo: PropTypes.object.isRequired,
   mergePR: PropTypes.func.isRequired,
   closePR: PropTypes.func.isRequired,
-  api: PropTypes.obj.isRequired
+  api: PropTypes.object.isRequired
 };
 
 export default riew(PROps).with('mergePR', 'closePR', 'api');

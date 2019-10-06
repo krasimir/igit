@@ -4292,11 +4292,6 @@ jest@24.1.0:
     import-local "^2.0.0"
     jest-cli "^24.1.0"
 
-jolly-roger@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/jolly-roger/-/jolly-roger-1.0.1.tgz#3038b93b5d11001486ec7b19bad833c6ed1b9be4"
-  integrity sha512-R088S44M3Pw2iSX5ehGJuZsUYESJuf39zWMXvusfsEZSithqG10wpECUYUsGIp+HBikLN3xuvRNhSJbMpQauCA==
-
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
@@ -6061,10 +6056,10 @@ ret@~0.1.10:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
-riew@0.92.0:
-  version "0.92.0"
-  resolved "https://registry.yarnpkg.com/riew/-/riew-0.92.0.tgz#409b24000df58dc8bc7fb4a467a2f2bd5a405cc7"
-  integrity sha512-kl0QdcNbWhpRwB57oYejfwiqzCB6ABMU4QPeKhmppCZVy2vZOwlACcjtlNPDB6WG/3KUTbP+IZfVagBO/WLyFw==
+riew@0.92.1:
+  version "0.92.1"
+  resolved "https://registry.yarnpkg.com/riew/-/riew-0.92.1.tgz#93cd8e5bf891a6b39acee59cfdd7bbc918889eff"
+  integrity sha512-WT4He7YKAgSVHwz9ayRQITfemwL5mqEMUdKCI54w7LZtTtik9I4sWvcc2a2uiQid674mv2cuUWt2XMOWxZxUhw==
   dependencies:
     fast-deep-equal "2.0.1"
 

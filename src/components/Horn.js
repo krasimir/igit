@@ -28,13 +28,15 @@ function Horn({ events, children, markAsRead, markAsUnread, notifications }) {
 
 Horn.propTypes = {
   events: PropTypes.array.isRequired,
-  children: PropTypes.object.isRequired,
   markAsRead: PropTypes.func.isRequired,
   markAsUnread: PropTypes.func.isRequired,
-  notifications: PropTypes.func.isRequired
+  notifications: PropTypes.array.isRequired,
+  children: PropTypes.object
 };
 
-export default riew(Horn).with('markAsRead', 'markAsUnread', 'notifications');
+const EnhancedHorn = riew(Horn).with('markAsRead', 'markAsUnread', 'notifications');
+
+export default EnhancedHorn;
 
 export function unDim(isDimmedByDefault, onDimChange = () => {}) {
   const [ isUndimmed, undim ] = useState(false);
@@ -60,9 +62,9 @@ export function withHorn(Component) {
     return (
       <div className='relative'>
         <Component { ...props } dim={ isUndim }/>
-        <Horn events={ events }>
+        <EnhancedHorn events={ events }>
           { undimComponent }
-        </Horn>
+        </EnhancedHorn>
       </div>
     );
   };

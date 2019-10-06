@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { riew } from 'riew/react';
+import riew from 'riew/react';
 
 import { getDiffItemType } from '../utils/ReviewDiff';
 import getFileLines from './getFileLines';
@@ -63,7 +63,7 @@ function File({
     if (fullFileContent.state === 'idle') {
       setFullFileContent({ state: 'loading', value: null });
 
-      const file = await api.fetchPRFile({ repo, path, commit: lastCommit.oid });
+      const file = await api.fetchPRFile(repo, path, lastCommit.oid);
       const lines = file.split('\n');
 
       setFullFileContent({ state: 'loaded', value: lines });

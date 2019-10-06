@@ -1,13 +1,13 @@
 /* eslint-disable no-sequences, no-use-before-define */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { use } from 'riew';
+import riew from 'riew/react';
 
 import { LoadingAnimation } from './Loading';
 import Suggestions from './Suggestions';
 import setCaretPosition from './utils/setCaretPosition';
 
-export default function Postman({
+function Postman({
   handler,
   value,
   className,
@@ -17,10 +17,10 @@ export default function Postman({
   focus,
   children,
   placeholder,
-  showAvatar
+  showAvatar,
+  profile
 }) {
   const textareaEl = useRef(null);
-  const profile = use('profile');
   const [ text, type ] = useState(value ? value.text : null);
   const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);
@@ -144,6 +144,7 @@ export default function Postman({
 
 Postman.propTypes = {
   handler: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
   value: PropTypes.object,
   className: PropTypes.string,
   placeholder: PropTypes.string,
@@ -163,3 +164,5 @@ Postman.defaultProps = {
   placeholder: 'Reply',
   showAvatar: true
 };
+
+export default riew(Postman).with('profile');

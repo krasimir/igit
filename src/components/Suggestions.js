@@ -18,7 +18,7 @@ function Suggestions({ visible, onSelect, repos }) {
 
   if (!visible && !opened) return null;
 
-  const users = repos()
+  const users = repos
     .reduce((result, repo) => {
       if (repo.prs) {
         repo.prs.forEach(pr => {
@@ -100,7 +100,7 @@ Suggestions.defaultProps = {
 Suggestions.propTypes = {
   visible: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
-  repos: PropTypes.func.isRequired
+  repos: PropTypes.array.isRequired
 };
 
 export default riew(Suggestions).with('repos');

@@ -10,8 +10,6 @@ const INDENT_STEP = 4;
 
 function Directory({ dir, indent, url }) {
   const isFile = dir.items === null;
-
-  console.log(url);
   const inFileView = url.match(/\/files$/) !== null;
 
   return (

@@ -41,7 +41,7 @@ function PRNew({ repo, owner, pr, api, createPR }) {
 
   useEffect(() => {
     headInput.current.focus();
-    api.fetchPRFile({ repo, path: '.github/PULL_REQUEST_TEMPLATE.md'}).then(
+    api.fetchPRFile(repo, '.github/PULL_REQUEST_TEMPLATE.md').then(
       prTemplate => {
         setValue({ value: prTemplate, key: 'body' });
         gettingTemplate(false);
