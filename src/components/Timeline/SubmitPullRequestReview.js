@@ -1,13 +1,11 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import riew from 'riew/react';
 
 import { LoadingAnimation } from '../Loading';
-import roger from 'jolly-roger';
 
-export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }) {
+function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor, submitReview, createReview, deleteReview, profile }) {
   const textareaEl = useRef(null);
-  const [ profile ] = roger.useState('profile');
-  const { submitReview, createReview, deleteReview } = roger.useContext();
   const [ text, type ] = useState(null);
   const [ submitted, setSubmitted ] = useState(false);
   const [ deleteSure, areYouSure ] = useState(false);
@@ -58,9 +56,15 @@ export default function SubmitPullRequestReview({ repo, pr, reviewId, prAuthor }
 };
 
 SubmitPullRequestReview.propTypes = {
+  submitReview: PropTypes.func.isRequired,
+  createReview: PropTypes.func.isRequired,
+  deleteReview: PropTypes.func.isRequired,
+  profile: PropTypes.func.isRequired,
   reviewId: PropTypes.string,
   prAuthor: PropTypes.object,
   repo: PropTypes.object,
   pr: PropTypes.object,
   dim: PropTypes.bool
 };
+
+export default riew(SubmitPullRequestReview).with('submitReview', 'createReview', 'deleteReview', 'profile');

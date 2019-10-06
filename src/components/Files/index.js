@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import diffParser from 'gitdiff-parser';
+import riew from 'riew/react';
 
-import roger from 'jolly-roger';
 import Loading from '../Loading';
 import { getHunkFiles } from '../utils/ReviewDiff';
 import Review from '../Timeline/Review';
@@ -37,8 +37,7 @@ const FilterOption = function ({ filter, dispatch, label, option }) {
   );
 };
 
-export default function Files({ pr, repo }) {
-  const { getPRFiles } = roger.useContext();
+function Files({ pr, repo, api }) {
   const [ diff, setDiff ] = useState(null);
   const [ error, setError ] = useState(false);
   const [ filter, dispatch ] = useReducer(filterReducer, [SHOW_COMMENTS]);
@@ -46,7 +45,7 @@ export default function Files({ pr, repo }) {
 
   useEffect(() => {
     setDiff(null);
-    getPRFiles({repo, prNumber: pr.number})
+    api.fetchPRFiles({repo, prNumber: pr.number})
       .then(setDiff)
       .then(() => {
         if (location.hash) {
@@ -137,3 +136,5 @@ Files.propTypes = {
   repo: PropTypes.object.isRequired,
   className: PropTypes.string
 };
+
+export default riew(Files).with('api');

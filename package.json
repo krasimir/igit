@@ -46,7 +46,6 @@
     "eslint-plugin-react": "7.12.4",
     "gitdiff-parser": "0.1.2",
     "jest": "24.1.0",
-    "jolly-roger": "1.0.1",
     "lodash": "4.17.11",
     "markdown-it": "8.4.2",
     "markdown-it-mentions": "1.0.0",
@@ -66,6 +65,6 @@
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
-    "riew": "0.91.0"
+    "riew": "0.92.0"
   }
 }

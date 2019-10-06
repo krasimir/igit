@@ -1,15 +1,11 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import riew from 'riew/react';
 
-import roger from 'jolly-roger';
 import isItANewEvent from './utils/isItANewEvent';
 import { EYE } from './Icons';
 
-function Horn({ events, children }) {
-  return null;
-  const { markAsRead, markAsUnread } = roger.useContext();
-  const [ notifications ] = roger.useState('notifications');
+function Horn({ events, children, markAsRead, markAsUnread, notifications }) {
   const [ otherOptions, showOtherOptions ] = useState(false);
 
   if (events.length === 0) return null;
@@ -31,8 +27,14 @@ function Horn({ events, children }) {
 }
 
 Horn.propTypes = {
-  events: PropTypes.array.isRequired
+  events: PropTypes.array.isRequired,
+  children: PropTypes.object.isRequired,
+  markAsRead: PropTypes.func.isRequired,
+  markAsUnread: PropTypes.func.isRequired,
+  notifications: PropTypes.func.isRequired
 };
+
+export default riew(Horn).with('markAsRead', 'markAsUnread', 'notifications');
 
 export function unDim(isDimmedByDefault, onDimChange = () => {}) {
   const [ isUndimmed, undim ] = useState(false);
@@ -50,12 +52,10 @@ export function unDim(isDimmedByDefault, onDimChange = () => {}) {
   ];
 };
 
-export default Horn;
-
 export function withHorn(Component) {
-  return function WithHorn({ dim, ...props }) {
+  return function WithHorn({ dim, ...props }) { // eslint-disable-line
     const [ undimComponent, isUndim ] = unDim(dim);
-    let events = [ props.event ];
+    let events = [ props.event ]; // eslint-disable-line
 
     return (
       <div className='relative'>

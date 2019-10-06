@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import riew from 'riew/react';
 
 import { PLUS } from './Icons';
-import roger from 'jolly-roger';
 import emojis from '../emoji.json';
 
 const pushUser = (arr, user) => {
@@ -11,15 +11,14 @@ const pushUser = (arr, user) => {
   }
 };
 
-export default function Suggestions({ visible, onSelect }) {
+function Suggestions({ visible, onSelect, repos }) {
   const filterInput = useRef(null);
   const [ opened, open ] = useState(false);
   const [ filterText, setFilterText ] = useState('');
-  const [ repos ] = roger.useState('repos');
 
   if (!visible && !opened) return null;
 
-  const users = repos
+  const users = repos()
     .reduce((result, repo) => {
       if (repo.prs) {
         repo.prs.forEach(pr => {
@@ -100,5 +99,8 @@ Suggestions.defaultProps = {
 
 Suggestions.propTypes = {
   visible: PropTypes.bool,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  repos: PropTypes.func.isRequired
 };
+
+export default riew(Suggestions).with('repos');

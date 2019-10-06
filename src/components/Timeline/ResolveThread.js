@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import riew from 'riew/react';
 
 import { CHECK } from '../Icons';
 import { LoadingAnimation } from '../Loading';
-import roger from 'jolly-roger';
 
-export default function ResolveThread({ event, onSuccess }) {
-  const { resolveThread, unresolveThread } = roger.useContext();
+function ResolveThread({ event, onSuccess, resolveThread, unresolveThread }) {
   const [ submitted, setSubmittedFlag ] = useState(false);
 
   async function submit() {
@@ -33,9 +32,13 @@ export default function ResolveThread({ event, onSuccess }) {
 
 ResolveThread.propTypes = {
   event: PropTypes.object.isRequired,
+  resolveThread: PropTypes.func.isRequired,
+  unresolveThread: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
   dim: PropTypes.bool
 };
 ResolveThread.defaultProps = {
   onSuccess: () => {}
 };
+
+export default riew(ResolveThread).with('resolveThread', 'unresolveThread');

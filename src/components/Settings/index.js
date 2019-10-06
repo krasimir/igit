@@ -17,7 +17,6 @@ function Settings({
   error,
   repos,
   profile,
-  setRepos,
   setError,
   initializationDone,
   fetchAllRepos,
@@ -28,6 +27,7 @@ function Settings({
   const [ filter, setFilter ] = useState('');
   const [ noRepos, setNoRepos ] = useState(false);
   const { component: dimSeenEventsComponent } = useDimSeenEvents();
+  const [ , setRepos ] = repos;
 
   useEffect(() => {
     if (initializationDone) {

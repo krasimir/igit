@@ -2,12 +2,10 @@ const initEffect = async function ({ render, state, api, profile, repos }) {
   const [ searchQuery, setSearchQuery ] = state([]);
   const [ , setError ] = state(null);
   const [ getProfile ] = profile;
-  const [ , setRepos ] = repos;
 
   render({
     searchQuery,
     setError,
-    setRepos,
     initializationDone: false,
     searchIn: searchQuery.mutate((current, payload) => {
       return current.map(c => ({

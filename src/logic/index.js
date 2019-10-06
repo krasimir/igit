@@ -1,4 +1,3 @@
-import roger from 'jolly-roger';
 import { state, serial, register } from 'riew';
 
 import api from '../api';
@@ -38,7 +37,7 @@ register('registerPRs', repos.mutate((list, { repo, prs }) => {
     return r;
   });
 }));
-register('addEventToPR', repos.mutate((repos, { repo, pr, event }) => {
+const addEventToPR = register('addEventToPR', repos.mutate((repos, { repo, pr, event }) => {
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -107,7 +106,7 @@ register('addPRReviewComment', repos.mutate((repos, { repo, pr, topComment, comm
     return r;
   });
 }));
-register('replacePRReviewComment', ((repos, { repo, pr, comment }) => {
+register('replacePRReviewComment', repos.mutate((repos, { repo, pr, comment }) => {
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -129,7 +128,7 @@ register('replacePRReviewComment', ((repos, { repo, pr, comment }) => {
     return r;
   });
 }));
-register('deletePRReviewComment', ((repos, { repo, pr, id }) => {
+register('deletePRReviewComment', repos.mutate((repos, { repo, pr, id }) => {
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id: prId }) => prId === pr.id);
@@ -146,291 +145,105 @@ register('deletePRReviewComment', ((repos, { repo, pr, id }) => {
     return r;
   });
 }));
-register('markAsRead', async (id) => {
+const replacePR = register('replacePR', repos.mutate((repos, { pr }) => {
+  return repos.map(r => {
+    r.prs = r.prs.map(p => {
+      if (p.id === pr.id) {
+        return pr;
+      }
+      return p;
+    });
+    return r;
+  });
+}));
+const addPR = register('addPR', repos.mutate((repos, { repo, pr }) => {
+  return repos.map(r => {
+    if (r.repoId === repo.repoId) {
+      r.prs.push(pr);
+    }
+    return r;
+  });
+}));
+const replaceEvent = register('replaceEvent', repos.mutate((repos, { event }) => {
+  return repos.map(r => {
+    if (r.prs && r.prs.length > 0) {
+      r.prs.forEach(p => {
+        p.events = p.events.map(e => {
+          if (e.id === event.id) {
+            return event;
+          }
+          return e;
+        });
+      });
+    }
+    return r;
+  });
+}));
+const deleteEvent = register('deleteEvent', repos.mutate((repos, { id }) => {
+  return repos.map(r => {
+    r.prs.forEach(p => {
+      p.events = p.events.filter(e => e.id !== id);
+    });
+    return r;
+  });
+}));
+
+// functions
+const markAsRead = register('markAsRead', async (id) => {
   await api.markAsRead(id);
   setNotifications(await api.getNotifications());
 });
 
-/* ---- old ---- */
+register('createPR', async ({ repo, title, body, base, head }) => {
+  const pr = await api.createPR(repo, title, body, base, head);
 
-roger.context({
-  async fetchOrganizations() {
-    return api.fetchOrganizations();
-  },
-  // toggleRepo(repo, { toggleRepos }) {
-  //   api.toggleRepo(repo);
-  //   toggleRepos(repo);
-  // },
-  getPRFiles({ repo, prNumber }) {
-    return api.fetchPRFiles(repo, prNumber);
-  },
-  getPRFile({ repo, path, commit }) {
-    return api.fetchPRFile(repo, path, commit);
-  },
-  // async fetchData({ repos, repoName, prNumber }, { registerPRs }) {
-  //   for (let i = 0; i < repos.length; i++) {
-  //     const repo = repos[i];
-  //     const prs = await api.fetchRemotePRs(repo);
-
-  //     if (PRINT_PRS) {
-  //       console.log(repo.name, JSON.stringify(prs, null, 2));
-  //     }
-
-  //     if (
-  //       prNumber &&
-  //       repo.name === repoName &&
-  //       prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
-  //     ) {
-  //       const otherPR = await api.fetchRemotePR(repo, prNumber);
-
-  //       if (otherPR) {
-  //         prs.push(otherPR);
-  //       }
-  //     }
-
-  //     registerPRs({ repo, prs });
-  //   }
-  // },
-  async submitReview({ reviewId, event, body }, { replaceEvent, markAsRead }) {
-    const review = await api.submitReview(reviewId, event, body);
-
-    markAsRead(review.id);
-    replaceEvent({ event: review });
-  },
-  async deleteReview({ reviewId }, { deleteEvent }) {
-    await api.deleteReview(reviewId);
-
-    deleteEvent({ id: reviewId });
-  },
-  async createReview({ repo, pr, event, path, position, body }, { addEventToPR, markAsRead }) {
-    const { review } = await api.createReview(pr.id, event, path, position, body);
-
-    markAsRead(review.id);
-    addEventToPR({ repo, pr, event: review });
-  },
-  async resolveThread({ threadId }, { replaceEvent }) {
-    const thread = await api.resolveThread(threadId);
-
-    replaceEvent({ event: thread });
-  },
-  async unresolveThread({ threadId }, { replaceEvent }) {
-    const thread = await api.unresolveThread(threadId);
-
-    replaceEvent({ event: thread });
-  },
-  // async markAsRead(id, { setNotifications }) {
-  //   await api.markAsRead(id);
-  //   setNotifications(await api.getNotifications());
-  // },
-  async markAsUnread(id, { setNotifications }) {
-    await api.markAsUnread(id);
-    setNotifications(await api.getNotifications());
-  },
-  async mergePR({ id, repo }, { replacePR }) {
-    const pr = await api.mergePR(id, repo);
-
-    replacePR({ pr });
-  },
-  async closePR({ id, repo }, { replacePR }) {
-    const pr = await api.closePR(id, repo);
-
-    replacePR({ pr });
-  },
-  async createPR({ repo, title, body, base, head }, { addPR }) {
-    const pr = await api.createPR(repo, title, body, base, head);
-
-    addPR({ repo, pr });
-    return pr;
-  },
-  async editPR({ repo, title, body, prId }, { replacePR }) {
-    const pr = await api.editPR(repo, title, body, prId);
-
-    replacePR({ pr });
-    return pr;
-  },
-  getPRStatuses({ prNumber, repo }) {
-    return api.getPRStatuses(prNumber, repo);
-  }
+  addPR({ repo, pr });
+  return pr;
 });
+register('submitReview', async ({ reviewId, event, body }) => {
+  const review = await api.submitReview(reviewId, event, body);
 
-roger.useReducer('repos', {
-  setRepos(oldRepos, newRepos) {
-    return newRepos;
-  },
-  registerPRs(repos, { repo, prs }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        r.prs = prs;
-      }
-      return r;
-    });
-  },
-  // addEventToPR(repos, { repo, pr, event }) {
-  //   return repos.map(r => {
-  //     if (r.repoId === repo.repoId) {
-  //       const p = r.prs.find(({ id }) => id === pr.id);
-
-  //       if (p) {
-  //         p.events.push(event);
-  //       }
-  //     }
-  //     return r;
-  //   });
-  // },
-  replaceEvent(repos, { event }) {
-    return repos.map(r => {
-      if (r.prs && r.prs.length > 0) {
-        r.prs.forEach(p => {
-          p.events = p.events.map(e => {
-            if (e.id === event.id) {
-              return event;
-            }
-            return e;
-          });
-        });
-      }
-      return r;
-    });
-  },
-  deleteEvent(repos, { id }) {
-    return repos.map(r => {
-      r.prs.forEach(p => {
-        p.events = p.events.filter(e => e.id !== id);
-      });
-      return r;
-    });
-  },
-  // replaceEventInPR(repos, { repo, pr, event }) {
-  //   return repos.map(r => {
-  //     if (r.repoId === repo.repoId) {
-  //       const p = r.prs.find(({ id }) => id === pr.id);
-
-  //       if (p) {
-  //         p.events = p.events.map(e => {
-  //           if (e.id === event.id) {
-  //             return event;
-  //           }
-  //           return e;
-  //         });
-  //       }
-  //     }
-  //     return r;
-  //   });
-  // },
-  // deleteEventFromPR(repos, { repo, pr, id }) {
-  //   return repos.map(r => {
-  //     if (r.repoId === repo.repoId) {
-  //       const p = r.prs.find(({ id }) => id === pr.id);
-
-  //       if (p) {
-  //         p.events = p.events.filter(e => e.id !== id);
-  //       }
-  //     }
-  //     return r;
-  //   });
-  // },
-  // addPRReviewComment(repos, { repo, pr, topComment, comment }) {
-  //   return repos.map(r => {
-  //     if (r.repoId === repo.repoId) {
-  //       const p = r.prs.find(({ id }) => id === pr.id);
-
-  //       if (p) {
-  //         // add it to already existing review thread
-  //         if (topComment.id) {
-  //           p.events = p.events.map(e => {
-  //             if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
-  //               e.comments.push(comment);
-  //             }
-  //             return e;
-  //           });
-  //         // create a new thread
-  //         } else {
-  //           p.events.push({
-  //             type: 'PullRequestReviewThread',
-  //             isResolved: false,
-  //             date: comment.date,
-  //             comments: [ comment ]
-  //           });
-  //         }
-  //       }
-  //     }
-  //     return r;
-  //   });
-  // },
-  // replacePRReviewComment(repos, { repo, pr, comment }) {
-  //   return repos.map(r => {
-  //     if (r.repoId === repo.repoId) {
-  //       const p = r.prs.find(({ id }) => id === pr.id);
-
-  //       if (p) {
-  //         p.events = p.events.map(e => {
-  //           if (e.comments && e.comments.length > 0) {
-  //             e.comments = e.comments.map(c => {
-  //               if (c.id === comment.id) {
-  //                 return comment;
-  //               }
-  //               return c;
-  //             });
-  //           }
-  //           return e;
-  //         });
-  //       }
-  //     }
-  //     return r;
-  //   });
-  // },
-  // deletePRReviewComment(repos, { repo, pr, id }) {
-  //   return repos.map(r => {
-  //     if (r.repoId === repo.repoId) {
-  //       const p = r.prs.find(({ id: prId }) => prId === pr.id);
-
-  //       if (p) {
-  //         p.events = p.events.map(e => {
-  //           if (e.comments && e.comments.length > 0) {
-  //             e.comments = e.comments.filter(c => c.id !== id);
-  //           }
-  //           return e;
-  //         });
-  //       }
-  //     }
-  //     return r;
-  //   });
-  // },
-  replacePR(repos, { pr }) {
-    return repos.map(r => {
-      r.prs = r.prs.map(p => {
-        if (p.id === pr.id) {
-          return pr;
-        }
-        return p;
-      });
-      return r;
-    });
-  },
-  addPR(repos, { repo, pr }) {
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        r.prs.push(pr);
-      }
-      return r;
-    });
-  }
+  markAsRead(review.id);
+  replaceEvent({ event: review });
 });
+register('deleteReview', async ({ reviewId }) => {
+  await api.deleteReview(reviewId);
 
-roger.useReducer('profile', {
-  setProfile(oldProfile, newProfile) {
-    return newProfile;
-  }
+  deleteEvent({ id: reviewId });
 });
+register('createReview', async ({ repo, pr, event, path, position, body }) => {
+  const { review } = await api.createReview(pr.id, event, path, position, body);
 
-roger.useReducer('notifications', {
-  setNotifications(oldNotifications, newNotifications) {
-    return newNotifications;
-  }
+  markAsRead(review.id);
+  addEventToPR({ repo, pr, event: review });
 });
+register('resolveThread', async ({ threadId }) => {
+  const thread = await api.resolveThread(threadId);
 
-roger.useReducer('verification', {
-  setVerification(oldV, newV) {
-    return newV;
-  }
+  replaceEvent({ event: thread });
+});
+register('unresolveThread', async ({ threadId }) => {
+  const thread = await api.unresolveThread(threadId);
+
+  replaceEvent({ event: thread });
+});
+register('markAsUnread', async (id) => {
+  await api.markAsUnread(id);
+  setNotifications(await api.getNotifications());
+});
+register('mergePR', async ({ id, repo }) => {
+  const pr = await api.mergePR(id, repo);
+
+  replacePR({ pr });
+});
+register('closePR', async ({ id, repo }, { replacePR }) => {
+  const pr = await api.closePR(id, repo);
+
+  replacePR({ pr });
+});
+register('editPR', async ({ repo, title, body, prId }) => {
+  const pr = await api.editPR(repo, title, body, prId);
+
+  replacePR({ pr });
+  return pr;
 });

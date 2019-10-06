@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { renderToString } from 'react-dom/server';
+import riew from 'riew/react';
 
 import marked from '../utils/marked';
 import Date from '../utils/Date';
-import roger from 'jolly-roger';
 import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
 import { withHorn } from '../Horn';
 
-function Comment({ event, repo, pr, dim }) {
+function Comment({ event, repo, pr, dim, profile, postman }) {
   const [ isBodyVisible, bodyVisibility ] = useState(true);
   const [ isEditing, edit ] = useState(false);
-  const [ profile ] = roger.useState('profile');
-  const { postman } = roger.useContext();
   const allowEdit = event.author.login === profile.login && isBodyVisible;
 
   if (dim) {
@@ -69,7 +67,9 @@ Comment.propTypes = {
   event: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired,
+  profile: PropTypes.func.isRequired,
+  postman: PropTypes.func.isRequired,
   dim: PropTypes.bool
 };
 
-export default withHorn(Comment);
+export default withHorn(riew(Comment).with('postman', 'profile'));

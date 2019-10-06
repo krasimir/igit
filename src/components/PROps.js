@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import riew from 'riew/react';
 
 import { CLOSE, CHECK, MORE_HORIZONTAL, CIRCLE } from './Icons';
-import roger from 'jolly-roger';
 import { LoadingAnimation } from './Loading';
 
 const isStatusSuccessful = (status) => {
@@ -17,9 +17,8 @@ const isPending = (status) => {
   return status.some(({ state }) => (state === 'PENDING' || state === 'EXPECTED'));
 };
 
-export default function PROps({ pr, repo }) {
+function PROps({ pr, repo, mergePR, closePR, api }) {
   const [ closingAreYouSure, areYouSure ] = useState(false);
-  const { mergePR, closePR, getPRStatuses } = roger.useContext();
   const [ submitted, setSubmitted ] = useState(false);
   const [ statuses, setStatuses ] = useState(null);
   const isLastCheckOk =
@@ -31,7 +30,7 @@ export default function PROps({ pr, repo }) {
 
   useEffect(() => {
     setStatuses(null);
-    getPRStatuses({ prNumber: pr.number, repo }).then(setStatuses);
+    api.getPRStatuses(pr.number, repo).then(setStatuses);
   }, [ pr.number ]);
 
   async function merge() {
@@ -103,8 +102,13 @@ export default function PROps({ pr, repo }) {
 
 PROps.propTypes = {
   pr: PropTypes.object.isRequired,
-  repo: PropTypes.object.isRequired
+  repo: PropTypes.object.isRequired,
+  mergePR: PropTypes.func.isRequired,
+  closePR: PropTypes.func.isRequired,
+  api: PropTypes.obj.isRequired
 };
+
+export default riew(PROps).with('mergePR', 'closePR', 'api');
 
 function Status({ commit, status }) {
   const [ expanded, expand ] = useState(false);

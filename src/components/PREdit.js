@@ -1,13 +1,13 @@
 /* eslint-disable max-len, consistent-return, handle-callback-err */
-import React, { useState, useRef, useEffect, useReducer } from 'react';
+import React, { useState, useRef, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import riew from 'riew/react';
 
 import { PULL_REQUEST } from './Icons';
 import Suggestions from './Suggestions';
 import setCaretPosition from './utils/setCaretPosition';
 import { LoadingAnimation } from './Loading';
-import roger from 'jolly-roger';
 
 function errorsReducer(state, error) {
   if (error === null) return {};
@@ -23,9 +23,8 @@ function valuesReducer(state, data) {
   return { ...state };
 }
 
-export default function PREdit({ repo, owner, pr }) {
+function PREdit({ repo, owner, pr, editPR }) {
   const bodyTextarea = useRef(null);
-  const { editPR } = roger.useContext();
   const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);
   const [ errors, setError ] = useReducer(errorsReducer, {});
@@ -119,5 +118,8 @@ export default function PREdit({ repo, owner, pr }) {
 PREdit.propTypes = {
   repo: PropTypes.object.isRequired,
   owner: PropTypes.string.isRequired,
+  editPR: PropTypes.func.isRequired,
   pr: PropTypes.object
 };
+
+export default riew(PREdit).with('editPR');

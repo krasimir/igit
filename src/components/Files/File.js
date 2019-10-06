@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import roger from 'jolly-roger';
+import { riew } from 'riew/react';
 
 import { getDiffItemType } from '../utils/ReviewDiff';
 import getFileLines from './getFileLines';
@@ -15,7 +15,7 @@ const toCommentReducer = function (state, { path, line, diffLine }) {
   return [ ...state, { path, line, diffLine } ];
 };
 
-export default function File({
+function File({
   lastCommit,
   events,
   path,
@@ -25,11 +25,12 @@ export default function File({
   progressPercent,
   isCollapsed,
   repo,
-  pr
+  pr,
+  api,
+  postman
 }) {
   const [ fullFileContent, setFullFileContent ] = useState({ state: 'idle', value: null });
   const [ toComment, openComment ] = useReducer(toCommentReducer, []);
-  const { postman, getPRFile } = roger.useContext();
 
   let viewFileUrl;
   const threads = events.filter(event => {
@@ -62,7 +63,7 @@ export default function File({
     if (fullFileContent.state === 'idle') {
       setFullFileContent({ state: 'loading', value: null });
 
-      const file = await getPRFile({ repo, path, commit: lastCommit.oid });
+      const file = await api.fetchPRFile({ repo, path, commit: lastCommit.oid });
       const lines = file.split('\n');
 
       setFullFileContent({ state: 'loaded', value: lines });
@@ -141,3 +142,5 @@ File.propTypes = {
 function ReviewProgress({ percents }) {
   return <div className='files-review'>{ percents }%</div>;
 }
+
+export default riew(File).with('api', 'postman');

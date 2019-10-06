@@ -2,12 +2,12 @@
 import React, { useState, useRef, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import riew from 'riew/react';
 
 import { PULL_REQUEST } from './Icons';
 import Suggestions from './Suggestions';
 import setCaretPosition from './utils/setCaretPosition';
 import { LoadingAnimation } from './Loading';
-import roger from 'jolly-roger';
 
 function errorsReducer(state, error) {
   if (error === null) return {};
@@ -23,10 +23,9 @@ function valuesReducer(state, data) {
   return { ...state };
 }
 
-export default function PRNew({ repo, owner, pr }) {
+function PRNew({ repo, owner, pr, api, createPR }) {
   const headInput = useRef(null);
   const bodyTextarea = useRef(null);
-  const { createPR, getPRFile } = roger.useContext();
   const [ textareaPosition, setTextareaPosition ] = useState(0);
   const [ submitted, submit ] = useState(false);
   const [ newPR, setNewPR ] = useState(null);
@@ -42,7 +41,7 @@ export default function PRNew({ repo, owner, pr }) {
 
   useEffect(() => {
     headInput.current.focus();
-    getPRFile({ repo, path: '.github/PULL_REQUEST_TEMPLATE.md'}).then(
+    api.fetchPRFile({ repo, path: '.github/PULL_REQUEST_TEMPLATE.md'}).then(
       prTemplate => {
         setValue({ value: prTemplate, key: 'body' });
         gettingTemplate(false);
@@ -170,5 +169,9 @@ export default function PRNew({ repo, owner, pr }) {
 PRNew.propTypes = {
   repo: PropTypes.object.isRequired,
   owner: PropTypes.string.isRequired,
-  pr: PropTypes.object
+  api: PropTypes.object.isRequired,
+  pr: PropTypes.object,
+  createPR: PropTypes.func.isRequired
 };
+
+export default riew(PRNew).with('api', 'createPR');
