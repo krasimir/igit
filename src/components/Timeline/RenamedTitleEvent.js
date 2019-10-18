@@ -6,11 +6,9 @@ import { EDIT } from '../Icons';
 import trim from '../utils/trim';
 import { withHorn } from '../Horn';
 
-function RenamedTitleEvent({ event, dim }) {
-  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
-
+function RenamedTitleEvent({ event }) {
   return (
-    <div className={ cls } id={ event.id }>
+    <div className='timeline-thread-comment media small relative' id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         { event.author.login }&nbsp;
@@ -23,8 +21,7 @@ function RenamedTitleEvent({ event, dim }) {
 };
 
 RenamedTitleEvent.propTypes = {
-  event: PropTypes.object.isRequired,
-  dim: PropTypes.bool
+  event: PropTypes.object.isRequired
 };
 
 export default withHorn(RenamedTitleEvent);

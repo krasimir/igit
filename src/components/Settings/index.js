@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
 import Header from '../Header';
-import useDimSeenEvents from './useDimSeenEvents';
 import PullingInterval from './PullingInterval';
 import initEffect from './effects/initEffect';
 import fetchAllReposEffect from './effects/fetchAllReposEffect';
@@ -28,7 +27,6 @@ function Settings({
   const textInput = useRef(null);
   const [ filter, setFilter ] = useState('');
   const [ noRepos, setNoRepos ] = useState(false);
-  const { component: dimSeenEventsComponent } = useDimSeenEvents();
 
   useEffect(() => {
     if (initializationDone) {
@@ -157,8 +155,6 @@ function Settings({
         </div>
         <div className='mt2 pr-card-light'>
           <h3 className='mb1'>Other settings</h3>
-          { dimSeenEventsComponent }
-          <hr />
           <PullingInterval />
         </div>
       </div>

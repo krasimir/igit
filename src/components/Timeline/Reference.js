@@ -6,11 +6,9 @@ import { MESSAGE } from '../Icons';
 import trim from '../utils/trim';
 import { withHorn } from '../Horn';
 
-function Reference({ event, dim }) {
-  const cls = `timeline-thread-comment media small relative ${ dim ? 'dim' : ''}`;
-
+function Reference({ event }) {
   return (
-    <div className={ cls } id={ event.id }>
+    <div className='timeline-thread-comment media small relative' id={ event.id }>
       <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
       <div>
         { event.author.login }&nbsp;
@@ -24,8 +22,7 @@ function Reference({ event, dim }) {
 };
 
 Reference.propTypes = {
-  event: PropTypes.object.isRequired,
-  dim: PropTypes.bool
+  event: PropTypes.object.isRequired
 };
 
 export default withHorn(Reference);

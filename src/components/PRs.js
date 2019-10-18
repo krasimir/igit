@@ -45,7 +45,7 @@ export default function PRs({ prs, owner, name, prNumber, loading }) {
       }
       <Link
         to={ `/repo/${ owner }/${ name }/new` }
-        className='as-link tac list-link dimmed'>
+        className='as-link tac list-link'>
         <PLUS size={ 14 } style={ { transform: 'translateY(2px)'} }/>New pull request
       </Link>
     </div>

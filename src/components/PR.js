@@ -31,6 +31,14 @@ const formatPRStatus = (pr) => {
   }
   return <span className='pr-status'>open / { formatDate(pr.createdAt) }</span>;
 };
+const getPRCardClass = (pr) => {
+  if (pr.merged) {
+    return 'pr-card cf merged';
+  } else if (pr.closed) {
+    return 'pr-card cf closed';
+  }
+  return 'pr-card cf';
+};
 const normalizeURL = url => {
   return url.replace(/\/files$/, '');
 };
@@ -52,7 +60,7 @@ export default function PR({ url, pr, repo }) {
   return (
     <div className='pr-details'>
       <LoCBar add={ pr.additions } del={ pr.deletions }/>
-      <div className='pr-card cf'>
+      <div className={ getPRCardClass(pr) }>
         <div className='media'>
           <a href={ pr.author.url } target='_blank' className='no-hover'>
             <img src={ pr.author.avatar } className='avatar' title={ pr.author.login }/>
@@ -95,7 +103,7 @@ export default function PR({ url, pr, repo }) {
         ) }/>
       </Switch>
       <Link
-        className='as-link pr-edit dimmed no-hover'
+        className='as-link pr-edit no-hover'
         to={ `/repo/${ repo.nameWithOwner }/${ pr.number }/edit` }>
         <EDIT size={ 18 }/>
       </Link>

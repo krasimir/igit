@@ -8,7 +8,7 @@ import SubmitPullRequestReview from './SubmitPullRequestReview';
 import flattenToPRReviewComments from '../../api/utils/flattenToPRReviewComments';
 import { withHorn } from '../Horn';
 
-function PullRequestReview({ event, pr, repo, dim }) {
+function PullRequestReview({ event, pr, repo }) {
   let StateIcon = MESSAGE;
   let stateLabel = '';
 
@@ -34,22 +34,6 @@ function PullRequestReview({ event, pr, repo, dim }) {
   }
 
   const reviewComments = flattenToPRReviewComments(pr, event.id);
-
-  if (dim && event.state !== 'PENDING') {
-    return (
-      <div className={ `timeline-review timeline-review-${ event.state } relative dim` } id={ event.id }>
-        <div className='media small'>
-          <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
-          <div>
-            { event.author.login }&nbsp;
-            <Date event={ event } />&nbsp;
-            <StateIcon size={ 18 }/>
-            <small>{ stateLabel }</small>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={ `timeline-review timeline-review-${ event.state } relative` } id={ event.id }>
@@ -89,8 +73,7 @@ function PullRequestReview({ event, pr, repo, dim }) {
 PullRequestReview.propTypes = {
   event: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
-  repo: PropTypes.object.isRequired,
-  dim: PropTypes.bool
+  repo: PropTypes.object.isRequired
 };
 
 export default withHorn(PullRequestReview);

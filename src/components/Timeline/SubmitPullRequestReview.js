@@ -63,8 +63,7 @@ SubmitPullRequestReview.propTypes = {
   reviewId: PropTypes.string,
   prAuthor: PropTypes.object,
   repo: PropTypes.object,
-  pr: PropTypes.object,
-  dim: PropTypes.bool
+  pr: PropTypes.object
 };
 
 export default riew(SubmitPullRequestReview).with('submitReview', 'createReview', 'deleteReview', 'profile');

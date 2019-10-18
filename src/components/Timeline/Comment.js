@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { renderToString } from 'react-dom/server';
 import riew from 'riew/react';
 
 import marked from '../utils/marked';
@@ -9,25 +8,10 @@ import { MESSAGE } from '../Icons';
 import Postman from '../Postman';
 import { withHorn } from '../Horn';
 
-function Comment({ event, repo, pr, dim, profile, postman }) {
+function Comment({ event, repo, pr, profile, postman }) {
   const [ isBodyVisible, bodyVisibility ] = useState(true);
   const [ isEditing, edit ] = useState(false);
   const allowEdit = event.author.login === profile.login && isBodyVisible;
-
-  if (dim) {
-    const dateMarkdown = renderToString(<Date event={ event } />);
-
-    return (
-      <div className='timeline-thread-comment relative dim'>
-        <div className='media small' id={ event.id }>
-          <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
-          <div
-            className='markdown'
-            dangerouslySetInnerHTML={ { __html: `<p>${ event.author.login }&nbsp;` + dateMarkdown + '</p>' + marked(event.body, repo) } } />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className='timeline-thread-comment relative'>
@@ -68,8 +52,7 @@ Comment.propTypes = {
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired,
   profile: PropTypes.func.isRequired,
-  postman: PropTypes.func.isRequired,
-  dim: PropTypes.bool
+  postman: PropTypes.func.isRequired
 };
 
 export default withHorn(riew(Comment).with('postman', 'profile'));

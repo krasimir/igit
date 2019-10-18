@@ -40,6 +40,5 @@ export default function Review({ pr, repo }) {
 
 Review.propTypes = {
   pr: PropTypes.object.isRequired,
-  repo: PropTypes.object.isRequired,
-  dim: PropTypes.bool
+  repo: PropTypes.object.isRequired
 };

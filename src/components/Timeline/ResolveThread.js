@@ -34,8 +34,7 @@ ResolveThread.propTypes = {
   event: PropTypes.object.isRequired,
   resolveThread: PropTypes.func.isRequired,
   unresolveThread: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func,
-  dim: PropTypes.bool
+  onSuccess: PropTypes.func
 };
 ResolveThread.defaultProps = {
   onSuccess: () => {}

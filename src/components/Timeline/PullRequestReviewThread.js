@@ -9,9 +9,9 @@ import { MESSAGE, CLOSE } from '../Icons';
 import ReviewDiff from '../utils/ReviewDiff';
 import Postman from '../Postman';
 import ResolveThread from './ResolveThread';
-import Horn, { unDim } from '../Horn';
+import Horn from '../Horn';
 
-function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, dim, profile, postman }) {
+function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, profile, postman }) {
   const [ isEditing, edit ] = useState(false);
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
@@ -26,22 +26,6 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
   str += comment.position ? ':' + comment.position : '';
 
   if (isTheFirstOne && context === 'timeline') {
-    if (dim) {
-      return (
-        <div className='timeline-thread-comment' id={ comment.id }>
-          <div className='media small'>
-            <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
-            <div>
-              { comment.author.login }&nbsp;
-              <Date event={ event.comments[totalComments - 1] } />&nbsp;
-              <MESSAGE size={ 18 }/>
-              { !isBodyVisible && <small>{ str }</small> }&nbsp;
-              ({ totalComments })
-            </div>
-          </div>
-        </div>
-      );
-    }
     return (
       <div className='timeline-thread-comment' id={ comment.id }>
         { isBodyVisible &&
@@ -128,18 +112,12 @@ ThreadItem.propTypes = {
   repo: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
-  postman: PropTypes.func.isRequired,
-  dim: PropTypes.bool
+  postman: PropTypes.func.isRequired
 };
 
-function PullRequestReviewThread({ event, repo, pr, context, expanded, dim, profile, postman }) {
+function PullRequestReviewThread({ event, repo, pr, context, expanded, profile, postman }) {
   const [ isBodyVisible, bodyVisibility ] = useState(expanded);
-  const [ undimComponent, isDimmed ] = unDim(dim, (undimmed) => {
-    if (undimmed && dim) {
-      bodyVisibility(true);
-    }
-  });
-  const showBody = isDimmed ? false : isBodyVisible;
+  const showBody = isBodyVisible;
 
   const comments = event.comments.map((comment, i) => {
     return (
@@ -153,14 +131,13 @@ function PullRequestReviewThread({ event, repo, pr, context, expanded, dim, prof
         context={ context }
         repo={ repo }
         pr={ pr }
-        dim={ isDimmed }
         profile={ profile }
         postman={ postman }/>
     );
   });
 
   return (
-    <div className={ `relative ${ isDimmed ? 'dim' : ''}` }>
+    <div className='relative'>
       { comments }
       { showBody &&
         <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }>
@@ -176,9 +153,7 @@ function PullRequestReviewThread({ event, repo, pr, context, expanded, dim, prof
             onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
         </div> }
       { !showBody && (
-        <Horn events={ event.comments }>
-          { undimComponent }
-        </Horn>
+        <Horn events={ event.comments } />
       ) }
     </div>
   );
@@ -191,8 +166,7 @@ PullRequestReviewThread.propTypes = {
   context: PropTypes.string.isRequired,
   expanded: PropTypes.bool,
   profile: PropTypes.object.isRequired,
-  postman: PropTypes.func.isRequired,
-  dim: PropTypes.bool
+  postman: PropTypes.func.isRequired
 };
 PullRequestReviewThread.defaultProps = {
   context: 'timeline',

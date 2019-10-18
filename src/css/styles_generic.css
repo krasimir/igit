@@ -55,12 +55,6 @@ a.default-link:hover {
   background: none;
   color: #4a4a4a;
 }
-a.dimmed {
-  opacity: .5;
-}
-a.dimmed:hover {
-  opacity: 1;
-}
 p {
   margin: 0 0 1em 0;
   padding: 0;

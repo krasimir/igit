@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import riew from 'riew/react';
 
 import isItANewEvent from './utils/isItANewEvent';
-import { EYE } from './Icons';
 
 function Horn({ events, children, markAsRead, markAsUnread, notifications }) {
   const [ otherOptions, showOtherOptions ] = useState(false);
@@ -38,33 +37,14 @@ const EnhancedHorn = riew(Horn).with('markAsRead', 'markAsUnread', 'notification
 
 export default EnhancedHorn;
 
-export function unDim(isDimmedByDefault, onDimChange = () => {}) {
-  const [ isUndimmed, undim ] = useState(false);
-
-  return [
-    isDimmedByDefault ? (
-      <div className='view' onClick={ () => {
-        onDimChange(!isUndimmed);
-        undim(!isUndimmed);
-      } }>
-        <EYE size={ 18 } />
-      </div>
-    ) : null,
-    isUndimmed ? false : isDimmedByDefault
-  ];
-};
-
 export function withHorn(Component) {
-  return function WithHorn({ dim, ...props }) { // eslint-disable-line
-    const [ undimComponent, isUndim ] = unDim(dim);
+  return function WithHorn({ ...props }) { // eslint-disable-line
     let events = [ props.event ]; // eslint-disable-line
 
     return (
       <div className='relative'>
-        <Component { ...props } dim={ isUndim }/>
-        <EnhancedHorn events={ events }>
-          { undimComponent }
-        </EnhancedHorn>
+        <Component { ...props } />
+        <EnhancedHorn events={ events } />
       </div>
     );
   };

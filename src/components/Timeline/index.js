@@ -13,8 +13,6 @@ import Reference from './Reference';
 import Review from './Review';
 import flattenUsers from '../../api/utils/flattenUsers';
 import Postman from '../Postman';
-import isItANewEvent from '../utils/isItANewEvent';
-import useDimSeenEvents from '../Settings/useDimSeenEvents';
 
 const components = {
   Commit,
@@ -39,7 +37,6 @@ function Timeline({ pr, repo, postman, notifications }) {
   const users = flattenUsers(pr).map(({ login }) => login);
   const [ allUsers, showAllUsers ] = useState(true);
   const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
-  const { dimKnownEvents, component: dimKnownEventsComponent } = useDimSeenEvents();
 
   const events = pr.events
     .filter(event => {
@@ -54,7 +51,6 @@ function Timeline({ pr, repo, postman, notifications }) {
       return true;
     })
     .map((event) => {
-      const isDimmed = dimKnownEvents && !isItANewEvent(event, notifications);
       const Component = components[event.type];
 
       if (event.type === 'PullRequestReview' && event.state === 'PENDING') {
@@ -66,8 +62,7 @@ function Timeline({ pr, repo, postman, notifications }) {
           event={ event }
           key={ event.id }
           pr={ pr }
-          repo={ repo }
-          dim={ isDimmed } />;
+          repo={ repo }/>;
       }
       return <div key={ event.id }>{ event.type }</div>;
     });
@@ -83,7 +78,6 @@ function Timeline({ pr, repo, postman, notifications }) {
   return (
     <div className='timeline'>
       <section className='filter mb1 cf'>
-        { dimKnownEventsComponent }
         <label key='all-users'>
           <input
             type='checkbox'
