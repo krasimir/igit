@@ -4,7 +4,7 @@
   "description": "An app for managing GitHub pull requests",
   "main": "index.js",
   "scripts": {
-    "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development",
+    "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development --no-inline",
     "dev": "yarn minify-css && concurrently \"onchange ./src/css/*.css -- yarn minify-css\" \"yarn dev-server\"",
     "minify-css": "cat ./src/css/diff2html.min.css ./src/css/custom.diff2html.min.css ./src/css/github.markdown.css ./src/css/styles_generic.css ./src/css/styles.css | uglifycss > ./dist/styles.css",
     "release": "node ./scripts/verify.js && node ./scripts/version.js && webpack --config ./webpack.prod.js --mode production",
@@ -56,6 +56,7 @@
     "react-hot-loader": "^4.3.11",
     "react-router-dom": "4.3.1",
     "react-testing-library": "6.0.0",
+    "riew": "0.93.0",
     "serve": "11.0.0",
     "sha-regex": "1.0.4",
     "terser-webpack-plugin": "1.2.3",
@@ -63,8 +64,5 @@
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
-  },
-  "dependencies": {
-    "riew": "0.92.1"
   }
 }

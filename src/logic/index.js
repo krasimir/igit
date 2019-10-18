@@ -3,6 +3,8 @@ import { state, serial, register } from 'riew';
 import api from '../api';
 import './postman';
 
+const clone = data => JSON.parse(JSON.stringify(data));
+
 const profile = state(null);
 const repos = state(null);
 const [ notifications, setNotifications ] = state([]);
@@ -25,8 +27,9 @@ register('toggleRepo', repos.mutate((list, { repoId }) => {
 }).pipe((list, { repoId }) => {
   api.toggleRepo(list.find(r => r.repoId === repoId));
 }));
-register('subscribedRepos', repos.filter(repo => repo.selected));
+register('subscribedRepos', repos.map(repos => repos.filter(repo => repo.selected)));
 register('registerPRs', repos.mutate((list, { repo, prs }) => {
+  list = clone(list);
   return list.map(r => {
     if (r.repoId === repo.repoId) {
       return {
@@ -38,6 +41,7 @@ register('registerPRs', repos.mutate((list, { repo, prs }) => {
   });
 }));
 const addEventToPR = register('addEventToPR', repos.mutate((repos, { repo, pr, event }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -50,6 +54,7 @@ const addEventToPR = register('addEventToPR', repos.mutate((repos, { repo, pr, e
   });
 }));
 register('replaceEventInPR', repos.mutate((repos, { repo, pr, event }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -67,6 +72,7 @@ register('replaceEventInPR', repos.mutate((repos, { repo, pr, event }) => {
   });
 }));
 register('deleteEventFromPR', repos.mutate((repos, { repo, pr, id }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -79,6 +85,7 @@ register('deleteEventFromPR', repos.mutate((repos, { repo, pr, id }) => {
   });
 }));
 register('addPRReviewComment', repos.mutate((repos, { repo, pr, topComment, comment }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -107,6 +114,7 @@ register('addPRReviewComment', repos.mutate((repos, { repo, pr, topComment, comm
   });
 }));
 register('replacePRReviewComment', repos.mutate((repos, { repo, pr, comment }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
@@ -129,6 +137,7 @@ register('replacePRReviewComment', repos.mutate((repos, { repo, pr, comment }) =
   });
 }));
 register('deletePRReviewComment', repos.mutate((repos, { repo, pr, id }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id: prId }) => prId === pr.id);
@@ -136,7 +145,11 @@ register('deletePRReviewComment', repos.mutate((repos, { repo, pr, id }) => {
       if (p) {
         p.events = p.events.map(e => {
           if (e.comments && e.comments.length > 0) {
-            e.comments = e.comments.filter(c => c.id !== id);
+            const idx = e.comments.findIndex(c => c.id === id);
+
+            if (idx >= 0) {
+              e.comments.splice(idx, 1);
+            }
           }
           return e;
         });
@@ -146,6 +159,7 @@ register('deletePRReviewComment', repos.mutate((repos, { repo, pr, id }) => {
   });
 }));
 const replacePR = register('replacePR', repos.mutate((repos, { pr }) => {
+  repos = clone(repos);
   return repos.map(r => {
     r.prs = r.prs.map(p => {
       if (p.id === pr.id) {
@@ -157,6 +171,7 @@ const replacePR = register('replacePR', repos.mutate((repos, { pr }) => {
   });
 }));
 const addPR = register('addPR', repos.mutate((repos, { repo, pr }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
       r.prs.push(pr);
@@ -165,6 +180,7 @@ const addPR = register('addPR', repos.mutate((repos, { repo, pr }) => {
   });
 }));
 const replaceEvent = register('replaceEvent', repos.mutate((repos, { event }) => {
+  repos = clone(repos);
   return repos.map(r => {
     if (r.prs && r.prs.length > 0) {
       r.prs.forEach(p => {
@@ -180,6 +196,7 @@ const replaceEvent = register('replaceEvent', repos.mutate((repos, { event }) =>
   });
 }));
 const deleteEvent = register('deleteEvent', repos.mutate((repos, { id }) => {
+  repos = clone(repos);
   return repos.map(r => {
     r.prs.forEach(p => {
       p.events = p.events.filter(e => e.id !== id);

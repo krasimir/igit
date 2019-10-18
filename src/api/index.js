@@ -121,7 +121,6 @@ function createAPI() {
     const data = await request('/user');
 
     db.setProfile(profile = createProfile(data, token));
-    // console.log(JSON.stringify(profile, null, 2));
     return profile;
   };
   api.fetchOrganizations = async function () {

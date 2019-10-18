@@ -12,12 +12,16 @@ let start = now();
 export default function UpdateProgress({ fetchDataInterval }) {
   const [ loadingInterval, setLoadingInterval ] = useState(null);
   const [ percent, setPercent ] = useState(0);
+  const pullingInterval = getPullingInterval();
 
   useEffect(() => {
     clearInterval(loadingInterval);
     start = now();
     setLoadingInterval(setInterval(() => {
-      setPercent(Math.ceil((now() - start) / getPullingInterval() * 100));
+      setPercent(Math.ceil((now() - start) / pullingInterval * 100));
+      if (pullingInterval < now() - start) {
+        start = now();
+      }
     }, 1000));
   }, [ fetchDataInterval ]);
 

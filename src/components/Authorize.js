@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 
 import Logo from './Logo';
 
-const controller = ({ render, state, api, profile }) => {
+const controller = ({ data, state, api, profile }) => {
   const [ error, setError ] = state(null);
   const [ verifying, setVerifying ] = state(false);
   const [ , setProfile ] = profile;
 
-  render({
+  data({
     error,
     verifying,
     async verify(token) {

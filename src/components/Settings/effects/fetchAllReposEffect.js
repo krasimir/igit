@@ -1,7 +1,7 @@
-const fetchAllReposEffect = ({ render, api, state }) => {
+const fetchAllReposEffect = ({ data, api, state }) => {
   const [ isFetchingRepos, fetching ] = state(false);
 
-  render({
+  data({
     isFetchingRepos,
     fetchAllRepos: async (query) => {
       fetching(true);

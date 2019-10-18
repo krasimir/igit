@@ -43,7 +43,6 @@ register('postman', ({ repo, pr }) => {
       },
       async del(id) {
         await api.deletePRThreadComment(id);
-
         deletePRReviewComment({ repo, pr, id });
       }
     },

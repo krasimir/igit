@@ -1,10 +1,10 @@
-const initEffect = async function ({ render, state, api, profile, repos }) {
+const initEffect = async function ({ data, state, api, profile, repos }) {
   const [ searchQuery, setSearchQuery ] = state([]);
   const [ , setError ] = state(null);
   const [ getProfile ] = profile;
   const [ , setRepos ] = repos;
 
-  render({
+  data({
     searchQuery,
     setError,
     setRepos,
@@ -32,7 +32,7 @@ const initEffect = async function ({ render, state, api, profile, repos }) {
         selected: false
       }))
     ]);
-    render({ initializationDone: true });
+    data({ initializationDone: true });
   } catch (error) {
     console.log(error);
     setError(new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));

@@ -3,7 +3,7 @@ import React from 'react';
 import PullRequestReviewThread from '../Timeline/PullRequestReviewThread';
 import Postman from '../Postman';
 
-export default function getFileItemLines(
+export default function getFileLines(
   diffItem,
   path,
   toComment,
