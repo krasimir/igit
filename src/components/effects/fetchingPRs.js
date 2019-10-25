@@ -47,9 +47,9 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
     }).then(
       () => {
         setFetchingPRs(false);
-        // if (PULLING) {
-        //   setFetchDataInterval(setTimeout(f, getPullingInterval()));
-        // }
+        if (PULLING) {
+          setFetchDataInterval(setTimeout(f, getPullingInterval()));
+        }
       },
       error => {
         setFetchingPRs(false);
