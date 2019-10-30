@@ -51,7 +51,7 @@ Comment.propTypes = {
   event: PropTypes.object.isRequired,
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired,
-  profile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
   postman: PropTypes.func.isRequired
 };
 

@@ -47,7 +47,7 @@ className='icon'
 
 export const CORNER_DOWN_RIGHT = ({ size, style }) => <svg style={ style || {} } width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><polyline points='15 10 20 15 15 20'/><path d='M4 4v7a4 4 0 0 0 4 4h12' /></svg>;
 
-export const CHEVRON_RIGHT = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><polyline points='9 18 15 12 9 6'/></svg>;
+export const CHEVRON_RIGHT = ({ size, style }) => <svg style={ style || {} } width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><polyline points='9 18 15 12 9 6'/></svg>;
 
 export const CHEVRON_DOWN = ({ size }) => <svg width={ size || 24 } height={ size || 24 } viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><polyline points='6 9 12 15 18 9'/></svg>;
 

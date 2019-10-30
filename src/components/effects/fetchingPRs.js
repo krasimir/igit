@@ -2,12 +2,14 @@ import { getPullingInterval } from '../Settings/PullingInterval';
 import { PRINT_PRS, PULLING } from '../../constants';
 
 export default function fetchingPRs({ api, data, state, subscribedRepos, props, registerPRs }) {
+  const numberOfFetches = state(0);
   const [ fetchingPRs, setFetchingPRs ] = state(false);
   const [ error, setError ] = state(null);
   const [ fetchDataInterval, setFetchDataInterval ] = state(null);
   const [ getRepos ] = subscribedRepos;
   const { match } = props();
   const { name, prNumber, op } = match.params;
+  const newFetch = numberOfFetches.mutate(value => value + 1);
 
   async function fetchData({ repos, repoName, prNumber }) {
     for (let i = 0; i < repos.length; i++) {
@@ -33,13 +35,10 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
     }
   }
 
-  data({
-    fetchingPRs,
-    error
-  });
-
   const f = () => {
+    newFetch();
     setFetchingPRs(true);
+    clearTimeout(fetchDataInterval);
     fetchData({
       repos: getRepos(),
       repoName: name,
@@ -60,6 +59,13 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
   };
 
   f();
+
+  data({
+    fetchingPRs,
+    numberOfFetches,
+    triggerUpdate: f,
+    error
+  });
 
   return () => {
     clearTimeout(fetchDataInterval);

@@ -9,7 +9,7 @@ function now() {
 
 let start = now();
 
-export default function UpdateProgress({ fetchDataInterval }) {
+export default function UpdateProgress({ numberOfFetches }) {
   const [ loadingInterval, setLoadingInterval ] = useState(null);
   const [ percent, setPercent ] = useState(0);
   const pullingInterval = getPullingInterval();
@@ -23,7 +23,7 @@ export default function UpdateProgress({ fetchDataInterval }) {
         start = now();
       }
     }, 1000));
-  }, [ fetchDataInterval ]);
+  }, [ numberOfFetches ]);
 
   return (
     <div className='update-progress'>
@@ -33,5 +33,5 @@ export default function UpdateProgress({ fetchDataInterval }) {
 }
 
 UpdateProgress.propTypes = {
-  fetchDataInterval: PropTypes.number
+  numberOfFetches: PropTypes.number
 };

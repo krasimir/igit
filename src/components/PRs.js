@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { LoadingAnimation } from './Loading';
 import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
-import { PLUS } from './Icons';
+import { PLUS, GITHUB } from './Icons';
 
-export default function PRs({ prs, owner, name, prNumber, loading }) {
+export default function PRs({ prs, owner, name, prNumber, loading, triggerUpdate }) {
   if (!prs) {
     return (
       <div>
@@ -48,6 +48,11 @@ export default function PRs({ prs, owner, name, prNumber, loading }) {
         className='as-link tac list-link'>
         <PLUS size={ 14 } style={ { transform: 'translateY(2px)'} }/>New pull request
       </Link>
+      <a
+        onClick={ triggerUpdate }
+        className='as-link tac list-link'>
+        <GITHUB size={ 14 } style={ { transform: 'translateY(3px)'} }/>Fetch latest data
+      </a>
     </div>
   );
 }
@@ -57,5 +62,6 @@ PRs.propTypes = {
   owner: PropTypes.string,
   name: PropTypes.string,
   prNumber: PropTypes.string,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  triggerUpdate: PropTypes.func
 };

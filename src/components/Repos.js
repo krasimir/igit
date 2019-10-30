@@ -18,7 +18,7 @@ import flattenPRsEvents from './utils/flattenRPsEvens';
 import fetchingPRs from './effects/fetchingPRs';
 import setTitle from './effects/setTitle';
 
-function Repos({ match, profile, fetchingPRs, subscribedRepos, error }) {
+function Repos({ match, profile, fetchingPRs, subscribedRepos, error, triggerUpdate, numberOfFetches }) {
   const { owner, name, prNumber, op } = match.params;
 
   const repo = subscribedRepos.find(
@@ -41,7 +41,7 @@ function Repos({ match, profile, fetchingPRs, subscribedRepos, error }) {
           { expanded ? <CHEVRON_DOWN size={ 18 }/> : <CHEVRON_RIGHT size={ 18 }/> }
           { repo.nameWithOwner }
         </Link>
-        { expanded && <PRs { ...match.params } prs={ repo.prs } loading={ fetchingPRs } /> }
+        { expanded && <PRs { ...match.params } prs={ repo.prs } loading={ fetchingPRs } triggerUpdate={ triggerUpdate }/> }
         { !expanded && <Horn events={ repoEvents } /> }
       </div>
     );
@@ -61,7 +61,7 @@ function Repos({ match, profile, fetchingPRs, subscribedRepos, error }) {
 
   return (
     <div>
-      <UpdateProgress fetchDataInterval={ 0 }/>
+      <UpdateProgress numberOfFetches={ numberOfFetches }/>
       <div className='layout'>
         <aside>
           <Header profile={ profile } />
@@ -91,7 +91,9 @@ Repos.propTypes = {
   profile: PropTypes.object.isRequired,
   fetchingPRs: PropTypes.bool,
   error: PropTypes.object,
-  subscribedRepos: PropTypes.array
+  subscribedRepos: PropTypes.array,
+  triggerUpdate: PropTypes.func,
+  numberOfFetches: PropTypes.number
 };
 
 export default riew(Repos, fetchingPRs, setTitle)
