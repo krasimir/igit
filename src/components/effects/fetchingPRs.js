@@ -36,7 +36,6 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
   }
 
   const f = () => {
-    newFetch();
     setFetchingPRs(true);
     clearTimeout(fetchDataInterval);
     fetchData({
@@ -46,6 +45,7 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
     }).then(
       () => {
         setFetchingPRs(false);
+        newFetch();
         if (PULLING) {
           setFetchDataInterval(setTimeout(f, getPullingInterval()));
         }

@@ -1,6 +1,6 @@
 {
   "name": "igit.dev",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "An app for managing GitHub pull requests",
   "main": "index.js",
   "scripts": {
