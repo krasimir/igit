@@ -6,7 +6,7 @@ import Horn from './Horn';
 import flattenPREvents from '../api/utils/flattenPREvents';
 import { PLUS, GITHUB } from './Icons';
 
-export default function PRs({ prs, owner, name, prNumber, loading, triggerUpdate }) {
+export default function PRs({ prs, owner, name, prNumber, loading, triggerUpdate, numberOfFetches }) {
   if (!prs) {
     return (
       <div>
@@ -51,7 +51,8 @@ export default function PRs({ prs, owner, name, prNumber, loading, triggerUpdate
       <a
         onClick={ triggerUpdate }
         className='as-link tac list-link'>
-        <GITHUB size={ 14 } style={ { transform: 'translateY(3px)'} }/>Fetch latest data
+        <GITHUB size={ 14 } style={ { transform: 'translateY(3px)'} }/>
+        Fetch data <sup style={ { opacity: 0.3 } }>{ numberOfFetches }</sup>
       </a>
     </div>
   );
@@ -63,5 +64,6 @@ PRs.propTypes = {
   name: PropTypes.string,
   prNumber: PropTypes.string,
   loading: PropTypes.bool.isRequired,
-  triggerUpdate: PropTypes.func
+  triggerUpdate: PropTypes.func,
+  numberOfFetches: PropTypes.number
 };

@@ -41,7 +41,12 @@ function Repos({ match, profile, fetchingPRs, subscribedRepos, error, triggerUpd
           { expanded ? <CHEVRON_DOWN size={ 18 }/> : <CHEVRON_RIGHT size={ 18 }/> }
           { repo.nameWithOwner }
         </Link>
-        { expanded && <PRs { ...match.params } prs={ repo.prs } loading={ fetchingPRs } triggerUpdate={ triggerUpdate }/> }
+        { expanded && <PRs
+            { ...match.params }
+            prs={ repo.prs }
+            loading={ fetchingPRs }
+            triggerUpdate={ triggerUpdate }
+            numberOfFetches={ numberOfFetches }/> }
         { !expanded && <Horn events={ repoEvents } /> }
       </div>
     );
