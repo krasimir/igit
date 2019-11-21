@@ -31,7 +31,7 @@
   }
 }
 .layout aside {
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1.6em;
 }
 .prs {
@@ -39,7 +39,7 @@
   margin-left: 8px;
 }
 .prs .list-link {
-  padding: .5em 1em;
+  padding: 0.5em 1em;
 }
 .prs .list-link + .list-link {
   border-top: solid 1px #e2e2e2;
@@ -52,7 +52,7 @@
 
 button.brand {
   display: inline-block;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   font-size: 1em;
   font-family: inherit;
   border-top: solid 1px #e2e2e2;
@@ -69,7 +69,7 @@ button.brand:hover:enabled {
   border-bottom: solid 2px #999;
 }
 button.brand + .brand {
-  margin-left: .5em;
+  margin-left: 0.5em;
 }
 button.brand.cta {
   background: #e6ffed;
@@ -81,7 +81,7 @@ button.brand.cancel {
   color: #808080;
 }
 button.brand:disabled {
-  opacity: .5;
+  opacity: 0.5;
   cursor: default;
 }
 button.brand.delete {
@@ -93,7 +93,7 @@ button.brand.delete:hover:enabled {
 button.light {
   border: none;
   background: none;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   font-size: 1em;
   border-radius: 4px;
   cursor: pointer;
@@ -134,7 +134,7 @@ button.as-link svg {
   border: solid 1px #999;
   border-radius: 2px;
   padding: 2px 4px;
-  font-size: .7em;
+  font-size: 0.7em;
   margin: 0 2px;
 }
 .tag.resolved {
@@ -148,7 +148,7 @@ button.as-link svg {
 .loading p {
   margin: 0;
   padding: 0;
-  font-size: .9em;
+  font-size: 0.9em;
 }
 .loading img {
   display: block;
@@ -174,7 +174,7 @@ button.as-link svg {
 }
 
 /* ---------------------------------------- header */
-header { 
+header {
   border-bottom: solid 1px #e2e2e2;
   padding: 1em;
   margin-bottom: 1em;
@@ -190,7 +190,7 @@ header .logo {
   padding: 0;
 }
 .settings .list-link svg {
-  opacity: .1;
+  opacity: 0.1;
 }
 .settings .selected svg {
   opacity: 1;
@@ -264,20 +264,23 @@ header .logo {
   border-radius: 67% 33% 35% 65% / 38% 30% 70% 62%;
 }
 .media.small {
-  grid-template-columns: 26px calc(100% - 26px - .5em);
-  column-gap: .5em;
+  grid-template-columns: 26px calc(100% - 26px - 0.5em);
+  column-gap: 0.5em;
 }
-.media.small .avatar, .avatar.small {
+.media.small .avatar,
+.avatar.small {
   width: 26px;
 }
 .media.medium {
   grid-template-columns: 32px calc(100% - 32px - 1em);
-  column-gap: .5em;
+  column-gap: 0.5em;
 }
-.media.medium .avatar, .avatar.medium {
+.media.medium .avatar,
+.avatar.medium {
   width: 32px;
 }
-.media.tiny .avatar, .avatar.tiny {
+.media.tiny .avatar,
+.avatar.tiny {
   width: 18px;
   transform: translateY(3px);
   -webkit-transform: translateY(3px);
@@ -288,9 +291,9 @@ header .logo {
 .pr-card {
   padding: 2em;
   border-radius: 3px;
-  -webkit-box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 0px 0px 15px -4px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 15px -4px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 15px -4px rgba(0, 0, 0, 0.75);
   margin-bottom: 1em;
 }
 .pr-card-light {
@@ -315,8 +318,8 @@ header .logo {
   border: none;
   border-radius: 2px;
   background: #e2e2e2;
-  font-size: .8em;
-  margin: 0 .3em;
+  font-size: 0.8em;
+  margin: 0 0.3em;
   outline: none;
   cursor: pointer;
 }
@@ -344,7 +347,7 @@ header .logo {
 }
 .pr-details nav a {
   display: inline-block;
-  padding: .5em;
+  padding: 0.5em;
   transform: translateY(3px);
   -webkit-transform: translateY(3px);
 }
@@ -370,12 +373,12 @@ header .logo {
   -webkit-transform: translateY(1px);
 }
 .commit {
-  padding: .5em;
+  padding: 0.5em;
   line-height: 1.6em;
   border-bottom: solid 1px #e2e2e2;
 }
 .comment {
-  padding: .5em 2em 2em 2em;
+  padding: 0.5em 2em 2em 2em;
   border: solid 1px #e2e2e2;
   border-radius: 4px;
   margin: 1em 0;
@@ -417,39 +420,48 @@ header .logo {
   line-height: 1.4em;
 }
 .files-preview .is-file {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 /* ---------------------------------------- pr-status */
 
 .pr-status {
-  font-size: .6em;
-  padding: .2em .4em;
+  font-size: 0.6em;
+  padding: 0.2em 0.4em;
   border-radius: 4px;
   border: solid 1px #e2e2e2;
 }
 .pr-status-merged {
-  font-size: .8em;
+  font-size: 0.8em;
   background: #329ecc;
   color: white;
   border: none;
 }
 .pr-status-closed {
-  font-size: .8em;
+  font-size: 0.8em;
   background: #e2e2e2;
   border: none;
+}
+.refresh-pr-statuses {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  opacity: 0.3;
+}
+.refresh-pr-statuses:hover {
+  opacity: 1;
 }
 
 /* ---------------------------------------- timeline */
 
 .timeline {
-  font-size: .9em;
+  font-size: 0.9em;
 }
 .timeline > div + div {
-  margin-top: .4em;
+  margin-top: 0.4em;
 }
 .timeline-thread-comment {
-  padding: .5em;
+  padding: 0.5em;
   border-right: solid 1px #efefef;
   border-bottom: solid 1px #efefef;
   border-top: solid 1px #f5f5f5;
@@ -464,7 +476,7 @@ header .logo {
   background: white;
 }
 .timeline-review {
-  padding: .8em;
+  padding: 0.8em;
   border-left: solid 10px #999;
   border-top: solid 1px #999;
   border-bottom: solid 1px #999;
@@ -484,10 +496,10 @@ header .logo {
 /* ---------------------------------------- files */
 
 .files {
-  font-size: .9em;
+  font-size: 0.9em;
 }
 .hunk + .hunk {
-  margin-top: .2em;
+  margin-top: 0.2em;
 }
 .files-review {
   position: absolute;
@@ -497,7 +509,7 @@ header .logo {
   opacity: 0;
 }
 .files .hunk:hover .files-review {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 /* ---------------------------------------- filter */
@@ -513,8 +525,8 @@ header .logo {
 
 .diff {
   display: inline-block;
-  margin-left: .5em;
-  font-size: .8em;
+  margin-left: 0.5em;
+  font-size: 0.8em;
 }
 .diff:hover {
   opacity: 1;
@@ -522,7 +534,7 @@ header .logo {
 .diff-add {
   color: green;
   display: inline-block;
-  margin-right: .2em;
+  margin-right: 0.2em;
 }
 .diff-delete {
   color: red;
@@ -536,7 +548,7 @@ header .logo {
   border-radius: 4px;
 }
 .hunk .header {
-  font-size: .8em;
+  font-size: 0.8em;
   padding: 4px 1em;
   background: #f5f5f5;
 }
@@ -546,7 +558,8 @@ header .logo {
   display: inline-block;
   line-height: 1.4em;
 }
-.hunk .header button, .hunk .header a {
+.hunk .header button,
+.hunk .header a {
   border: none;
   outline: none;
   background: none;
@@ -557,10 +570,12 @@ header .logo {
   max-width: 80%;
   text-align: left;
 }
-.hunk .header button:hover, .hunk .header a:hover {  
+.hunk .header button:hover,
+.hunk .header a:hover {
   color: #0056ff;
 }
-.hunk .header button svg, .hunk .header a svg {
+.hunk .header button svg,
+.hunk .header a svg {
   transform: translateY(5px);
   -webkit-transform: translateY(5px);
 }
@@ -586,8 +601,8 @@ header .logo {
   /* display: grid;
   grid-template-columns: 25px 1fr; */
   color: #696969;
-  padding: 0 .7em;
-  font-size: .8em;
+  padding: 0 0.7em;
+  font-size: 0.8em;
   line-height: 1.8em;
 }
 .code-line.normal {
@@ -600,7 +615,7 @@ header .logo {
   background: #e6ffed;
 }
 .code-line.full-content {
-  opacity: .6;
+  opacity: 0.6;
 }
 .code-line-start {
   border-top: solid 1px #e2e2e2;
@@ -625,11 +640,12 @@ header .logo {
   color: white;
   text-decoration: none;
 }
-.markdown ul, .markdown ol {
+.markdown ul,
+.markdown ol {
   list-style: disc;
 }
 .markdown p {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 
 /* ---------------------------------------- third-party */
@@ -643,7 +659,7 @@ header .logo {
   left: 0;
 }
 .timeline-thread-comment .d2h-file-wrapper {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 
 /* ---------------------------------------- horn */
@@ -686,7 +702,7 @@ header .logo {
 }
 .horn .view svg {
   stroke: #999;
-  opacity: .6;
+  opacity: 0.6;
 }
 .horn .view svg:hover {
   stroke: black;
@@ -734,22 +750,22 @@ header .logo {
   background: white;
   margin-right: 6px;
   margin-top: 4px;
-  padding: .8em;
+  padding: 0.8em;
   border: solid 1px #e2e2e2;
   width: 250px;
 }
 .suggestions > section > input {
-  font-size: .9em;
-  padding: .4em .5em;
+  font-size: 0.9em;
+  padding: 0.4em 0.5em;
   display: block;
   max-width: 100%;
 }
 .suggestions-items a {
-  font-size: .8em;
+  font-size: 0.8em;
   display: inline-block;
-  margin-right: .2em;
+  margin-right: 0.2em;
   padding: 2px 4px;
 }
 .suggestions-items + .suggestions-items {
-  border-top: solid 1px #e2e2e2
+  border-top: solid 1px #e2e2e2;
 }
