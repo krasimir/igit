@@ -1,4 +1,4 @@
-import { state, serial, register } from 'riew';
+import { state, register } from 'riew';
 
 import api from '../api';
 import './postman';
@@ -7,28 +7,21 @@ const clone = data => JSON.parse(JSON.stringify(data));
 
 const profile = state(null);
 const repos = state(null);
-const [ notifications, setNotifications ] = state([]);
+const [notifications, setNotifications] = state([]);
 
-register('profile', profile);
-register('repos', repos);
-register('notifications', notifications);
-
-export const initialize = serial(
-  profile.mutate(async () => await api.getProfile()),
-  repos.mutate(async () => await api.getLocalRepos()),
-  notifications.mutate(async () => await api.getNotifications())
-);
-
-register('toggleRepo', repos.mutate((list, { repoId }) => {
+const toggleRepo = repos.set((list, { repoId }) => {
   return list.map(r => ({
     ...r,
     selected: r.repoId === repoId ? !r.selected : r.selected
   }));
-}).pipe((list, { repoId }) => {
-  api.toggleRepo(list.find(r => r.repoId === repoId));
-}));
-register('subscribedRepos', repos.map(repos => repos.filter(repo => repo.selected)));
-register('registerPRs', repos.mutate((list, { repo, prs }) => {
+});
+const subscribedRepos = repos.map(repos => {
+  if (repos) {
+    return repos.filter(repo => repo.selected);
+  }
+  return repos;
+});
+const registerPRs = repos.set((list, { repo, prs }) => {
   list = clone(list);
   return list.map(r => {
     if (r.repoId === repo.repoId) {
@@ -39,8 +32,8 @@ register('registerPRs', repos.mutate((list, { repo, prs }) => {
     }
     return r;
   });
-}));
-const addEventToPR = register('addEventToPR', repos.mutate((repos, { repo, pr, event }) => {
+});
+const addEventToPR = repos.set((repos, { repo, pr, event }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -52,8 +45,8 @@ const addEventToPR = register('addEventToPR', repos.mutate((repos, { repo, pr, e
     }
     return r;
   });
-}));
-register('replaceEventInPR', repos.mutate((repos, { repo, pr, event }) => {
+});
+const replaceEventInPR = repos.set((repos, { repo, pr, event }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -70,8 +63,8 @@ register('replaceEventInPR', repos.mutate((repos, { repo, pr, event }) => {
     }
     return r;
   });
-}));
-register('deleteEventFromPR', repos.mutate((repos, { repo, pr, id }) => {
+});
+const deleteEventFromPR = repos.set((repos, { repo, pr, id }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -83,8 +76,8 @@ register('deleteEventFromPR', repos.mutate((repos, { repo, pr, id }) => {
     }
     return r;
   });
-}));
-register('addPRReviewComment', repos.mutate((repos, { repo, pr, topComment, comment }) => {
+});
+const addPRReviewComment = repos.set((repos, { repo, pr, topComment, comment }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -99,21 +92,21 @@ register('addPRReviewComment', repos.mutate((repos, { repo, pr, topComment, comm
             }
             return e;
           });
-        // create a new thread
+          // create a new thread
         } else {
           p.events.push({
             type: 'PullRequestReviewThread',
             isResolved: false,
             date: comment.date,
-            comments: [ comment ]
+            comments: [comment]
           });
         }
       }
     }
     return r;
   });
-}));
-register('replacePRReviewComment', repos.mutate((repos, { repo, pr, comment }) => {
+});
+const replacePRReviewComment = repos.set((repos, { repo, pr, comment }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -135,8 +128,8 @@ register('replacePRReviewComment', repos.mutate((repos, { repo, pr, comment }) =
     }
     return r;
   });
-}));
-register('deletePRReviewComment', repos.mutate((repos, { repo, pr, id }) => {
+});
+const deletePRReviewComment = repos.set((repos, { repo, pr, id }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -157,8 +150,8 @@ register('deletePRReviewComment', repos.mutate((repos, { repo, pr, id }) => {
     }
     return r;
   });
-}));
-const replacePR = register('replacePR', repos.mutate((repos, { pr }) => {
+});
+const replacePR = repos.set((repos, { pr }) => {
   repos = clone(repos);
   return repos.map(r => {
     r.prs = r.prs.map(p => {
@@ -169,8 +162,8 @@ const replacePR = register('replacePR', repos.mutate((repos, { pr }) => {
     });
     return r;
   });
-}));
-const addPR = register('addPR', repos.mutate((repos, { repo, pr }) => {
+});
+const addPR = repos.set((repos, { repo, pr }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.repoId === repo.repoId) {
@@ -178,8 +171,8 @@ const addPR = register('addPR', repos.mutate((repos, { repo, pr }) => {
     }
     return r;
   });
-}));
-const replaceEvent = register('replaceEvent', repos.mutate((repos, { event }) => {
+});
+const replaceEvent = repos.set((repos, { event }) => {
   repos = clone(repos);
   return repos.map(r => {
     if (r.prs && r.prs.length > 0) {
@@ -194,8 +187,8 @@ const replaceEvent = register('replaceEvent', repos.mutate((repos, { event }) =>
     }
     return r;
   });
-}));
-const deleteEvent = register('deleteEvent', repos.mutate((repos, { id }) => {
+});
+const deleteEvent = repos.set((repos, { id }) => {
   repos = clone(repos);
   return repos.map(r => {
     r.prs.forEach(p => {
@@ -203,55 +196,85 @@ const deleteEvent = register('deleteEvent', repos.mutate((repos, { id }) => {
     });
     return r;
   });
-}));
+});
+
+toggleRepo.subscribe(({ repoId }) => {
+  api.toggleRepo(repos.getState().find(r => r.repoId === repoId));
+});
+
+register('profile', profile);
+register('repos', repos);
+register('notifications', notifications);
+
+export const initialize = () => {
+  return Promise.all(
+    api.getProfile().then(profile => profile.set().put(profile)),
+    api.getLocalRepos().then(localRepos => repos.set().put(localRepos)),
+    api.getNotifications().then(notifications => notifications.put(notifications))
+  );
+};
+
+register('toggleRepo', toggleRepo);
+register('subscribedRepos', subscribedRepos);
+register('registerPRs', registerPRs);
+register('addEventToPR', addEventToPR);
+register('replaceEventInPR', replaceEventInPR);
+register('deleteEventFromPR', deleteEventFromPR);
+register('addPRReviewComment', addPRReviewComment);
+register('replacePRReviewComment', replacePRReviewComment);
+register('deletePRReviewComment', deletePRReviewComment);
+register('replacePR', replacePR);
+register('addPR', addPR);
+register('replaceEvent', replaceEvent);
+register('deleteEvent', deleteEvent);
 
 // functions
-const markAsRead = register('markAsRead', async (id) => {
+const markAsRead = register('markAsRead', async id => {
   await api.markAsRead(id);
-  setNotifications(await api.getNotifications());
+  setNotifications.put(await api.getNotifications());
 });
 
 register('createPR', async ({ repo, title, body, base, head }) => {
   const pr = await api.createPR(repo, title, body, base, head);
 
-  addPR({ repo, pr });
+  addPR.put({ repo, pr });
   return pr;
 });
 register('submitReview', async ({ reviewId, event, body }) => {
   const review = await api.submitReview(reviewId, event, body);
 
   markAsRead(review.id);
-  replaceEvent({ event: review });
+  replaceEvent.put({ event: review });
 });
 register('deleteReview', async ({ reviewId }) => {
   await api.deleteReview(reviewId);
 
-  deleteEvent({ id: reviewId });
+  deleteEvent.put({ id: reviewId });
 });
 register('createReview', async ({ repo, pr, event, path, position, body }) => {
   const { review } = await api.createReview(pr.id, event, path, position, body);
 
   markAsRead(review.id);
-  addEventToPR({ repo, pr, event: review });
+  addEventToPR.put({ repo, pr, event: review });
 });
 register('resolveThread', async ({ threadId }) => {
   const thread = await api.resolveThread(threadId);
 
-  replaceEvent({ event: thread });
+  replaceEvent.put({ event: thread });
 });
 register('unresolveThread', async ({ threadId }) => {
   const thread = await api.unresolveThread(threadId);
 
-  replaceEvent({ event: thread });
+  replaceEvent.put({ event: thread });
 });
-register('markAsUnread', async (id) => {
+register('markAsUnread', async id => {
   await api.markAsUnread(id);
-  setNotifications(await api.getNotifications());
+  setNotifications.put(await api.getNotifications());
 });
 register('mergePR', async ({ id, repo }) => {
   const pr = await api.mergePR(id, repo);
 
-  replacePR({ pr });
+  replacePR.put({ pr });
 });
 register('closePR', async ({ id, repo }, { replacePR }) => {
   const pr = await api.closePR(id, repo);
