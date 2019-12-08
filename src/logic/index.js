@@ -7,8 +7,17 @@ const clone = data => JSON.parse(JSON.stringify(data));
 
 const profile = state(null);
 const repos = state(null);
-const [notifications, setNotifications] = state([]);
+const notifications = state([]);
 
+export const initialize = () => {
+  return Promise.all([
+    api.getProfile().then(profileData => profile.set().put(profileData)),
+    api.getLocalRepos().then(localRepos => repos.set().put(localRepos)),
+    api.getNotifications().then(notificationsData => notifications.set().put(notificationsData))
+  ]);
+};
+
+const setNotifications = notifications.set();
 const toggleRepo = repos.set((list, { repoId }) => {
   return list.map(r => ({
     ...r,
@@ -205,15 +214,6 @@ toggleRepo.subscribe(({ repoId }) => {
 register('profile', profile);
 register('repos', repos);
 register('notifications', notifications);
-
-export const initialize = () => {
-  return Promise.all(
-    api.getProfile().then(profile => profile.set().put(profile)),
-    api.getLocalRepos().then(localRepos => repos.set().put(localRepos)),
-    api.getNotifications().then(notifications => notifications.put(notifications))
-  );
-};
-
 register('toggleRepo', toggleRepo);
 register('subscribedRepos', subscribedRepos);
 register('registerPRs', registerPRs);

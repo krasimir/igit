@@ -4,21 +4,21 @@ import flattenPRsEvents from '../utils/flattenRPsEvens';
 import isItANewEvent from '../utils/isItANewEvent';
 
 export default function setTitle({ subscribedRepos, notifications }) {
-  const updateTitle = () => {
+  const updateTitle = async repos => {
     let totalUnread = 0;
-    subscribedRepos().map(repo => {
+    repos.forEach(repo => {
       const repoEvents = flattenPRsEvents(repo.prs);
 
-      totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications())).length;
+      totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications.getState())).length;
     });
     if (totalUnread === 0) {
       document.title = '✔ Well done ';
     } else {
-      document.title = `${ totalUnread } unread`;
+      document.title = `${totalUnread} unread`;
     }
   };
 
-  subscribe(subscribedRepos.pipe(updateTitle));
+  subscribedRepos.subscribe(updateTitle);
   subscribe(notifications.pipe(updateTitle));
   updateTitle();
-};
+}

@@ -1,15 +1,14 @@
 import { getPullingInterval } from '../Settings/PullingInterval';
 import { PRINT_PRS, PULLING } from '../../constants';
 
-export default function fetchingPRs({ api, data, state, subscribedRepos, props, registerPRs }) {
+export default async function fetchingPRs({ api, render, state, chan, subscribedRepos, props, registerPRs }) {
   const numberOfFetches = state(0);
-  const [ fetchingPRs, setFetchingPRs ] = state(false);
-  const [ error, setError ] = state(null);
-  const [ fetchDataInterval, setFetchDataInterval ] = state(null);
-  const [ getRepos ] = subscribedRepos;
-  const { match } = props();
+  const [fetchingPRs, setFetchingPRs] = state(false);
+  const [error, setError] = state(null);
+  const { match } = await props.take();
   const { name, prNumber, op } = match.params;
-  const newFetch = numberOfFetches.mutate(value => value + 1);
+  const newFetch = numberOfFetches.set(value => value + 1);
+  let fetchDataInterval = null;
 
   async function fetchData({ repos, repoName, prNumber }) {
     for (let i = 0; i < repos.length; i++) {
@@ -20,11 +19,7 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
         console.log(repo.name, JSON.stringify(prs, null, 2));
       }
 
-      if (
-        prNumber &&
-        repo.name === repoName &&
-        prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
-      ) {
+      if (prNumber && repo.name === repoName && prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined) {
         const otherPR = await api.fetchRemotePR(repo, prNumber);
 
         if (otherPR) {
@@ -35,19 +30,19 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
     }
   }
 
-  const f = () => {
+  const f = async () => {
     setFetchingPRs(true);
     clearTimeout(fetchDataInterval);
     fetchData({
-      repos: getRepos(),
+      repos: await subscribedRepos.take(),
       repoName: name,
       prNumber: prNumber !== 'new' && op !== 'edit' ? prNumber : undefined
     }).then(
       () => {
         setFetchingPRs(false);
-        newFetch();
+        newFetch.put();
         if (PULLING) {
-          setFetchDataInterval(setTimeout(f, getPullingInterval()));
+          fetchDataInterval = setTimeout(f, getPullingInterval());
         }
       },
       error => {
@@ -60,7 +55,7 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
 
   f();
 
-  data({
+  render({
     fetchingPRs,
     numberOfFetches,
     triggerUpdate: f,
@@ -70,4 +65,4 @@ export default function fetchingPRs({ api, data, state, subscribedRepos, props, 
   return () => {
     clearTimeout(fetchDataInterval);
   };
-};
+}
