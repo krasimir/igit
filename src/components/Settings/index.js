@@ -1,63 +1,21 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import riew from 'riew/react';
 import PropTypes from 'prop-types';
-import { sput } from 'riew';
 
 import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
 import Header from '../Header';
 import PullingInterval from './PullingInterval';
-import init from './routines/init';
-import fetchAllRepos from './routines/fetchAllRepos';
-import { TOGGLE_REPO } from '../../constants';
+import searchRepos from './routines/searchRepos';
 
-function Settings({
-  searchQuery,
-  searchIn,
-  error,
-  repos,
-  setRepos,
-  profile,
-  setError,
-  initializationDone,
-  fetchAllRepos,
-  toggleRepo,
-  isFetchingRepos
-}) {
-  const textInput = useRef(null);
+function Settings({ searchQuery, searchIn, search, error, repos, profile, toggleRepo, isFetchingRepos, noRepos }) {
   const [filter, setFilter] = useState('');
-  const [noRepos, setNoRepos] = useState(false);
-
-  useEffect(() => {
-    if (initializationDone) {
-      textInput.current.focus();
-    }
-  }, [initializationDone]);
 
   const handleKeyUp = (e) => {
     if (e.key === 'Enter' && e.target.value !== '') {
-      setNoRepos(false);
-      fetchAllRepos(
-        `${filter} in:name ` +
-          searchQuery
-            .filter(({ selected }) => selected)
-            .map(({ param }) => param)
-            .join(' ')
-      ).then(
-        (allRepos) => {
-          if (allRepos.length === 0) {
-            setNoRepos(true);
-          }
-          setRepos(allRepos);
-          textInput.current.focus();
-        },
-        (error) => {
-          console.log(error);
-          setError(new Error('IGit can not fetch repositories.'));
-        }
-      );
+      search(filter);
     }
   };
 
@@ -128,7 +86,6 @@ function Settings({
           </div>
           <div key='filter'>
             <input
-              ref={textInput}
               type='text'
               placeholder='repository name'
               className='mb1'
@@ -170,17 +127,13 @@ function Settings({
 Settings.propTypes = {
   searchQuery: PropTypes.array.isRequired,
   searchIn: PropTypes.func.isRequired,
+  search: PropTypes.func.isRequired,
   repos: PropTypes.array.isRequired,
-  setRepos: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
-  setError: PropTypes.func.isRequired,
-  initializationDone: PropTypes.bool.isRequired,
-  fetchAllRepos: PropTypes.func.isRequired,
   toggleRepo: PropTypes.func.isRequired,
   isFetchingRepos: PropTypes.bool.isRequired,
+  noRepos: PropTypes.bool.isRequired,
   error: PropTypes.object
 };
 
-export default riew(Settings, init, fetchAllRepos).with('api', 'profile', 'repos', {
-  toggleRepo: (repo) => sput(TOGGLE_REPO, repo)
-});
+export default riew(Settings, searchRepos).with('api', 'profile', 'repos');
