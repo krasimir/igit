@@ -1,15 +1,17 @@
-import { subscribe } from 'riew';
+import { sub } from 'riew';
 
 import flattenPRsEvents from '../utils/flattenRPsEvens';
 import isItANewEvent from '../utils/isItANewEvent';
+import { SUBSCRIBED_REPOS } from '../../constants';
 
-export default function setTitle({ subscribedRepos, notifications }) {
-  const updateTitle = async repos => {
+export default function* setTitle({ notifications }) {
+  const updateTitle = async (repos) => {
     let totalUnread = 0;
-    repos.forEach(repo => {
+
+    repos.forEach((repo) => {
       const repoEvents = flattenPRsEvents(repo.prs);
 
-      totalUnread += repoEvents.filter(event => isItANewEvent(event, notifications.getState())).length;
+      totalUnread += repoEvents.filter((event) => isItANewEvent(event, notifications.getState())).length;
     });
     if (totalUnread === 0) {
       document.title = '✔ Well done ';
@@ -18,7 +20,7 @@ export default function setTitle({ subscribedRepos, notifications }) {
     }
   };
 
-  subscribedRepos.subscribe(updateTitle);
-  subscribe(notifications.pipe(updateTitle));
+  sub(SUBSCRIBED_REPOS, updateTitle);
+  sub(notifications, updateTitle);
   updateTitle();
 }

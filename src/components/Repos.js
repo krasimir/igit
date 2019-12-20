@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import riew from 'riew/react';
+import { sput } from 'riew';
 
 import Header from './Header';
 import PRs from './PRs';
@@ -17,11 +18,23 @@ import flattenPRsEvents from './utils/flattenRPsEvens';
 
 import fetchingPRs from './routines/fetchingPRs';
 import setTitle from './routines/setTitle';
+import { SUBSCRIBED_REPOS, REGISTER_PRS } from '../constants';
 
-function Repos({ match, profile, fetchingPRs, subscribedRepos, error, triggerUpdate, numberOfFetches }) {
+function Repos({
+  match,
+  profile,
+  fetchingPRs,
+  subscribedRepos,
+  error,
+  triggerUpdate,
+  numberOfFetches
+}) {
   const { owner, name, prNumber, op } = match.params;
 
-  const repo = subscribedRepos.find(({ owner: repoOwner, name: repoName }) => owner === repoOwner && name === repoName);
+  const repo = subscribedRepos.find(
+    ({ owner: repoOwner, name: repoName }) =>
+      owner === repoOwner && name === repoName
+  );
   let pr;
 
   if (repo && repo.prs && repo.prs.length > 0) {
@@ -30,25 +43,27 @@ function Repos({ match, profile, fetchingPRs, subscribedRepos, error, triggerUpd
 
   const reposList = subscribedRepos.map(repo => {
     const expanded = repo.owner === owner && repo.name === name;
-    const linkUrl = expanded ? `/repo/${repo.owner}` : `/repo/${repo.owner}/${repo.name}`;
+    const linkUrl = expanded
+      ? `/repo/${repo.owner}`
+      : `/repo/${repo.owner}/${repo.name}`;
     const repoEvents = flattenPRsEvents(repo.prs);
 
     return (
-      <div key={ repo.repoId } className="relative">
-        <Link to={ linkUrl } className="list-link">
-          {expanded ? <CHEVRON_DOWN size={ 18 } /> : <CHEVRON_RIGHT size={ 18 } />}
+      <div key={repo.repoId} className="relative">
+        <Link to={linkUrl} className="list-link">
+          {expanded ? <CHEVRON_DOWN size={18} /> : <CHEVRON_RIGHT size={18} />}
           {repo.nameWithOwner}
         </Link>
         {expanded && (
           <PRs
-            { ...match.params }
-            prs={ repo.prs }
-            loading={ fetchingPRs }
-            triggerUpdate={ triggerUpdate }
-            numberOfFetches={ numberOfFetches }
+            {...match.params}
+            prs={repo.prs}
+            loading={fetchingPRs}
+            triggerUpdate={triggerUpdate}
+            numberOfFetches={numberOfFetches}
           />
         )}
-        {!expanded && <Horn events={ repoEvents } />}
+        {!expanded && <Horn events={repoEvents} />}
       </div>
     );
   });
@@ -56,35 +71,36 @@ function Repos({ match, profile, fetchingPRs, subscribedRepos, error, triggerUpd
   let PRComponent;
 
   if (pr && op === 'edit') {
-    PRComponent = <PREdit pr={ pr } repo={ repo } owner={ owner } />;
+    PRComponent = <PREdit pr={pr} repo={repo} owner={owner} />;
   } else if (pr) {
-    PRComponent = <PR pr={ pr } url={ match.url } repo={ repo } />;
+    PRComponent = <PR pr={pr} url={match.url} repo={repo} />;
   } else if (prNumber === 'new') {
-    PRComponent = <PRNew repo={ repo } owner={ owner } />;
+    PRComponent = <PRNew repo={repo} owner={owner} />;
   } else {
     PRComponent = <PRFake />;
   }
 
   return (
     <div>
-      <UpdateProgress numberOfFetches={ numberOfFetches } />
+      <UpdateProgress numberOfFetches={numberOfFetches} />
       <div className="layout">
         <aside>
-          <Header profile={ profile } />
+          <Header profile={profile} />
           <Link to="/" className="list-link">
-            <ARROW_RIGHT_CIRCLE size={ 18 } />
+            <ARROW_RIGHT_CIRCLE size={18} />
             Dashboard
           </Link>
           <div className="pl05">
             {subscribedRepos.length === 0 && (
               <div className="ml1">
-                You have no selected repositories. To select some click <Link to="/settings">here</Link>.
+                You have no selected repositories. To select some click{' '}
+                <Link to="/settings">here</Link>.
               </div>
             )}
             {reposList}
           </div>
           <Link to="/settings" className="list-link">
-            <CHEVRON_RIGHT size={ 18 } />
+            <CHEVRON_RIGHT size={18} />
             Settings
           </Link>
         </aside>
@@ -107,7 +123,8 @@ Repos.propTypes = {
 export default riew(Repos, fetchingPRs, setTitle).with(
   'api',
   'profile',
-  'subscribedRepos',
-  'registerPRs',
-  'notifications'
+  'notifications',
+  {
+    subscribedRepos: SUBSCRIBED_REPOS
+  }
 );

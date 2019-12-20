@@ -1,41 +1,44 @@
-const initEffect = async function ({ data, state, api, profile, repos }) {
-  const [ searchQuery, setSearchQuery ] = state([]);
-  const [ , setError ] = state(null);
-  const [ getProfile ] = profile;
-  const [ , setRepos ] = repos;
+import { put, sput, take } from 'riew';
 
-  data({
+const initEffect = function*({ render, state, api, profile, repos }) {
+  const UPDATE_SEARCH_QUERY = 'UPDATE_SEARCH_QUERY';
+  const searchQuery = state([]);
+  const error = state(null);
+
+  searchQuery.mutate(UPDATE_SEARCH_QUERY, (current, payload) => {
+    return current.map((c) => ({
+      ...c,
+      selected: c === payload ? !c.selected : c.selected
+    }));
+  });
+
+  render({
     searchQuery,
-    setError,
-    setRepos,
+    setError: (e) => sput(error, e),
+    setRepos: (r) => sput(repos, r),
     initializationDone: false,
-    searchIn: searchQuery.mutate((current, payload) => {
-      return current.map(c => ({
-        ...c,
-        selected: c === payload ? !c.selected : c.selected
-      }));
-    })
+    searchIn: (payload) => sput(UPDATE_SEARCH_QUERY, payload)
   });
 
   try {
-    const orgs = await api.fetchOrganizations();
+    const orgs = yield api.fetchOrganizations();
 
-    setSearchQuery([
+    yield put(searchQuery, [
       {
         label: 'My repositories',
-        param: `user:${ getProfile().login }`,
+        param: `user:${(yield take(profile)).login}`,
         selected: true
       },
-      ...orgs.map(org => ({
-        label: `Repositories in "${ org.name }" organization`,
-        param: `org:${ org.login }`,
+      ...orgs.map((org) => ({
+        label: `Repositories in "${org.name}" organization`,
+        param: `org:${org.login}`,
         selected: false
       }))
     ]);
-    data({ initializationDone: true });
+    render({ initializationDone: true });
   } catch (error) {
     console.log(error);
-    setError(new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
+    yield put(error, new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
   }
 };
 

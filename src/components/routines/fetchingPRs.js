@@ -1,13 +1,15 @@
+import { take, sput } from 'riew';
+
 import { getPullingInterval } from '../Settings/PullingInterval';
 import { PRINT_PRS, PULLING } from '../../constants';
 
-export default async function fetchingPRs({ api, render, state, chan, subscribedRepos, props, registerPRs }) {
-  const numberOfFetches = state(0);
-  const [fetchingPRs, setFetchingPRs] = state(false);
-  const [error, setError] = state(null);
-  const { match } = await props.take();
+export default function* fetchingPRs({ api, render, state, props }) {
+  const numberOfFetches = state(0).mutate('NEW_FETCH', v => v + 1);
+  const newFetch = () => sput('NEW_FETCH');
+  const fetchingPRs = state(false);
+  const error = state(null);
+  const { match } = yield take(props);
   const { name, prNumber, op } = match.params;
-  const newFetch = numberOfFetches.set(value => value + 1);
   let fetchDataInterval = null;
 
   async function fetchData({ repos, repoName, prNumber }) {
@@ -19,19 +21,23 @@ export default async function fetchingPRs({ api, render, state, chan, subscribed
         console.log(repo.name, JSON.stringify(prs, null, 2));
       }
 
-      if (prNumber && repo.name === repoName && prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined) {
+      if (
+        prNumber &&
+        repo.name === repoName &&
+        prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
+      ) {
         const otherPR = await api.fetchRemotePR(repo, prNumber);
 
         if (otherPR) {
           prs.push(otherPR);
         }
       }
-      registerPRs({ repo, prs });
+      sput(REGISTER_PRS, { repo, prs });
     }
   }
 
   const f = async () => {
-    setFetchingPRs(true);
+    sput(fetchingPRs, true);
     clearTimeout(fetchDataInterval);
     fetchData({
       repos: await subscribedRepos.take(),

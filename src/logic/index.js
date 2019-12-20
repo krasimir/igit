@@ -18,7 +18,7 @@ import {
   DELETE_EVENT
 } from '../constants';
 
-const clone = data => JSON.parse(JSON.stringify(data));
+const clone = (data) => JSON.parse(JSON.stringify(data));
 
 const profile = state(null);
 const repos = state(null);
@@ -26,29 +26,27 @@ const notifications = state([]);
 
 export const initialize = function*() {
   yield Promise.all([
-    api.getProfile().then(profileData => profile.set(profileData)),
-    api.getLocalRepos().then(localRepos => repos.set(localRepos)),
-    api
-      .getNotifications()
-      .then(notificationsData => notifications.set(notificationsData))
+    api.getProfile().then((profileData) => profile.set(profileData)),
+    api.getLocalRepos().then((localRepos) => repos.set(localRepos)),
+    api.getNotifications().then((notificationsData) => notifications.set(notificationsData))
   ]);
 };
 
-repos.select(SUBSCRIBED_REPOS, list => {
+repos.select(SUBSCRIBED_REPOS, (list) => {
   if (list) {
-    return list.filter(repo => repo.selected);
+    return list.filter((repo) => repo.selected);
   }
   return list;
 });
 repos.mutate(TOGGLE_REPO, (list, { repoId }) => {
-  return list.map(r => ({
+  return list.map((r) => ({
     ...r,
     selected: r.repoId === repoId ? !r.selected : r.selected
   }));
 });
 repos.mutate(REGISTER_PRS, (list, { repo, prs }) => {
   list = clone(list);
-  return list.map(r => {
+  return list.map((r) => {
     if (r.repoId === repo.repoId) {
       return {
         ...r,
@@ -60,7 +58,7 @@ repos.mutate(REGISTER_PRS, (list, { repo, prs }) => {
 });
 repos.mutate(ADD_EVENT_TO_PR, (repos, { repo, pr, event }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
 
@@ -73,12 +71,12 @@ repos.mutate(ADD_EVENT_TO_PR, (repos, { repo, pr, event }) => {
 });
 repos.mutate(REPLACE_EVENT_IN_PR, (repos, { repo, pr, event }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
 
       if (p) {
-        p.events = p.events.map(e => {
+        p.events = p.events.map((e) => {
           if (e.id === event.id) {
             return event;
           }
@@ -91,63 +89,56 @@ repos.mutate(REPLACE_EVENT_IN_PR, (repos, { repo, pr, event }) => {
 });
 repos.mutate(DELETE_EVENT_FROM_PR, (repos, { repo, pr, id }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
 
       if (p) {
-        p.events = p.events.filter(e => e.id !== id);
+        p.events = p.events.filter((e) => e.id !== id);
       }
     }
     return r;
   });
 });
-repos.mutate(
-  ADD_PR_REVIEW_COMMENT,
-  (repos, { repo, pr, topComment, comment }) => {
-    repos = clone(repos);
-    return repos.map(r => {
-      if (r.repoId === repo.repoId) {
-        const p = r.prs.find(({ id }) => id === pr.id);
-
-        if (p) {
-          // add it to already existing review thread
-          if (topComment.id) {
-            p.events = p.events.map(e => {
-              if (
-                e.comments &&
-                e.comments.length > 0 &&
-                e.comments[0].id === topComment.id
-              ) {
-                e.comments.push(comment);
-              }
-              return e;
-            });
-            // create a new thread
-          } else {
-            p.events.push({
-              type: 'PullRequestReviewThread',
-              isResolved: false,
-              date: comment.date,
-              comments: [comment]
-            });
-          }
-        }
-      }
-      return r;
-    });
-  }
-);
-repos.mutate(REPLACE_PR_REVIEW_COMMENT, (repos, { repo, pr, comment }) => {
+repos.mutate(ADD_PR_REVIEW_COMMENT, (repos, { repo, pr, topComment, comment }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id }) => id === pr.id);
 
       if (p) {
-        p.events = p.events.map(e => {
+        // add it to already existing review thread
+        if (topComment.id) {
+          p.events = p.events.map((e) => {
+            if (e.comments && e.comments.length > 0 && e.comments[0].id === topComment.id) {
+              e.comments.push(comment);
+            }
+            return e;
+          });
+          // create a new thread
+        } else {
+          p.events.push({
+            type: 'PullRequestReviewThread',
+            isResolved: false,
+            date: comment.date,
+            comments: [comment]
+          });
+        }
+      }
+    }
+    return r;
+  });
+});
+repos.mutate(REPLACE_PR_REVIEW_COMMENT, (repos, { repo, pr, comment }) => {
+  repos = clone(repos);
+  return repos.map((r) => {
+    if (r.repoId === repo.repoId) {
+      const p = r.prs.find(({ id }) => id === pr.id);
+
+      if (p) {
+        p.events = p.events.map((e) => {
           if (e.comments && e.comments.length > 0) {
-            e.comments = e.comments.map(c => {
+            e.comments = e.comments.map((c) => {
               if (c.id === comment.id) {
                 return comment;
               }
@@ -163,14 +154,14 @@ repos.mutate(REPLACE_PR_REVIEW_COMMENT, (repos, { repo, pr, comment }) => {
 });
 repos.mutate(DELETE_PR_REVIEW_COMMENT, (repos, { repo, pr, id }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.repoId === repo.repoId) {
       const p = r.prs.find(({ id: prId }) => prId === pr.id);
 
       if (p) {
-        p.events = p.events.map(e => {
+        p.events = p.events.map((e) => {
           if (e.comments && e.comments.length > 0) {
-            const idx = e.comments.findIndex(c => c.id === id);
+            const idx = e.comments.findIndex((c) => c.id === id);
 
             if (idx >= 0) {
               e.comments.splice(idx, 1);
@@ -185,8 +176,8 @@ repos.mutate(DELETE_PR_REVIEW_COMMENT, (repos, { repo, pr, id }) => {
 });
 repos.mutate(REPLACE_PR, (repos, { pr }) => {
   repos = clone(repos);
-  return repos.map(r => {
-    r.prs = r.prs.map(p => {
+  return repos.map((r) => {
+    r.prs = r.prs.map((p) => {
       if (p.id === pr.id) {
         return pr;
       }
@@ -197,7 +188,7 @@ repos.mutate(REPLACE_PR, (repos, { pr }) => {
 });
 repos.mutate(ADD_PR, (repos, { repo, pr }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.repoId === repo.repoId) {
       r.prs.push(pr);
     }
@@ -206,10 +197,10 @@ repos.mutate(ADD_PR, (repos, { repo, pr }) => {
 });
 repos.mutate(REPLACE_EVENT, (repos, { event }) => {
   repos = clone(repos);
-  return repos.map(r => {
+  return repos.map((r) => {
     if (r.prs && r.prs.length > 0) {
-      r.prs.forEach(p => {
-        p.events = p.events.map(e => {
+      r.prs.forEach((p) => {
+        p.events = p.events.map((e) => {
           if (e.id === event.id) {
             return event;
           }
@@ -222,16 +213,16 @@ repos.mutate(REPLACE_EVENT, (repos, { event }) => {
 });
 repos.mutate(DELETE_EVENT, (repos, { id }) => {
   repos = clone(repos);
-  return repos.map(r => {
-    r.prs.forEach(p => {
-      p.events = p.events.filter(e => e.id !== id);
+  return repos.map((r) => {
+    r.prs.forEach((p) => {
+      p.events = p.events.filter((e) => e.id !== id);
     });
     return r;
   });
 });
 
 sub(TOGGLE_REPO, ({ repoId }) => {
-  api.toggleRepo(repos.getState().find(r => r.repoId === repoId));
+  api.toggleRepo(repos.get().find((r) => r.repoId === repoId));
 });
 
 register('profile', profile);
@@ -239,7 +230,7 @@ register('repos', repos);
 register('notifications', notifications);
 
 // functions
-const markAsRead = register('markAsRead', async id => {
+const markAsRead = register('markAsRead', async (id) => {
   await api.markAsRead(id);
   sput(notifications, await api.getNotifications());
 });
@@ -277,7 +268,7 @@ register('unresolveThread', async ({ threadId }) => {
 
   sput(REPLACE_EVENT, { event: thread });
 });
-register('markAsUnread', async id => {
+register('markAsUnread', async (id) => {
   await api.markAsUnread(id);
   sput(notifications, await api.getNotifications());
 });
