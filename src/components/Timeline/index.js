@@ -26,25 +26,25 @@ const components = {
   ReferencedEvent: Reference
 };
 
-const filterByUserReducer = function (state, { user }) {
-  if (state.find(u => u === user)) {
-    return state.filter(u => u !== user);
+const filterByUserReducer = function(state, { user }) {
+  if (state.find((u) => u === user)) {
+    return state.filter((u) => u !== user);
   }
-  return [ ...state, user ];
+  return [...state, user];
 };
 
-function Timeline({ pr, repo, postman, notifications }) {
+function Timeline({ pr, repo, postman }) {
   const users = flattenUsers(pr).map(({ login }) => login);
-  const [ allUsers, showAllUsers ] = useState(true);
-  const [ filterByAuthor, setFilterByAuthor ] = useReducer(filterByUserReducer, users);
+  const [allUsers, showAllUsers] = useState(true);
+  const [filterByAuthor, setFilterByAuthor] = useReducer(filterByUserReducer, users);
 
   const events = pr.events
-    .filter(event => {
+    .filter((event) => {
       if (filterByAuthor.length > 0 && !allUsers) {
         if (event.author) {
-          return filterByAuthor.find(u => u === event.author.login);
+          return filterByAuthor.find((u) => u === event.author.login);
         } else if (event.type === 'PullRequestReviewThread') {
-          return event.comments.find(comment => filterByAuthor.find(u => u === comment.author.login));
+          return event.comments.find((comment) => filterByAuthor.find((u) => u === comment.author.login));
         }
         return false;
       }
@@ -58,61 +58,50 @@ function Timeline({ pr, repo, postman, notifications }) {
       }
 
       if (Component) {
-        return <Component
-          event={ event }
-          key={ event.id }
-          pr={ pr }
-          repo={ repo }/>;
+        return <Component event={event} key={event.id} pr={pr} repo={repo} />;
       }
-      return <div key={ event.id }>{ event.type }</div>;
+      return <div key={event.id}>{event.type}</div>;
     });
 
   useEffect(() => {
-    users.forEach(user => {
+    users.forEach((user) => {
       if (filterByAuthor.indexOf(user) < 0) {
         setFilterByAuthor({ user });
       }
     });
-  }, [ pr.id ]);
+  }, [pr.id]);
 
   return (
     <div className='timeline'>
       <section className='filter mb1 cf'>
         <label key='all-users'>
-          <input
-            type='checkbox'
-            checked={ allUsers }
-            onChange={ () => showAllUsers(!allUsers) }
-            />
+          <input type='checkbox' checked={allUsers} onChange={() => showAllUsers(!allUsers)} />
           All users
         </label>
-        {
-          !allUsers && users.map(user => (
-            <label key={ user }>
+        {!allUsers &&
+          users.map((user) => (
+            <label key={user}>
               <input
                 type='checkbox'
-                checked={ !!filterByAuthor.find(u => u === user) }
-                onChange={ () => setFilterByAuthor({ user }) }/>
-              { user }
+                checked={!!filterByAuthor.find((u) => u === user)}
+                onChange={() => setFilterByAuthor({ user })}
+              />
+              {user}
             </label>
-          ))
-        }
+          ))}
       </section>
-      { events }
+      {events}
       <div className='timeline-thread-comment my03'>
-        <Postman
-          resetOnSave
-          handler={ postman({ repo, pr }).newTimelineComment }
-          placeholder='Leave a comment' />
+        <Postman resetOnSave handler={postman({ repo, pr }).newTimelineComment} placeholder='Leave a comment' />
       </div>
-      <Review pr={ pr } repo={ repo }/>
+      <Review pr={pr} repo={repo} />
     </div>
   );
-};
+}
 
 Timeline.propTypes = {
   pr: PropTypes.object.isRequired,
   repo: PropTypes.object.isRequired
 };
 
-export default riew(Timeline).with('postman', 'notifications');
+export default riew(Timeline).with('postman');

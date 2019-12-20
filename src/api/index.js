@@ -45,18 +45,15 @@ function createAPI() {
 
   const getHeaders = () => ({
     'Content-Type': 'application/json',
-    'Authorization': 'token ' + token
+    Authorization: 'token ' + token
   });
-  const request = async function (endpointPath, absolute = false, additionalHeaders = {}) {
-    const res = await fetch(
-      (absolute === false ? endpoint : '') + endpointPath,
-      {
-        headers: {
-          ...getHeaders(),
-          ...additionalHeaders
-        }
+  const request = async function(endpointPath, absolute = false, additionalHeaders = {}) {
+    const res = await fetch((absolute === false ? endpoint : '') + endpointPath, {
+      headers: {
+        ...getHeaders(),
+        ...additionalHeaders
       }
-    );
+    });
 
     if (!res.ok) {
       throw new Error(res.status + ' ' + res.statusText);
@@ -66,7 +63,7 @@ function createAPI() {
     }
     return res.text();
   };
-  const requestGraphQL = async function (query, customHeaders = {}) {
+  const requestGraphQL = async function(query, customHeaders = {}) {
     const res = await fetch(endpointGraphQL, {
       headers: Object.assign({}, getHeaders(), customHeaders),
       method: 'POST',
@@ -84,7 +81,7 @@ function createAPI() {
     }
     return resultData;
   };
-  const requestMock = async function (file) {
+  const requestMock = async function(file) {
     const res = await fetch('/mocks/' + file);
 
     if (!res.ok) {
@@ -111,7 +108,7 @@ function createAPI() {
     }
     return profile;
   };
-  api.verify = async function () {
+  api.verify = async function() {
     if (USE_MOCKS) {
       const profile = await requestMock('profile.json');
 
@@ -120,24 +117,23 @@ function createAPI() {
     }
     const data = await request('/user');
 
-    db.setProfile(profile = createProfile(data, token));
+    db.setProfile((profile = createProfile(data, token)));
     return profile;
   };
-  api.fetchOrganizations = async function () {
+  api.fetchOrganizations = async function() {
     if (USE_MOCKS) return requestMock('orgs.json');
 
     const { data } = await requestGraphQL(QUERY_GET_ORGANIZATIONS());
 
     return data.viewer.organizations.nodes.map(createOrganization);
   };
-  api.fetchRemoteRepos = function (query) {
+  api.fetchRemoteRepos = function(query) {
     if (USE_MOCKS) return requestMock('remote.repos.json');
 
     let perPage = 50;
     let cursor;
     let repos = [];
     const get = async () => {
-
       const q = QUERY_GET_REPOS_OF_ORG(query, perPage, cursor);
       const { data } = await requestGraphQL(q);
 
@@ -152,20 +148,19 @@ function createAPI() {
 
     return get();
   };
-  api.getLocalRepos = function () {
+  api.getLocalRepos = function() {
     return db.getRepos();
   };
-  api.toggleRepo = function (repo) {
+  api.toggleRepo = function(repo) {
     return db.toggleRepo(repo);
   };
-  api.fetchRemotePRs = async function (repo) {
+  api.fetchRemotePRs = async function(repo) {
     if (USE_MOCKS) return requestMock(USE_MOCKS + '/prs.json');
 
     let perPage = 10;
     let cursor;
     let prs = [];
     const get = async () => {
-
       const q = QUERY_GET_PRS(repo.name, repo.owner, perPage, cursor);
       const { data } = await requestGraphQL(q);
       const repoData = data.search.edges[0].node;
@@ -181,7 +176,7 @@ function createAPI() {
 
     return get();
   };
-  api.fetchRemotePR = async function (repo, prNumber) {
+  api.fetchRemotePR = async function(repo, prNumber) {
     if (USE_MOCKS) return requestMock(USE_MOCKS + '/prs.json')[0];
 
     const q = QUERY_GET_PR(repo.name, repo.owner, prNumber);
@@ -190,29 +185,25 @@ function createAPI() {
 
     return createPRDetails(repoData.pullRequest, repoData.owner.login);
   };
-  api.fetchPRFiles = function (repo, prNumber) {
+  api.fetchPRFiles = function(repo, prNumber) {
     if (USE_MOCKS) return requestMock(USE_MOCKS + '/diff');
 
-    return request(
-      `/repos/${ repo.owner }/${ repo.name }/pulls/${ prNumber }`,
-      false,
-      { 'Accept': 'application/vnd.github.v3.diff' }
-    );
+    return request(`/repos/${repo.owner}/${repo.name}/pulls/${prNumber}`, false, {
+      Accept: 'application/vnd.github.v3.diff'
+    });
   };
-  api.fetchPRFile = function (repo, path, commit) {
-    return request(
-      `/repos/${ repo.owner }/${ repo.name }/contents/${ path }${ commit ? `?ref=${ commit }` : '' }`,
-      false,
-      { 'Accept': 'application/vnd.github.v3.raw' }
-    );
+  api.fetchPRFile = function(repo, path, commit) {
+    return request(`/repos/${repo.owner}/${repo.name}/contents/${path}${commit ? `?ref=${commit}` : ''}`, false, {
+      Accept: 'application/vnd.github.v3.raw'
+    });
   };
-  api.addComment = async function (subjectId, body) {
+  api.addComment = async function(subjectId, body) {
     const q = MUTATION_ADD_COMMENT(subjectId, body);
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent(data.addComment.commentEdge);
   };
-  api.editComment = async function (id, body) {
+  api.editComment = async function(id, body) {
     // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
 
     const q = MUTATION_EDIT_COMMENT(id, body);
@@ -220,18 +211,18 @@ function createAPI() {
 
     return normalizeTimelineEvent({ node: data.updateIssueComment.issueComment });
   };
-  api.deleteComment = async function (id) {
+  api.deleteComment = async function(id) {
     const q = MUTATION_DELETE_COMMENT(id);
 
     await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
   };
-  api.newPullRequestReviewComment = async function (pullRequestReviewId, inReplyTo, path, position, body) {
+  api.newPullRequestReviewComment = async function(pullRequestReviewId, inReplyTo, path, position, body) {
     const q = MUTATION_ADD_PR_THREAD_COMMENT(pullRequestReviewId, inReplyTo, path, position, body);
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent({ node: data.addPullRequestReviewComment.comment });
   };
-  api.createReview = async function (pullRequestId, event, path, position, body) {
+  api.createReview = async function(pullRequestId, event, path, position, body) {
     const q = MUTATION_CREATE_REVIEW(pullRequestId, event, path, position, body);
     const { data } = await requestGraphQL(q);
 
@@ -240,18 +231,18 @@ function createAPI() {
       comments: data.addPullRequestReview.pullRequestReview.comments.edges.map(normalizeTimelineEvent)
     };
   };
-  api.submitReview = async function (pullRequestReviewId, event, body) {
+  api.submitReview = async function(pullRequestReviewId, event, body) {
     const q = MUTATION_SUBMIT_REVIEW(pullRequestReviewId, event, body);
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent({ node: data.submitPullRequestReview.pullRequestReview });
   };
-  api.deleteReview = async function (pullRequestReviewId) {
+  api.deleteReview = async function(pullRequestReviewId) {
     const q = MUTATION_DELETE_REVIEW(pullRequestReviewId);
 
     await requestGraphQL(q);
   };
-  api.editPRThreadComment = async function (id, body) {
+  api.editPRThreadComment = async function(id, body) {
     // if (USE_MOCKS) return requestMock(USE_MOCKS + '/mutation.json');
 
     const q = MUTATION_PR_THREAD_COMMENT(id, body);
@@ -259,63 +250,63 @@ function createAPI() {
 
     return normalizeTimelineEvent({ node: data.updatePullRequestReviewComment.pullRequestReviewComment });
   };
-  api.deletePRThreadComment = async function (id) {
+  api.deletePRThreadComment = async function(id) {
     const q = MUTATION_DELETE_PR_THREAD_COMMENT(id);
 
     await requestGraphQL(q, { Accept: 'application/vnd.github.starfire-preview+json' });
   };
-  api.resolveThread = async function (id) {
+  api.resolveThread = async function(id) {
     const q = MUTATION_RESOLVE_THREAD(id);
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent({ node: data.resolveReviewThread.thread });
   };
-  api.unresolveThread = async function (id) {
+  api.unresolveThread = async function(id) {
     const q = MUTATION_UNRESOLVE_THREAD(id);
     const { data } = await requestGraphQL(q);
 
     return normalizeTimelineEvent({ node: data.unresolveReviewThread.thread });
   };
-  api.markAsRead = function (id) {
+  api.markAsRead = function(id) {
     if (Array.isArray(id)) {
       return db.markAsReadBulk(id);
     }
     return db.markAsRead(id);
   };
-  api.markAsUnread = function (id) {
+  api.markAsUnread = function(id) {
     if (Array.isArray(id)) {
       return db.bulkDelete(id);
     }
     return db.delete(id);
   };
-  api.getNotifications = async function () {
+  api.getNotifications = async function() {
     return (await db.getNotifications()).map(({ objectId }) => objectId);
   };
-  api.mergePR = async function (id, repo) {
+  api.mergePR = async function(id, repo) {
     const q = MUTATION_MERGE_PR(id);
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.mergePullRequest.pullRequest, repo.owner.login);
   };
-  api.closePR = async function (id, repo) {
+  api.closePR = async function(id, repo) {
     const q = MUTATION_CLOSE_PR(id);
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.closePullRequest.pullRequest, repo.owner.login);
   };
-  api.createPR = async function (repo, title, body, base, head) {
+  api.createPR = async function(repo, title, body, base, head) {
     const q = MUTATION_CREATE_PR(repo.repoId, title, body, base, head);
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.createPullRequest.pullRequest, repo.owner.login);
   };
-  api.editPR = async function (repo, title, body, prId) {
+  api.editPR = async function(repo, title, body, prId) {
     const q = MUTATION_EDIT_PR(title, body, prId);
     const { data } = await requestGraphQL(q);
 
     return createPRDetails(data.updatePullRequest.pullRequest, repo.owner.login);
   };
-  api.getPRStatuses = async function (prNumber, repo) {
+  api.getPRStatuses = async function(prNumber, repo) {
     const q = QUERY_GET_PR_STATUSES(prNumber, repo.name, repo.owner);
     const { data } = await requestGraphQL(q);
 

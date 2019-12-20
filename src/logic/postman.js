@@ -1,15 +1,23 @@
-import { use, register } from 'riew';
+import { use, register, sput } from 'riew';
 
 import api from '../api';
+import {
+  ADD_EVENT_TO_PR,
+  REPLACE_EVENT_IN_PR,
+  DELETE_EVENT_FROM_PR,
+  ADD_PR_REVIEW_COMMENT,
+  REPLACE_PR_REVIEW_COMMENT,
+  DELETE_PR_REVIEW_COMMENT
+} from '../constants';
 
 // this function needs other (potentially) registered deps
 register('postman', ({ repo, pr }) => {
-  const addEventToPR = use('addEventToPR');
-  const replaceEventInPR = use('replaceEventInPR');
-  const deleteEventFromPR = use('deleteEventFromPR');
-  const addPRReviewComment = use('addPRReviewComment');
-  const replacePRReviewComment = use('replacePRReviewComment');
-  const deletePRReviewComment = use('deletePRReviewComment');
+  const addEventToPR = (data) => sput(ADD_EVENT_TO_PR, data);
+  const replaceEventInPR = (data) => sput(REPLACE_EVENT_IN_PR, data);
+  const deleteEventFromPR = (data) => sput(DELETE_EVENT_FROM_PR, data);
+  const addPRReviewComment = (data) => sput(ADD_PR_REVIEW_COMMENT, data);
+  const replacePRReviewComment = (data) => sput(REPLACE_PR_REVIEW_COMMENT, data);
+  const deletePRReviewComment = (data) => sput(DELETE_PR_REVIEW_COMMENT, data);
   const markAsRead = use('markAsRead');
 
   return {
@@ -47,9 +55,11 @@ register('postman', ({ repo, pr }) => {
       }
     },
     newPullRequestReviewThread(topComment) {
-      const pendingReview = pr.events.filter(({ type, state }) => {
-        return type === 'PullRequestReview' && state === 'PENDING';
-      }).shift();
+      const pendingReview = pr.events
+        .filter(({ type, state }) => {
+          return type === 'PullRequestReview' && state === 'PENDING';
+        })
+        .shift();
 
       if (pendingReview) {
         return {
@@ -78,7 +88,7 @@ register('postman', ({ repo, pr }) => {
             text
           );
 
-          markAsRead([ review.id, comment.id ]);
+          markAsRead([review.id, comment.id]);
           addEventToPR({ repo, pr, event: review });
           addPRReviewComment({ repo, pr, topComment, comment });
         },
@@ -92,7 +102,7 @@ register('postman', ({ repo, pr }) => {
             text
           );
 
-          markAsRead([ review.id, comment.id ]);
+          markAsRead([review.id, comment.id]);
           await api.submitReview(review.id, 'COMMENT');
           addPRReviewComment({ repo, pr, topComment, comment });
         }

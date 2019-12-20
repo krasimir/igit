@@ -10,35 +10,32 @@ import { BASE_PATH, NO_TOKEN } from '../constants';
 import { initialize } from '../logic';
 import Repos from './Repos';
 
-const App = riew(
-  function ({ profile, repos }) {
-    if (profile === null) {
-      return <Loading />;
-    } else if (profile === NO_TOKEN) {
-      return <Authorize />;
-    }
+const App = riew(function({ profile, repos }) {
+  if (profile === null) {
+    return <Loading />;
+  } else if (profile === NO_TOKEN) {
+    return <Authorize />;
+  }
 
-    if (repos === null) {
-      return <Loading />;
-    }
+  if (repos === null) {
+    return <Loading />;
+  }
 
-    return (
-      <Router basename={ BASE_PATH }>
-        <Fragment>
-          <Switch>
-            <Route path='/settings' component={ Settings } />
-            { repos.length === 0 && <Redirect to='/settings' /> }
-            <Route path='/repo/:owner/:name/:prNumber/:op' component={ Repos } />
-            <Route path='/repo/:owner/:name/:prNumber/files' component={ Repos } />
-            <Route path='/repo/:owner/:name/:prNumber' component={ Repos } />
-            <Route path='/repo/:owner/:name' component={ Repos } />
-            <Route path='/' component={ Repos } />
-          </Switch>
-        </Fragment>
-      </Router>
-    );
-  },
-  initialize
-).with('profile', 'repos');
+  return (
+    <Router basename={BASE_PATH}>
+      <Fragment>
+        <Switch>
+          <Route path='/settings' component={Settings} />
+          {repos.length === 0 && <Redirect to='/settings' />}
+          <Route path='/repo/:owner/:name/:prNumber/:op' component={Repos} />
+          <Route path='/repo/:owner/:name/:prNumber/files' component={Repos} />
+          <Route path='/repo/:owner/:name/:prNumber' component={Repos} />
+          <Route path='/repo/:owner/:name' component={Repos} />
+          <Route path='/' component={Repos} />
+        </Switch>
+      </Fragment>
+    </Router>
+  );
+}, initialize).with('profile', 'repos');
 
 export default App;

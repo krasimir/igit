@@ -12,7 +12,7 @@ import ResolveThread from './ResolveThread';
 import Horn from '../Horn';
 
 function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, context, repo, pr, profile, postman }) {
-  const [ isEditing, edit ] = useState(false);
+  const [isEditing, edit] = useState(false);
   const totalComments = event.comments.length;
   const isTheFirstOne = index === 0;
   const comment = event.comments[index];
@@ -27,78 +27,91 @@ function ThreadItem({ event, index, isBodyVisible, bodyVisibility, repoURL, cont
 
   if (isTheFirstOne && context === 'timeline') {
     return (
-      <div className='timeline-thread-comment' id={ comment.id }>
-        { isBodyVisible &&
-          <ReviewDiff data={ comment } className='mb1' shrinkBottom={ 12 } repoURL={ repoURL }/> }
-        { isBodyVisible &&
-          <div className='absolute' style={ { top: '12px', right: '7px' } }>
-            { comment.isResolved && <span className='tag resolved'>resolved</span> }
-            { comment.outdated && <span className='tag'>outdated</span> }
-            <button className='as-link no-hover' onClick={ () => bodyVisibility(false) }>
-              <CLOSE size={ 14 }/>
+      <div className='timeline-thread-comment' id={comment.id}>
+        {isBodyVisible && <ReviewDiff data={comment} className='mb1' shrinkBottom={12} repoURL={repoURL} />}
+        {isBodyVisible && (
+          <div className='absolute' style={{ top: '12px', right: '7px' }}>
+            {comment.isResolved && <span className='tag resolved'>resolved</span>}
+            {comment.outdated && <span className='tag'>outdated</span>}
+            <button className='as-link no-hover' onClick={() => bodyVisibility(false)}>
+              <CLOSE size={14} />
             </button>
           </div>
-           }
+        )}
         <div className='media small'>
-          <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
+          <img src={comment.author.avatar} className='avatar' title={comment.author.login} />
           <div>
-            { comment.author.login }&nbsp;
-            <Date event={ event.comments[totalComments - 1] } />&nbsp;
-            <MESSAGE size={ 18 }/>
-            { !isBodyVisible && <small>{ str }</small> }
-            { !isBodyVisible && <button className='card-tag-button' onClick={ () => bodyVisibility(!isBodyVisible) }>
-              { totalComments > 1 ? <span>···<small> ({ totalComments })</small></span> : '···' }
-              </button> }
-            { (isBodyVisible && allowEdit) &&
-              <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
-            { (!isBodyVisible && comment.isResolved) && <span className='tag resolved'>resolved</span> }
-            { (!isBodyVisible && comment.outdated) && <span className='tag'>outdated</span> }
-            { review && review.state === 'PENDING' && <span className='tag'>pending</span> }
+            {comment.author.login}&nbsp;
+            <Date event={event.comments[totalComments - 1]} />
+            &nbsp;
+            <MESSAGE size={18} />
+            {!isBodyVisible && <small>{str}</small>}
+            {!isBodyVisible && (
+              <button className='card-tag-button' onClick={() => bodyVisibility(!isBodyVisible)}>
+                {totalComments > 1 ? (
+                  <span>
+                    ···<small> ({totalComments})</small>
+                  </span>
+                ) : (
+                  '···'
+                )}
+              </button>
+            )}
+            {isBodyVisible && allowEdit && (
+              <button className='card-tag-button' onClick={() => edit(!isEditing)}>
+                edit
+              </button>
+            )}
+            {!isBodyVisible && comment.isResolved && <span className='tag resolved'>resolved</span>}
+            {!isBodyVisible && comment.outdated && <span className='tag'>outdated</span>}
+            {review && review.state === 'PENDING' && <span className='tag'>pending</span>}
           </div>
         </div>
-        { (isBodyVisible && !isEditing) && (
-            <div
-              className='markdown mt05'
-              dangerouslySetInnerHTML={ { __html: marked(comment.body, repo) } } />
-        ) }
-        { isEditing &&
+        {isBodyVisible && !isEditing && (
+          <div className='markdown mt05' dangerouslySetInnerHTML={{ __html: marked(comment.body, repo) }} />
+        )}
+        {isEditing && (
           <Postman
             className='mt05'
-            handler={ postman({ repo, pr }).PullRequestReviewThread }
-            value={ { text: comment.body, id: comment.id } }
-            onSave={ () => edit(false) }
-            onCancel={ () => edit(false) }
-            showAvatar={ false }/> }
-        <Horn events={ [ comment ] }/>
+            handler={postman({ repo, pr }).PullRequestReviewThread}
+            value={{ text: comment.body, id: comment.id }}
+            onSave={() => edit(false)}
+            onCancel={() => edit(false)}
+            showAvatar={false}
+          />
+        )}
+        <Horn events={[comment]} />
       </div>
     );
   }
 
   return isBodyVisible || context === 'files' ? (
-    <div
-      className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }
-      id={ comment.id }>
+    <div className={`timeline-thread-comment ${context === 'timeline' ? 'ml2 my03' : 'my03 mx03'}`} id={comment.id}>
       <div className='media small'>
-        <img src={ comment.author.avatar } className='avatar' title={ comment.author.login }/>
+        <img src={comment.author.avatar} className='avatar' title={comment.author.login} />
         <div>
-          { comment.author.login }&nbsp;
-          <Date event={ comment } />
-          { allowEdit && <button className='card-tag-button' onClick={ () => edit(!isEditing) }>edit</button> }
-          { review && review.state === 'PENDING' && <span className='tag'>pending</span> }
+          {comment.author.login}&nbsp;
+          <Date event={comment} />
+          {allowEdit && (
+            <button className='card-tag-button' onClick={() => edit(!isEditing)}>
+              edit
+            </button>
+          )}
+          {review && review.state === 'PENDING' && <span className='tag'>pending</span>}
         </div>
       </div>
-      { !isEditing && <div
-        className='markdown mt05'
-        dangerouslySetInnerHTML={ { __html: marked(comment.body, repo) } } /> }
-      { isEditing &&
+      {!isEditing && <div className='markdown mt05' dangerouslySetInnerHTML={{ __html: marked(comment.body, repo) }} />}
+      {isEditing && (
         <Postman
           className='mt05'
-          handler={ postman({ repo, pr }).PullRequestReviewThread }
-          value={ { text: comment.body, id: comment.id } }
-          onSave={ () => edit(false) }
-          onCancel={ () => edit(false) }
-          showAvatar={ false }/> }
-      <Horn events={ [ comment ] }/>
+          handler={postman({ repo, pr }).PullRequestReviewThread}
+          value={{ text: comment.body, id: comment.id }}
+          onSave={() => edit(false)}
+          onCancel={() => edit(false)}
+          showAvatar={false}
+        />
+      )}
+      <Horn events={[comment]} />
     </div>
   ) : null;
 }
@@ -116,48 +129,48 @@ ThreadItem.propTypes = {
 };
 
 function PullRequestReviewThread({ event, repo, pr, context, expanded, profile, postman }) {
-  const [ isBodyVisible, bodyVisibility ] = useState(expanded);
+  const [isBodyVisible, bodyVisibility] = useState(expanded);
   const showBody = isBodyVisible;
 
   const comments = event.comments.map((comment, i) => {
     return (
       <ThreadItem
-        event={ event }
-        index={ i }
-        key={ comment.id }
-        isBodyVisible={ showBody }
-        bodyVisibility={ bodyVisibility }
-        repoURL={ repo.url }
-        context={ context }
-        repo={ repo }
-        pr={ pr }
-        profile={ profile }
-        postman={ postman }/>
+        event={event}
+        index={i}
+        key={comment.id}
+        isBodyVisible={showBody}
+        bodyVisibility={bodyVisibility}
+        repoURL={repo.url}
+        context={context}
+        repo={repo}
+        pr={pr}
+        profile={profile}
+        postman={postman}
+      />
     );
   });
 
   return (
     <div className='relative'>
-      { comments }
-      { showBody &&
-        <div className={ `timeline-thread-comment ${ context === 'timeline' ? 'ml2 my03' : 'my03 mx03' }` }>
-          <Postman
-            resetOnSave
-            handler={ postman({ repo, pr }).newPullRequestReviewThread(event.comments[0]) } />
-        </div> }
-      { (showBody && context === 'timeline') &&
+      {comments}
+      {showBody && (
+        <div className={`timeline-thread-comment ${context === 'timeline' ? 'ml2 my03' : 'my03 mx03'}`}>
+          <Postman resetOnSave handler={postman({ repo, pr }).newPullRequestReviewThread(event.comments[0])} />
+        </div>
+      )}
+      {showBody && context === 'timeline' && (
         <div className='ml2 mb1 mt05'>
           <ResolveThread
-            key={ event.id + '_' + event.isResolved }
-            event={ event }
-            onSuccess={ (resolved) => bodyVisibility(!resolved) }/>
-        </div> }
-      { !showBody && (
-        <Horn events={ event.comments } />
-      ) }
+            key={event.id + '_' + event.isResolved}
+            event={event}
+            onSuccess={(resolved) => bodyVisibility(!resolved)}
+          />
+        </div>
+      )}
+      {!showBody && <Horn events={event.comments} />}
     </div>
   );
-};
+}
 
 PullRequestReviewThread.propTypes = {
   event: PropTypes.object.isRequired,

@@ -1,12 +1,11 @@
-import { take, sput } from 'riew';
+import { take, sput, go, put } from 'riew';
 
 import { getPullingInterval } from '../Settings/PullingInterval';
-import { PRINT_PRS, PULLING } from '../../constants';
+import { PRINT_PRS, PULLING, REGISTER_PRS, SUBSCRIBED_REPOS } from '../../constants';
 
 export default function* fetchingPRs({ api, render, state, props }) {
-  const numberOfFetches = state(0).mutate('NEW_FETCH', v => v + 1);
-  const newFetch = () => sput('NEW_FETCH');
-  const fetchingPRs = state(false);
+  const numberOfFetches = state(0).mutate('NEW_FETCH', (v) => v + 1);
+  const isFetchingPRs = state(false);
   const error = state(null);
   const { match } = yield take(props);
   const { name, prNumber, op } = match.params;
@@ -21,11 +20,7 @@ export default function* fetchingPRs({ api, render, state, props }) {
         console.log(repo.name, JSON.stringify(prs, null, 2));
       }
 
-      if (
-        prNumber &&
-        repo.name === repoName &&
-        prs.find(pr => pr.number === parseInt(prNumber, 10)) === undefined
-      ) {
+      if (prNumber && repo.name === repoName && prs.find((pr) => pr.number === parseInt(prNumber, 10)) === undefined) {
         const otherPR = await api.fetchRemotePR(repo, prNumber);
 
         if (otherPR) {
@@ -36,35 +31,34 @@ export default function* fetchingPRs({ api, render, state, props }) {
     }
   }
 
-  const f = async () => {
-    sput(fetchingPRs, true);
+  const R = function*() {
+    yield put(isFetchingPRs, true);
     clearTimeout(fetchDataInterval);
-    fetchData({
-      repos: await subscribedRepos.take(),
-      repoName: name,
-      prNumber: prNumber !== 'new' && op !== 'edit' ? prNumber : undefined
-    }).then(
-      () => {
-        setFetchingPRs(false);
-        newFetch.put();
-        if (PULLING) {
-          fetchDataInterval = setTimeout(f, getPullingInterval());
-        }
-      },
-      error => {
-        setFetchingPRs(false);
-        console.error(error);
-        setError(error);
+    try {
+      const repos = yield take(SUBSCRIBED_REPOS);
+      yield fetchData({
+        repos,
+        repoName: name,
+        prNumber: prNumber !== 'new' && op !== 'edit' ? prNumber : undefined
+      });
+      yield put(isFetchingPRs, false);
+      yield put('NEW_FETCH');
+      if (PULLING) {
+        fetchDataInterval = setTimeout(() => go(R), getPullingInterval());
       }
-    );
+    } catch (e) {
+      sput(isFetchingPRs, false);
+      console.error(e);
+      sput(error, e);
+    }
   };
 
-  f();
+  go(R);
 
   render({
-    fetchingPRs,
+    isFetchingPRs,
     numberOfFetches,
-    triggerUpdate: f,
+    triggerUpdate: () => go(R),
     error
   });
 
