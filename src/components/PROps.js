@@ -6,12 +6,12 @@ import riew from 'riew/react';
 import { CLOSE, CHECK, MORE_HORIZONTAL, CIRCLE } from './Icons';
 import { LoadingAnimation } from './Loading';
 
-const isStatusSuccessful = status => {
+const isStatusSuccessful = (status) => {
   if (status === null) return true;
 
   return status.every(({ state }) => state === 'SUCCESS');
 };
-const isPending = status => {
+const isPending = (status) => {
   if (status === null) return false;
 
   return status.some(({ state }) => state === 'PENDING' || state === 'EXPECTED');
@@ -23,7 +23,7 @@ function PROps({ pr, repo, mergePR, closePR, api }) {
   const [statuses, setStatuses] = useState(null);
   const isLastCheckOk =
     statuses === null || statuses.length === 0 || isStatusSuccessful(statuses[statuses.length - 1].status);
-  const areThereAnyChecks = statuses && statuses.length > 0 && statuses.some(s => s.status !== null);
+  const areThereAnyChecks = statuses && statuses.length > 0 && statuses.some((s) => s.status !== null);
   let mergeButtonLabel = 'Merge pull request';
 
   useEffect(() => {
@@ -55,8 +55,8 @@ function PROps({ pr, repo, mergePR, closePR, api }) {
     return (
       <div>
         <hr />
-        <span className="markdown" dangerouslySetInnerHTML={ { __html: submitted } } />
-        <LoadingAnimation className="m0" />
+        <span className='markdown' dangerouslySetInnerHTML={{ __html: submitted }} />
+        <LoadingAnimation className='m0' />
       </div>
     );
   }
@@ -70,34 +70,34 @@ function PROps({ pr, repo, mergePR, closePR, api }) {
   return (
     <div>
       <hr />
-      <button className="brand" disabled={ submitted } onClick={ close }>
-        <CLOSE size={ 18 } />
+      <button className='brand' disabled={submitted} onClick={close}>
+        <CLOSE size={18} />
         &nbsp;
         {!closingAreYouSure ? 'Close pull request' : 'Closing. Are you sure?'}
       </button>
       <button
-        className={ `brand right ${isLastCheckOk && pr.mergeable !== 'CONFLICTING' ? 'cta' : 'delete'}` }
-        disabled={ submitted || pr.mergeable !== 'MERGEABLE' }
-        onClick={ () => merge() }
+        className={`brand right ${isLastCheckOk && pr.mergeable !== 'CONFLICTING' ? 'cta' : 'delete'}`}
+        disabled={submitted || pr.mergeable !== 'MERGEABLE'}
+        onClick={() => merge()}
       >
-        <CHECK size={ 18 } />
+        <CHECK size={18} />
         &nbsp;
         {mergeButtonLabel}
       </button>
       {statuses && statuses.length > 0 ? (
         areThereAnyChecks && (
-          <div className="mt1 fz8 pr-card-light" style={ { position: 'relative' } }>
+          <div className='mt1 fz8 pr-card-light' style={{ position: 'relative' }}>
             {statuses.map(({ commit, status }) => (
-              <Status key={ commit.id } commit={ commit } status={ status } />
+              <Status key={commit.id} commit={commit} status={status} />
             ))}
-            <button onClick={ getStatuses } className="as-link no-hover block refresh-pr-statuses">
-              <CIRCLE size={ 18 } />
+            <button onClick={getStatuses} className='as-link no-hover block refresh-pr-statuses'>
+              <CIRCLE size={18} />
             </button>
           </div>
         )
       ) : (
-        <div className="mt1 fz8 pr-card-light">
-          <LoadingAnimation className="m0" />
+        <div className='mt1 fz8 pr-card-light'>
+          <LoadingAnimation className='m0' />
         </div>
       )}
     </div>
@@ -119,30 +119,30 @@ function Status({ commit, status }) {
   let icon;
 
   if (status === null) {
-    icon = <CIRCLE size={ 14 } color="#e8e8e8" />;
+    icon = <CIRCLE size={14} color='#e8e8e8' />;
   } else if (isPending(status)) {
-    icon = <MORE_HORIZONTAL size={ 14 } />;
+    icon = <MORE_HORIZONTAL size={14} />;
   } else {
-    icon = isStatusSuccessful(status) ? <CHECK size={ 14 } color="#079221" /> : <CLOSE size={ 14 } color="#920721" />;
+    icon = isStatusSuccessful(status) ? <CHECK size={14} color='#079221' /> : <CLOSE size={14} color='#920721' />;
   }
 
   return (
-    <div className="opa7">
-      <button className="as-link tal" onClick={ () => expand(!expanded) }>
+    <div className='opa7'>
+      <button className='as-link tal' onClick={() => expand(!expanded)}>
         {icon}
         {commit.message}
       </button>
       {expanded && (
-        <div className="ml2">
+        <div className='ml2'>
           {status &&
-            status.map(context => {
+            status.map((context) => {
               return (
-                <div key={ context.id }>
-                  <div className="media small">
-                    <img src={ context.creator.avatar } className="avatar" alt={ context.creator.login } />
+                <div key={context.id}>
+                  <div className='media small'>
+                    <img src={context.creator.avatar} className='avatar' alt={context.creator.login} />
                     <div>
                       {statusIcon(context.state)}
-                      <a href={ context.targetUrl } target="_blank">
+                      <a href={context.targetUrl} target='_blank'>
                         {context.context}
                       </a>
                     </div>
@@ -165,10 +165,10 @@ function statusIcon(state) {
   switch (state) {
     case 'ERROR':
     case 'FAILURE':
-      return <CLOSE size={ 18 } color="#920721" />;
+      return <CLOSE size={18} color='#920721' />;
     case 'EXPECTED':
     case 'PENDING':
-      return <MORE_HORIZONTAL size={ 18 } />;
+      return <MORE_HORIZONTAL size={18} />;
   }
-  return <CHECK size={ 18 } color="#079221" />;
+  return <CHECK size={18} color='#079221' />;
 }

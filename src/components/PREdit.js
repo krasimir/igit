@@ -25,11 +25,11 @@ function valuesReducer(state, data) {
 
 function PREdit({ repo, owner, pr, editPR }) {
   const bodyTextarea = useRef(null);
-  const [ textareaPosition, setTextareaPosition ] = useState(0);
-  const [ submitted, submit ] = useState(false);
-  const [ errors, setError ] = useReducer(errorsReducer, {});
-  const [ isEdited, edited ] = useState(null);
-  const [ values, setValue ] = useReducer(valuesReducer, {
+  const [textareaPosition, setTextareaPosition] = useState(0);
+  const [submitted, submit] = useState(false);
+  const [errors, setError] = useReducer(errorsReducer, {});
+  const [isEdited, edited] = useState(null);
+  const [values, setValue] = useReducer(valuesReducer, {
     title: pr.title,
     body: pr.body
   });
@@ -76,41 +76,53 @@ function PREdit({ repo, owner, pr, editPR }) {
   };
 
   if (isEdited) {
-    return <Redirect to={ `/repo/${ owner }/${ repo.name }/${ pr.number }` }/>;
+    return <Redirect to={`/repo/${owner}/${repo.name}/${pr.number}`} />;
   }
 
   return (
     <div className='pr-card cf'>
-      <h1><PULL_REQUEST /> { repo.name }: { pr.title }</h1>
+      <h1>
+        <PULL_REQUEST /> {repo.name}: {pr.title}
+      </h1>
       <hr />
       <div>
         <input
-          className={ 'block my1' + (errors.title ? ' error' : '') }
+          className={'block my1' + (errors.title ? ' error' : '')}
           type='text'
           placeholder='title'
-          value={ values.title }
-          disabled={ submitted }
-          onChange={ (e) => setValue({ value: e.target.value, key: 'title' }) } />
-        { errors.title && <div className='error'>{ errors.title }</div> }
+          value={values.title}
+          disabled={submitted}
+          onChange={(e) => setValue({ value: e.target.value, key: 'title' })}
+        />
+        {errors.title && <div className='error'>{errors.title}</div>}
       </div>
       <div className='relative'>
         <textarea
-          ref={ bodyTextarea }
-          className={ 'block my1 type as-input' }
+          ref={bodyTextarea}
+          className={'block my1 type as-input'}
           placeholder='body'
-          value={ values.body }
-          disabled={ submitted }
-          onChange={ onBodyChange }
-          onBlur={ (e) => setTextareaPosition(e.target.selectionStart) }
-          style={ { height: '570px' } }/>
-        { errors.body && <div className='error'>{ errors.body }</div> }
-        { !submitted && <Suggestions visible onSelect={ addToText } /> }
+          value={values.body}
+          disabled={submitted}
+          onChange={onBodyChange}
+          onBlur={(e) => setTextareaPosition(e.target.selectionStart)}
+          style={{ height: '570px' }}
+        />
+        {errors.body && <div className='error'>{errors.body}</div>}
+        {!submitted && <Suggestions visible onSelect={addToText} />}
       </div>
       <hr />
-      { submitted ?
-        <LoadingAnimation className='right mt1'/> :
-        <button className='brand right' onClick={ edit }>Edit</button> }
-      { errors.request && <div className='cf'><div className='error mt1'>{ errors.request }</div></div> }
+      {submitted ? (
+        <LoadingAnimation className='right mt1' />
+      ) : (
+        <button className='brand right' onClick={edit}>
+          Edit
+        </button>
+      )}
+      {errors.request && (
+        <div className='cf'>
+          <div className='error mt1'>{errors.request}</div>
+        </div>
+      )}
     </div>
   );
 }

@@ -13,29 +13,29 @@ const pushUser = (arr, user) => {
 
 function Suggestions({ visible, onSelect, repos }) {
   const filterInput = useRef(null);
-  const [ opened, open ] = useState(false);
-  const [ filterText, setFilterText ] = useState('');
+  const [opened, open] = useState(false);
+  const [filterText, setFilterText] = useState('');
 
   if (!visible && !opened) return null;
 
   const users = repos
     .reduce((result, repo) => {
       if (repo.prs) {
-        repo.prs.forEach(pr => {
+        repo.prs.forEach((pr) => {
           pushUser(result, pr.author);
-          pr.events.forEach(event => {
+          pr.events.forEach((event) => {
             pushUser(result, event.author);
           });
         });
       }
       return result;
     }, [])
-    .filter(login => {
+    .filter((login) => {
       if (filterText.length === 0) return false;
       return login.match(new RegExp(filterText, 'gi'));
     });
 
-  const emojisToRender = Object.keys(emojis).filter(emojiLabel => {
+  const emojisToRender = Object.keys(emojis).filter((emojiLabel) => {
     if (filterText.length < 3) return false;
     return emojiLabel.match(new RegExp(filterText, 'gi'));
   });
@@ -62,33 +62,37 @@ function Suggestions({ visible, onSelect, repos }) {
 
   return (
     <div className='suggestions'>
-      <a className='no-hover block right' onClick={ onPlusClick }>
-        <PLUS color={ opened ? '#999' : '#e2e2e2' } />
+      <a className='no-hover block right' onClick={onPlusClick}>
+        <PLUS color={opened ? '#999' : '#e2e2e2'} />
       </a>
       <div className='cf' />
-      { opened && <section>
-        <input
-          placeholder='username or emoji'
-          type='text'
-          ref={ filterInput }
-          onChange={ (e) => setFilterText(e.target.value) }
-          onKeyDown={ onInputKeyDown }/>
-        <div className='suggestions-items mt05'>
-          {
-            users.map(userLoginName => (
-              <a key={ userLoginName } onClick={ () => select(`@${ userLoginName }`) }>{ userLoginName }</a>
-            ))
-          }
-        </div>
-        { emojisToRender.length > 0 &&
-          <div className='suggestions-items mt05 pt05' style={ { maxHeight: '98px', overflowY: 'scroll' } }>
-            {
-              emojisToRender.map(emojiLabel => (
-                <a key={ emojiLabel } onClick={ () => select(emojis[emojiLabel]) }>{ emojis[emojiLabel] }</a>
-              ))
-            }
-          </div> }
-      </section> }
+      {opened && (
+        <section>
+          <input
+            placeholder='username or emoji'
+            type='text'
+            ref={filterInput}
+            onChange={(e) => setFilterText(e.target.value)}
+            onKeyDown={onInputKeyDown}
+          />
+          <div className='suggestions-items mt05'>
+            {users.map((userLoginName) => (
+              <a key={userLoginName} onClick={() => select(`@${userLoginName}`)}>
+                {userLoginName}
+              </a>
+            ))}
+          </div>
+          {emojisToRender.length > 0 && (
+            <div className='suggestions-items mt05 pt05' style={{ maxHeight: '98px', overflowY: 'scroll' }}>
+              {emojisToRender.map((emojiLabel) => (
+                <a key={emojiLabel} onClick={() => select(emojis[emojiLabel])}>
+                  {emojis[emojiLabel]}
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

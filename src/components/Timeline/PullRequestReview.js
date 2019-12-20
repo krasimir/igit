@@ -12,63 +12,70 @@ function PullRequestReview({ event, pr, repo }) {
   let StateIcon = MESSAGE;
   let stateLabel = '';
 
-  switch (event.state) { // APPROVED, CHANGES_REQUESTED, COMMENTED, DISMISSED, PENDING
+  switch (
+    event.state // APPROVED, CHANGES_REQUESTED, COMMENTED, DISMISSED, PENDING
+  ) {
     case 'APPROVED':
       stateLabel = 'Approved';
       StateIcon = CHECK_CIRCLE;
-    break;
+      break;
     case 'CHANGES_REQUESTED':
       stateLabel = 'Changes requested';
       StateIcon = STORM;
-    break;
+      break;
     case 'PENDING':
       stateLabel = 'Pending review';
       StateIcon = CLIPBOARD;
-    break;
+      break;
     case 'COMMENTED':
       stateLabel = 'Review comment';
-    break;
+      break;
     case 'DISMISS':
-    stateLabel = 'Review dismissed';
-    break;
+      stateLabel = 'Review dismissed';
+      break;
   }
 
   const reviewComments = flattenToPRReviewComments(pr, event.id);
 
   return (
-    <div className={ `timeline-review timeline-review-${ event.state } relative` } id={ event.id }>
+    <div className={`timeline-review timeline-review-${event.state} relative`} id={event.id}>
       <div className='media small'>
-        <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
+        <img src={event.author.avatar} className='avatar' title={event.author.login} />
         <div>
-          { event.author.login }&nbsp;
-          <Date event={ event } />&nbsp;
-          <StateIcon size={ 18 }/>
-          <small>{ stateLabel }</small>
+          {event.author.login}&nbsp;
+          <Date event={event} />
+          &nbsp;
+          <StateIcon size={18} />
+          <small>{stateLabel}</small>
         </div>
       </div>
-      { event.body !== '' &&
-          <div className='markdown mt05' dangerouslySetInnerHTML={ { __html: marked(event.body, repo) } } />
-      }
-      { reviewComments.length > 0 && <div className='mt05'>
-        {
-          reviewComments.map(comment => {
+      {event.body !== '' && (
+        <div className='markdown mt05' dangerouslySetInnerHTML={{ __html: marked(event.body, repo) }} />
+      )}
+      {reviewComments.length > 0 && (
+        <div className='mt05'>
+          {reviewComments.map((comment) => {
             return (
-              <div className='m0 fz8 relative' key={ comment.id }>
-                <a href={ `#${ comment.id }` }>{ comment.path }:{ comment.position }</a>&nbsp;
-                { comment.outdated && <span className='tag'>outdated</span> }
-                { comment.isResolved && <span className='tag resolved'>resolved</span> }
+              <div className='m0 fz8 relative' key={comment.id}>
+                <a href={`#${comment.id}`}>
+                  {comment.path}:{comment.position}
+                </a>
+                &nbsp;
+                {comment.outdated && <span className='tag'>outdated</span>}
+                {comment.isResolved && <span className='tag resolved'>resolved</span>}
                 <div
                   className='markdown mb05 fz9 opa7'
-                  dangerouslySetInnerHTML={ { __html: marked(comment.body, repo) } } />
+                  dangerouslySetInnerHTML={{ __html: marked(comment.body, repo) }}
+                />
               </div>
             );
-          })
-        }
-      </div> }
-      { event.state === 'PENDING' && <SubmitPullRequestReview reviewId={ event.id } prAuthor={ pr.author }/> }
+          })}
+        </div>
+      )}
+      {event.state === 'PENDING' && <SubmitPullRequestReview reviewId={event.id} prAuthor={pr.author} />}
     </div>
   );
-};
+}
 
 PullRequestReview.propTypes = {
   event: PropTypes.object.isRequired,

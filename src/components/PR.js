@@ -19,17 +19,17 @@ import FilesPreview from './FilesPreview';
 
 const formatBranchLabels = (base, head) => {
   if (base.owner === head.owner || typeof base.owner === 'undefined' || typeof head.owner === 'undefined') {
-    return [ base.ref, head.ref ];
+    return [base.ref, head.ref];
   }
-  return [ base.owner + ':' + base.ref, head.owner + ':' + head.ref ];
+  return [base.owner + ':' + base.ref, head.owner + ':' + head.ref];
 };
 const formatPRStatus = (pr) => {
   if (pr.merged) {
-    return <span className='pr-status pr-status-merged'>merged / { formatDate(pr.mergedAt) }</span>;
+    return <span className='pr-status pr-status-merged'>merged / {formatDate(pr.mergedAt)}</span>;
   } else if (pr.closed) {
-    return <span className='pr-status pr-status-closed'>closed / { formatDate(pr.closedAt) }</span>;
+    return <span className='pr-status pr-status-closed'>closed / {formatDate(pr.closedAt)}</span>;
   }
-  return <span className='pr-status'>open / { formatDate(pr.createdAt) }</span>;
+  return <span className='pr-status'>open / {formatDate(pr.createdAt)}</span>;
 };
 const getPRCardClass = (pr) => {
   if (pr.merged) {
@@ -39,7 +39,7 @@ const getPRCardClass = (pr) => {
   }
   return 'pr-card cf';
 };
-const normalizeURL = url => {
+const normalizeURL = (url) => {
   return url.replace(/\/files$/, '');
 };
 
@@ -48,69 +48,83 @@ export default function PR({ url, pr, repo }) {
     return (
       <div className='pr-details'>
         <div className='pr-card'>
-          <Loading showLogo={ false } message='Loading...'/>
+          <Loading showLogo={false} message='Loading...' />
         </div>
       </div>
     );
   }
 
-  const [ base, head ] = formatBranchLabels(pr.base, pr.head);
+  const [base, head] = formatBranchLabels(pr.base, pr.head);
   const normalizedUrl = normalizeURL(url);
 
   return (
     <div className='pr-details'>
-      <LoCBar add={ pr.additions } del={ pr.deletions }/>
-      <div className={ getPRCardClass(pr) }>
+      <LoCBar add={pr.additions} del={pr.deletions} />
+      <div className={getPRCardClass(pr)}>
         <div className='media'>
-          <a href={ pr.author.url } target='_blank' className='no-hover'>
-            <img src={ pr.author.avatar } className='avatar' title={ pr.author.login }/>
+          <a href={pr.author.url} target='_blank' className='no-hover'>
+            <img src={pr.author.avatar} className='avatar' title={pr.author.login} />
           </a>
           <div>
             <h2>
-              { pr.title }&nbsp;
-              <a href={ pr.url } target='_blank'><span>(#{ pr.number })</span></a>&nbsp;
-              <small>{ formatPRStatus(pr) }</small>
+              {pr.title}&nbsp;
+              <a href={pr.url} target='_blank'>
+                <span>(#{pr.number})</span>
+              </a>
+              &nbsp;
+              <small>{formatPRStatus(pr)}</small>
             </h2>
             <small className='block mt1'>
-              <span className='branch'>{ base }</span> ← <span className='branch'>{ head } <Diff data={ { additions: pr.additions, deletions: pr.deletions } } /></span>
+              <span className='branch'>{base}</span> ←{' '}
+              <span className='branch'>
+                {head} <Diff data={{ additions: pr.additions, deletions: pr.deletions }} />
+              </span>
             </small>
           </div>
         </div>
         <hr />
-        <div className='markdown mt1' dangerouslySetInnerHTML={ { __html: marked(pr.body, repo) } } />
-        { (!pr.merged && !pr.closed) && <PROps pr={ pr } repo={ repo }/> }
-        <Reviewers pr={ pr }/>
-        <FilesPreview pr={ pr } url={ url } />
+        <div className='markdown mt1' dangerouslySetInnerHTML={{ __html: marked(pr.body, repo) }} />
+        {!pr.merged && !pr.closed && <PROps pr={pr} repo={repo} />}
+        <Reviewers pr={pr} />
+        <FilesPreview pr={pr} url={url} />
       </div>
       <Switch>
-        <Route path={ normalizedUrl + '/files' } render={ () => (
-          <React.Fragment>
-            <nav>
-              <Link to={ normalizedUrl }>Timeline</Link>
-              <Link to={ normalizedUrl + '/files' } className='selected'>Files</Link>
-            </nav>
-            <Files pr={ pr } repo={ repo }/>
-          </React.Fragment>
-        ) }/>
-        <Route path={ normalizedUrl + '/' } render={ () => (
-          <React.Fragment>
-            <nav>
-              <Link to={ normalizedUrl } className='selected'>Timeline</Link>
-              <Link to={ normalizedUrl + '/files' }>Files</Link>
-            </nav>
-            <Timeline pr={ pr } repo={ repo }/>
-          </React.Fragment>
-        ) }/>
+        <Route
+          path={normalizedUrl + '/files'}
+          render={() => (
+            <React.Fragment>
+              <nav>
+                <Link to={normalizedUrl}>Timeline</Link>
+                <Link to={normalizedUrl + '/files'} className='selected'>
+                  Files
+                </Link>
+              </nav>
+              <Files pr={pr} repo={repo} />
+            </React.Fragment>
+          )}
+        />
+        <Route
+          path={normalizedUrl + '/'}
+          render={() => (
+            <React.Fragment>
+              <nav>
+                <Link to={normalizedUrl} className='selected'>
+                  Timeline
+                </Link>
+                <Link to={normalizedUrl + '/files'}>Files</Link>
+              </nav>
+              <Timeline pr={pr} repo={repo} />
+            </React.Fragment>
+          )}
+        />
       </Switch>
-      <Link
-        className='as-link pr-edit no-hover'
-        to={ `/repo/${ repo.nameWithOwner }/${ pr.number }/edit` }>
-        <EDIT size={ 18 }/>
+      <Link className='as-link pr-edit no-hover' to={`/repo/${repo.nameWithOwner}/${pr.number}/edit`}>
+        <EDIT size={18} />
       </Link>
-      <Horn events={ flattenPREvents(pr) } />
+      <Horn events={flattenPREvents(pr)} />
     </div>
   );
-};
+}
 
 PR.propTypes = {
   url: PropTypes.string,

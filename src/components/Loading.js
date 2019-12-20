@@ -4,15 +4,20 @@ import PropTypes from 'prop-types';
 
 import Logo from './Logo';
 
-export default function Loading({ message, showLogo, className}) {
+export default function Loading({ message, showLogo, className }) {
   return (
-    <div className={ `loading centered-content tac ${ className }` }>
-      { showLogo && <Logo /> }
-      <p>{ message }</p>
-      <div className='lds-ellipsis'><div></div><div></div><div></div><div></div></div>
+    <div className={`loading centered-content tac ${className}`}>
+      {showLogo && <Logo />}
+      <p>{message}</p>
+      <div className='lds-ellipsis'>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
-};
+}
 
 Loading.propTypes = {
   message: PropTypes.string,
@@ -26,8 +31,11 @@ Loading.defaultProps = {
 
 export function LoadingAnimation({ className }) {
   return (
-    <div className={ `lds-ellipsis loading-animation ml1 ${ className }` }>
-      <div></div><div></div><div></div><div></div>
+    <div className={`lds-ellipsis loading-animation ml1 ${className}`}>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
   );
 }

@@ -38,7 +38,7 @@ comments(first: 50) {
   totalCount
   edges {
     node {
-      ${ REVIEW_COMMENT }
+      ${REVIEW_COMMENT}
     }
   }
 }`;
@@ -207,7 +207,7 @@ reviewThreads(first: 50) {
   totalCount
   edges {
     node {
-      ${ REVIEW_THREAD }
+      ${REVIEW_THREAD}
     }
   }
 }
@@ -242,7 +242,7 @@ files(first: 100) {
 
 export const QUERY_GET_REPOS_OF_ORG = (query, perPage, cursor) => `
   query {
-    search(query: "${ query }", type: REPOSITORY, first: ${ perPage }${ cursor ? `, after: ${ cursor }` : ''}) {
+    search(query: "${query}", type: REPOSITORY, first: ${perPage}${cursor ? `, after: ${cursor}` : ''}) {
       repositoryCount,
       edges {
         cursor,
@@ -277,7 +277,7 @@ export const QUERY_GET_ORGANIZATIONS = () => `
 `;
 
 export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
-  search(query: "${ name } in:name user:${ owner }", type: REPOSITORY, first: 1) {
+  search(query: "${name} in:name user:${owner}", type: REPOSITORY, first: 1) {
     edges {
       node {
         ... on Repository {
@@ -285,12 +285,12 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
           owner {
               login
           },
-          pullRequests(states: OPEN, first: ${ perPage }${ cursor ? `, after: "${ cursor }"` : ''}) {
+          pullRequests(states: OPEN, first: ${perPage}${cursor ? `, after: "${cursor}"` : ''}) {
             totalCount
             edges {
               cursor
               node {
-                ${ PULL_REQUEST }
+                ${PULL_REQUEST}
               }
             }
           }
@@ -302,13 +302,13 @@ export const QUERY_GET_PRS = (name, owner, perPage, cursor) => `{
 
 export const QUERY_GET_PR = (name, owner, prNumber) => `
   query {
-    repository(name: "${ name }", owner: "${ owner }") {
+    repository(name: "${name}", owner: "${owner}") {
       name,
       owner {
           login
       },
-      pullRequest(number: ${ prNumber }) {
-        ${ PULL_REQUEST }
+      pullRequest(number: ${prNumber}) {
+        ${PULL_REQUEST}
       }
     }
   }
@@ -316,12 +316,12 @@ export const QUERY_GET_PR = (name, owner, prNumber) => `
 
 export const QUERY_GET_PR_STATUSES = (prNumber, name, owner) => `
   query {
-    repository(name: "${ name }", owner: "${ owner }") {
+    repository(name: "${name}", owner: "${owner}") {
       name,
       owner {
         login
       },
-      pullRequest(number: ${ prNumber }) {
+      pullRequest(number: ${prNumber}) {
         id,
         commits(last: 3) {
           edges {
@@ -355,8 +355,8 @@ export const QUERY_GET_PR_STATUSES = (prNumber, name, owner) => `
 export const MUTATION_ADD_COMMENT = (subjectId, body) => `
   mutation {
     addComment(input: {
-      subjectId: "${ subjectId }",
-      body: ${ JSON.stringify(body) }
+      subjectId: "${subjectId}",
+      body: ${JSON.stringify(body)}
     }) {
       commentEdge {
         node {
@@ -379,8 +379,8 @@ export const MUTATION_ADD_COMMENT = (subjectId, body) => `
 export const MUTATION_EDIT_COMMENT = (id, body) => `
   mutation {
     updateIssueComment(input: {
-      id: "${ id }",
-      body: ${ JSON.stringify(body) }
+      id: "${id}",
+      body: ${JSON.stringify(body)}
     }) {
       issueComment {
         __typename
@@ -401,7 +401,7 @@ export const MUTATION_EDIT_COMMENT = (id, body) => `
 export const MUTATION_DELETE_COMMENT = (id) => `
   mutation {
     deleteIssueComment(input: {
-      id: "${ id }"
+      id: "${id}"
     }) {
       clientMutationId
     }
@@ -411,8 +411,8 @@ export const MUTATION_DELETE_COMMENT = (id) => `
 export const MUTATION_PR_THREAD_COMMENT = (id, body) => `
   mutation {
     updatePullRequestReviewComment(input: {
-      pullRequestReviewCommentId: "${ id }",
-      body: ${ JSON.stringify(body) }
+      pullRequestReviewCommentId: "${id}",
+      body: ${JSON.stringify(body)}
     }) {
       pullRequestReviewComment {
         __typename
@@ -444,7 +444,7 @@ export const MUTATION_PR_THREAD_COMMENT = (id, body) => `
 export const MUTATION_DELETE_PR_THREAD_COMMENT = (id) => `
   mutation {
     deletePullRequestReviewComment(input: {
-      id: "${ id }"
+      id: "${id}"
     }) {
       clientMutationId
     }
@@ -454,14 +454,14 @@ export const MUTATION_DELETE_PR_THREAD_COMMENT = (id) => `
 export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, path, position, body) => `
   mutation {
     addPullRequestReviewComment(input: {
-      pullRequestReviewId: "${ pullRequestReviewId }",
-      ${ inReplyTo ? `inReplyTo: "${ inReplyTo }"` : '' },
-      path: "${ path }",
-      position: ${ position },
-      body: ${ JSON.stringify(body) }
+      pullRequestReviewId: "${pullRequestReviewId}",
+      ${inReplyTo ? `inReplyTo: "${inReplyTo}"` : ''},
+      path: "${path}",
+      position: ${position},
+      body: ${JSON.stringify(body)}
     }) {
       comment {
-        ${ REVIEW_COMMENT }
+        ${REVIEW_COMMENT}
       }
     }
   }
@@ -470,16 +470,20 @@ export const MUTATION_ADD_PR_THREAD_COMMENT = (pullRequestReviewId, inReplyTo, p
 export const MUTATION_CREATE_REVIEW = (pullRequestId, event, path, position, body) => `
 mutation {
   addPullRequestReview(input: {
-    pullRequestId: "${ pullRequestId }"
-    ${ event ? `event: ${ event }` : ''}
-    ${ body ? `body: ${ JSON.stringify(body) }` : ''}
-    ${ (path && position && body) ? `comments: [
+    pullRequestId: "${pullRequestId}"
+    ${event ? `event: ${event}` : ''}
+    ${body ? `body: ${JSON.stringify(body)}` : ''}
+    ${
+      path && position && body
+        ? `comments: [
       {
-        path: "${ path }",
-        position: ${ position },
-        body: ${ JSON.stringify(body) }
+        path: "${path}",
+        position: ${position},
+        body: ${JSON.stringify(body)}
       }
-    ]` : '' }
+    ]`
+        : ''
+    }
   }) {
     pullRequestReview {
       __typename
@@ -530,9 +534,9 @@ mutation {
 export const MUTATION_SUBMIT_REVIEW = (pullRequestReviewId, event, body) => `
 mutation {
   submitPullRequestReview(input: {
-    pullRequestReviewId: "${ pullRequestReviewId }"
-    event: ${ event }
-    ${ body ? `body: ${ JSON.stringify(body) }` : '' }
+    pullRequestReviewId: "${pullRequestReviewId}"
+    event: ${event}
+    ${body ? `body: ${JSON.stringify(body)}` : ''}
   }) {
     pullRequestReview {
       __typename
@@ -554,7 +558,7 @@ mutation {
 export const MUTATION_DELETE_REVIEW = (pullRequestReviewId) => `
 mutation {
   deletePullRequestReview(input: {
-    pullRequestReviewId: "${ pullRequestReviewId }"
+    pullRequestReviewId: "${pullRequestReviewId}"
   }) {
     pullRequestReview {
       __typename
@@ -576,10 +580,10 @@ mutation {
 export const MUTATION_RESOLVE_THREAD = (threadId) => `
 mutation {
   resolveReviewThread(input: {
-    threadId: "${ threadId }"
+    threadId: "${threadId}"
   }) {
     thread {
-      ${ REVIEW_THREAD }
+      ${REVIEW_THREAD}
     }
   }
 }
@@ -588,10 +592,10 @@ mutation {
 export const MUTATION_UNRESOLVE_THREAD = (threadId) => `
 mutation {
   unresolveReviewThread(input: {
-    threadId: "${ threadId }"
+    threadId: "${threadId}"
   }) {
     thread {
-      ${ REVIEW_THREAD }
+      ${REVIEW_THREAD}
     }
   }
 }
@@ -600,10 +604,10 @@ mutation {
 export const MUTATION_MERGE_PR = (prId) => `
 mutation {
   mergePullRequest(input: {
-    pullRequestId: "${ prId }"
+    pullRequestId: "${prId}"
   }) {
     pullRequest {
-      ${ PULL_REQUEST }
+      ${PULL_REQUEST}
     }
   }
 }
@@ -612,10 +616,10 @@ mutation {
 export const MUTATION_CLOSE_PR = (prId) => `
 mutation {
   closePullRequest(input: {
-    pullRequestId: "${ prId }"
+    pullRequestId: "${prId}"
   }) {
     pullRequest {
-      ${ PULL_REQUEST }
+      ${PULL_REQUEST}
     }
   }
 }
@@ -624,14 +628,14 @@ mutation {
 export const MUTATION_CREATE_PR = (repoId, title, body, base, head) => `
 mutation {
   createPullRequest(input: {
-    repositoryId: "${ repoId }",
-    title: ${ JSON.stringify(title) },
-    baseRefName: "${ base }",
-    headRefName: "${ head }",
-    body: ${ JSON.stringify(body) }
+    repositoryId: "${repoId}",
+    title: ${JSON.stringify(title)},
+    baseRefName: "${base}",
+    headRefName: "${head}",
+    body: ${JSON.stringify(body)}
   }) {
     pullRequest {
-      ${ PULL_REQUEST }
+      ${PULL_REQUEST}
     }
   }
 }
@@ -640,12 +644,12 @@ mutation {
 export const MUTATION_EDIT_PR = (title, body, prId) => `
 mutation {
   updatePullRequest(input: {
-    pullRequestId: "${ prId }",
-    title: ${ JSON.stringify(title) },
-    body: ${ JSON.stringify(body) }
+    pullRequestId: "${prId}",
+    title: ${JSON.stringify(title)},
+    body: ${JSON.stringify(body)}
   }) {
     pullRequest {
-      ${ PULL_REQUEST }
+      ${PULL_REQUEST}
     }
   }
 }

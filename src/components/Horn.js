@@ -5,22 +5,20 @@ import riew from 'riew/react';
 import isItANewEvent from './utils/isItANewEvent';
 
 function Horn({ events, children, markAsRead, markAsUnread, notifications }) {
-  const [ otherOptions, showOtherOptions ] = useState(false);
+  const [otherOptions, showOtherOptions] = useState(false);
 
   if (events.length === 0) return null;
 
-  const unread = events.filter(event => isItANewEvent(event, notifications));
+  const unread = events.filter((event) => isItANewEvent(event, notifications));
   const allRead = unread.length === 0;
   const ids = events.map(({ id }) => id);
 
   return (
-    <div className='horn' onMouseOver={ () => showOtherOptions(true) } onMouseLeave={ () => showOtherOptions(false) }>
-      <div
-        onClick={ () => allRead ? markAsUnread(ids) : markAsRead(ids) }
-        className={ allRead ? 'count read' : 'count' }>
-        { allRead ? events.length : unread.length }
+    <div className='horn' onMouseOver={() => showOtherOptions(true)} onMouseLeave={() => showOtherOptions(false)}>
+      <div onClick={() => (allRead ? markAsUnread(ids) : markAsRead(ids))} className={allRead ? 'count read' : 'count'}>
+        {allRead ? events.length : unread.length}
       </div>
-      { otherOptions && children }
+      {otherOptions && children}
     </div>
   );
 }
@@ -38,13 +36,14 @@ const EnhancedHorn = riew(Horn).with('markAsRead', 'markAsUnread', 'notification
 export default EnhancedHorn;
 
 export function withHorn(Component) {
-  return function WithHorn({ ...props }) { // eslint-disable-line
-    let events = [ props.event ]; // eslint-disable-line
+  return function WithHorn({ ...props }) {
+    // eslint-disable-line
+    let events = [props.event]; // eslint-disable-line
 
     return (
       <div className='relative'>
-        <Component { ...props } />
-        <EnhancedHorn events={ events } />
+        <Component {...props} />
+        <EnhancedHorn events={events} />
       </div>
     );
   };

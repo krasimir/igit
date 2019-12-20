@@ -9,8 +9,8 @@ import { CHECK, CHEVRON_RIGHT, ARROW_RIGHT_CIRCLE } from '../Icons';
 import Loading from '../Loading';
 import Header from '../Header';
 import PullingInterval from './PullingInterval';
-import initEffect from './routines/initEffect';
-import fetchAllReposEffect from './routines/fetchAllReposEffect';
+import init from './routines/init';
+import fetchAllRepos from './routines/fetchAllRepos';
 import { TOGGLE_REPO } from '../../constants';
 
 function Settings({
@@ -181,6 +181,6 @@ Settings.propTypes = {
   error: PropTypes.object
 };
 
-export default riew(Settings, initEffect, fetchAllReposEffect).with('api', 'profile', 'repos', {
+export default riew(Settings, init, fetchAllRepos).with('api', 'profile', 'repos', {
   toggleRepo: (repo) => sput(TOGGLE_REPO, repo)
 });

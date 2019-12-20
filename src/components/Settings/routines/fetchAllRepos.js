@@ -1,6 +1,6 @@
 import { sput } from 'riew';
 
-const fetchAllReposEffect = function*({ render, api, state }) {
+const fetchAllRepos = function*({ render, api, state }) {
   const isFetchingRepos = state(false);
 
   render({
@@ -29,4 +29,4 @@ const fetchAllReposEffect = function*({ render, api, state }) {
   });
 };
 
-export default fetchAllReposEffect;
+export default fetchAllRepos;

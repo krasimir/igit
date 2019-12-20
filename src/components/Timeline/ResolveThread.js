@@ -6,7 +6,7 @@ import { CHECK } from '../Icons';
 import { LoadingAnimation } from '../Loading';
 
 function ResolveThread({ event, onSuccess, resolveThread, unresolveThread }) {
-  const [ submitted, setSubmittedFlag ] = useState(false);
+  const [submitted, setSubmittedFlag] = useState(false);
 
   async function submit() {
     setSubmittedFlag(true);
@@ -20,12 +20,17 @@ function ResolveThread({ event, onSuccess, resolveThread, unresolveThread }) {
   }
 
   if (submitted) {
-    return <span className='block'><LoadingAnimation /></span>;
+    return (
+      <span className='block'>
+        <LoadingAnimation />
+      </span>
+    );
   }
 
   return (
-    <button className='as-link opa5 block' onClick={ submit }>
-      <CHECK size={ 18 }/>{ event.isResolved ? 'Unresolve conversation' : 'Resolve conversation' }
+    <button className='as-link opa5 block' onClick={submit}>
+      <CHECK size={18} />
+      {event.isResolved ? 'Unresolve conversation' : 'Resolve conversation'}
     </button>
   );
 }

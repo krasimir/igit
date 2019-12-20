@@ -9,17 +9,11 @@ export default function Placeholder({ height, length, className }) {
   const items = [];
 
   for (let i = 0; i < length; i++) {
-    items.push(
-      <span key={ i } style={ { height: height + 'px', width: getRandom(30, 200) + 'px'} } />
-    );
+    items.push(<span key={i} style={{ height: height + 'px', width: getRandom(30, 200) + 'px' }} />);
   }
 
-  return (
-    <div className={ `placeholder ${ className }` }>
-      { items }
-    </div>
-  );
-};
+  return <div className={`placeholder ${className}`}>{items}</div>;
+}
 
 Placeholder.propTypes = {
   height: PropTypes.number,

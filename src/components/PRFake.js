@@ -9,8 +9,8 @@ export default function FakePR() {
           <div className='media'>
             <img src='/img/avatar.png' className='avatar' />
             <div>
-              <Placeholder height={ 10 } length={ 10 }/>
-              <Placeholder className='mt05' height={ 3 } length={ 10 }/>
+              <Placeholder height={10} length={10} />
+              <Placeholder className='mt05' height={3} length={10} />
             </div>
           </div>
         </div>
@@ -22,19 +22,19 @@ export default function FakePR() {
           <div className='timeline-thread-comment my03'>
             <div className='media small'>
               <img src='/img/avatar.png' className='avatar' />
-              <Placeholder className='pl05' height={ 3 } length={ 10 }/>
+              <Placeholder className='pl05' height={3} length={10} />
             </div>
           </div>
           <div className='timeline-thread-comment my03'>
             <div className='media small'>
               <img src='/img/avatar.png' className='avatar' />
-              <Placeholder className='pl05' height={ 3 } length={ 10 }/>
+              <Placeholder className='pl05' height={3} length={10} />
             </div>
           </div>
           <div className='timeline-thread-comment my03'>
             <div className='media small'>
               <img src='/img/avatar.png' className='avatar' />
-              <Placeholder className='pl05' height={ 3 } length={ 10 }/>
+              <Placeholder className='pl05' height={3} length={10} />
             </div>
           </div>
         </div>

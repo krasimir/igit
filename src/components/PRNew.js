@@ -26,13 +26,15 @@ function valuesReducer(state, data) {
 function PRNew({ repo, owner, pr, api, createPR }) {
   const headInput = useRef(null);
   const bodyTextarea = useRef(null);
-  const [ textareaPosition, setTextareaPosition ] = useState(0);
-  const [ submitted, submit ] = useState(false);
-  const [ newPR, setNewPR ] = useState(null);
-  const [ gettingTemplateInProgress, gettingTemplate ] = useState(true);
-  const [ textareaPlaceholder, setTextareaPlaceholder ] = useState(`Getting the pull request template for ${ repo.nameWithOwner }...`);
-  const [ errors, setError ] = useReducer(errorsReducer, {});
-  const [ values, setValue ] = useReducer(valuesReducer, {
+  const [textareaPosition, setTextareaPosition] = useState(0);
+  const [submitted, submit] = useState(false);
+  const [newPR, setNewPR] = useState(null);
+  const [gettingTemplateInProgress, gettingTemplate] = useState(true);
+  const [textareaPlaceholder, setTextareaPlaceholder] = useState(
+    `Getting the pull request template for ${repo.nameWithOwner}...`
+  );
+  const [errors, setError] = useReducer(errorsReducer, {});
+  const [values, setValue] = useReducer(valuesReducer, {
     base: 'master',
     head: '',
     title: '',
@@ -42,12 +44,12 @@ function PRNew({ repo, owner, pr, api, createPR }) {
   useEffect(() => {
     headInput.current.focus();
     api.fetchPRFile(repo, '.github/PULL_REQUEST_TEMPLATE.md').then(
-      prTemplate => {
+      (prTemplate) => {
         setValue({ value: prTemplate, key: 'body' });
         gettingTemplate(false);
         setTextareaPlaceholder('body');
       },
-      error => {
+      (error) => {
         gettingTemplate(false);
         setTextareaPlaceholder('body');
       }
@@ -106,62 +108,76 @@ function PRNew({ repo, owner, pr, api, createPR }) {
   };
 
   if (newPR) {
-    return <Redirect to={ `/repo/${ owner }/${ repo.name }/${ newPR.number }` }/>;
+    return <Redirect to={`/repo/${owner}/${repo.name}/${newPR.number}`} />;
   }
 
   return (
     <div className='pr-card cf'>
-      <h1><PULL_REQUEST /> { repo.name }: new pull request</h1>
+      <h1>
+        <PULL_REQUEST /> {repo.name}: new pull request
+      </h1>
       <hr />
       <div>
         <input
-          className={ 'block my1' + (errors.base ? ' error' : '') }
+          className={'block my1' + (errors.base ? ' error' : '')}
           type='text'
           placeholder='base'
-          value={ values.base }
-          disabled={ submitted }
-          onChange={ (e) => setValue({ value: e.target.value, key: 'base' }) } />
-        { errors.base && <div className='error'>{ errors.base }</div> }
+          value={values.base}
+          disabled={submitted}
+          onChange={(e) => setValue({ value: e.target.value, key: 'base' })}
+        />
+        {errors.base && <div className='error'>{errors.base}</div>}
       </div>
       <div>
         <input
-          ref={ headInput }
-          className={ 'block my1' + (errors.head ? ' error' : '') }
+          ref={headInput}
+          className={'block my1' + (errors.head ? ' error' : '')}
           type='text'
           placeholder='head'
-          value={ values.head }
-          disabled={ submitted }
-          onChange={ (e) => setValue({ value: e.target.value, key: 'head' }) } />
-        { errors.head && <div className='error'>{ errors.head }</div> }
+          value={values.head}
+          disabled={submitted}
+          onChange={(e) => setValue({ value: e.target.value, key: 'head' })}
+        />
+        {errors.head && <div className='error'>{errors.head}</div>}
       </div>
       <div>
         <input
-          className={ 'block my1' + (errors.title ? ' error' : '') }
+          className={'block my1' + (errors.title ? ' error' : '')}
           type='text'
           placeholder='title'
-          value={ values.title }
-          disabled={ submitted }
-          onChange={ (e) => setValue({ value: e.target.value, key: 'title' }) } />
-        { errors.title && <div className='error'>{ errors.title }</div> }
+          value={values.title}
+          disabled={submitted}
+          onChange={(e) => setValue({ value: e.target.value, key: 'title' })}
+        />
+        {errors.title && <div className='error'>{errors.title}</div>}
       </div>
       <div className='relative'>
         <textarea
-          ref={ bodyTextarea }
-          className={ 'block my1 type as-input' }
-          placeholder={ textareaPlaceholder }
-          value={ values.body }
-          disabled={ submitted || gettingTemplateInProgress }
-          onChange={ onBodyChange }
-          onBlur={ (e) => setTextareaPosition(e.target.selectionStart) }
-          style={ { height: '570px' } }/>
-        { errors.body && <div className='error'>{ errors.body }</div> }
-        { !submitted && <Suggestions visible onSelect={ addToText } /> }
+          ref={bodyTextarea}
+          className={'block my1 type as-input'}
+          placeholder={textareaPlaceholder}
+          value={values.body}
+          disabled={submitted || gettingTemplateInProgress}
+          onChange={onBodyChange}
+          onBlur={(e) => setTextareaPosition(e.target.selectionStart)}
+          style={{ height: '570px' }}
+        />
+        {errors.body && <div className='error'>{errors.body}</div>}
+        {!submitted && <Suggestions visible onSelect={addToText} />}
       </div>
       <hr />
-      { submitted ?
-        <LoadingAnimation className='right mt1'/> :
-        <button className='brand right' onClick={ create }>Create</button> }
-      { errors.request && <div className='cf'><div className='error mt1'>{ errors.request }</div></div> }
+      {submitted ? (
+        <LoadingAnimation className='right mt1' />
+      ) : (
+        <button className='brand right' onClick={create}>
+          Create
+        </button>
+      )}
+      {errors.request && (
+        <div className='cf'>
+          <div className='error mt1'>{errors.request}</div>
+        </div>
+      )}
     </div>
   );
 }

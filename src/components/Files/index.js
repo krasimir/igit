@@ -12,40 +12,38 @@ import File from './File';
 const SHOW_COMMENTS = 'SHOW_COMMENTS';
 
 const isFiltering = (filter, option) => filter.indexOf(option) >= 0;
-const filterReducer = function (state, { option }) {
+const filterReducer = function(state, { option }) {
   if (isFiltering(state, option)) {
-    return state.filter(f => f !== option);
+    return state.filter((f) => f !== option);
   }
-  return [ ...state, option ];
+  return [...state, option];
 };
-const expandedReducer = function (state, { path }) {
+const expandedReducer = function(state, { path }) {
   if (path === null) return [];
   if (state.indexOf(path) >= 0) {
-    return state.filter(p => p !== path);
+    return state.filter((p) => p !== path);
   }
-  return [ ...state, path ];
+  return [...state, path];
 };
-const FilterOption = function ({ filter, dispatch, label, option }) {
+const FilterOption = function({ filter, dispatch, label, option }) {
   return (
     <label>
-      <input
-        type='checkbox'
-        checked={ isFiltering(filter, option) }
-        onChange={ () => dispatch({ option }) } />
-        <span>{ label }</span>
+      <input type='checkbox' checked={isFiltering(filter, option)} onChange={() => dispatch({ option })} />
+      <span>{label}</span>
     </label>
   );
 };
 
 function Files({ pr, repo, api }) {
-  const [ diff, setDiff ] = useState(null);
-  const [ error, setError ] = useState(false);
-  const [ filter, dispatch ] = useReducer(filterReducer, [SHOW_COMMENTS]);
-  const [ collapsed, collapse ] = useReducer(expandedReducer, []);
+  const [diff, setDiff] = useState(null);
+  const [error, setError] = useState(false);
+  const [filter, dispatch] = useReducer(filterReducer, [SHOW_COMMENTS]);
+  const [collapsed, collapse] = useReducer(expandedReducer, []);
 
   useEffect(() => {
     setDiff(null);
-    api.fetchPRFiles(repo, pr.number)
+    api
+      .fetchPRFiles(repo, pr.number)
       .then(setDiff)
       .then(() => {
         if (location.hash) {
@@ -54,7 +52,7 @@ function Files({ pr, repo, api }) {
           if (elements.length === 1) elements[0].parentElement.scrollIntoView();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
         setError(error);
       });
@@ -63,22 +61,22 @@ function Files({ pr, repo, api }) {
   if (error) {
     return (
       <div className='tac'>
-        Ops! There is an error fetching the PR's file changes.<br />Wait a bit and refresh the page.
+        Ops! There is an error fetching the PR's file changes.
+        <br />
+        Wait a bit and refresh the page.
       </div>
     );
   }
 
   if (diff === null) {
-    return <Loading className='mt2' showLogo={ false } message='Loading file changes.'/>;
+    return <Loading className='mt2' showLogo={false} message='Loading file changes.' />;
   }
 
   const parsedDiff = diffParser.parse(diff);
   const lastCommit = pr.events.filter(({ type }) => type === 'Commit').pop();
-  const events = pr.events.filter(({ type, comments }) => (
-      type === 'PullRequestReviewThread' &&
-      comments.length > 0 &&
-      comments[0].outdated === false
-  ));
+  const events = pr.events.filter(
+    ({ type, comments }) => type === 'PullRequestReviewThread' && comments.length > 0 && comments[0].outdated === false
+  );
   const showComments = isFiltering(filter, SHOW_COMMENTS);
   const paths = [];
 
@@ -95,41 +93,39 @@ function Files({ pr, repo, api }) {
       diffItem,
       onPathClick: () => collapse({ path }),
       showComments,
-      progressPercent: Math.ceil(collapsed.length / parsedDiff.length * 100),
+      progressPercent: Math.ceil((collapsed.length / parsedDiff.length) * 100),
       isCollapsed,
       repo,
       pr
     };
 
-    return <File { ...FileComponentProps } key={ key }/>;
+    return <File {...FileComponentProps} key={key} />;
   });
 
   return (
     <div className='files'>
       <section className='filter mb1 cf'>
-        <FilterOption
-          filter={ filter }
-          dispatch={ dispatch }
-          label='Show comments'
-          option={ SHOW_COMMENTS }
-          />
-        <button className='right as-link fz8' onClick={ () => {
-          if (collapsed.length > 0) {
-            collapse({ path: null });
-          } else {
-            paths.forEach(p => collapse({ path: p }));
-          }
-         } } >
-          { collapsed.length === 0 ? '↑ collapse all' : '↓ expand all' }
+        <FilterOption filter={filter} dispatch={dispatch} label='Show comments' option={SHOW_COMMENTS} />
+        <button
+          className='right as-link fz8'
+          onClick={() => {
+            if (collapsed.length > 0) {
+              collapse({ path: null });
+            } else {
+              paths.forEach((p) => collapse({ path: p }));
+            }
+          }}
+        >
+          {collapsed.length === 0 ? '↑ collapse all' : '↓ expand all'}
         </button>
       </section>
-      { files }
+      {files}
       <div className='mt03'>
-        <Review pr={ pr } repo={ repo } />
+        <Review pr={pr} repo={repo} />
       </div>
     </div>
   );
-};
+}
 
 Files.propTypes = {
   pr: PropTypes.object.isRequired,

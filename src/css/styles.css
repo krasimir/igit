@@ -47,6 +47,12 @@
 .prs .selected {
   background: #f5f5f5;
 }
+.prs .merged {
+  background: #baeec9;
+}
+.prs .closed {
+  background: #f8e3e3;
+}
 
 /* ---------------------------------------- button */
 
@@ -309,6 +315,9 @@ header .logo {
 }
 .pr-card.merged {
   background: #baeec9;
+}
+.pr-card.closed {
+  background: #f8e3e3;
 }
 
 /* ---------------------------------------- card-tag-button */

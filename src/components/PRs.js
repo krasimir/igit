@@ -16,6 +16,18 @@ export default function PRs({ prs, owner, name, prNumber, loading, triggerUpdate
   }
 
   const selectedPR = prs.find(({ number }) => number.toString() === prNumber);
+  const getLinkClasses = (pr) => {
+    const classes = ['list-link', 'py05', 'block', 'relative'];
+    if (selectedPR === pr) {
+      classes.push('selected');
+    }
+    if (pr.merged) {
+      classes.push('merged');
+    } else if (pr.closed) {
+      classes.push('closed');
+    }
+    return classes.join(' ');
+  };
 
   if (prs.length === 0 && !loading) {
     return (
@@ -24,35 +36,24 @@ export default function PRs({ prs, owner, name, prNumber, loading, triggerUpdate
       </div>
     );
   }
-
   return (
     <div className='prs'>
-      {
-        prs
-          .sort((pr1, pr2) => parseInt(pr1.number, 10) > parseInt(pr2.number, 10) ? -1 : 1)
-          .map((pr, i) => (
-            <Link
-              to={ `/repo/${ owner }/${ name }/${ pr.number }` }
-              key={ pr.id }
-              className={
-                selectedPR === pr ? 'list-link selected py05 block relative' : 'list-link py05 block relative'
-              }>
-                <img src={ pr.author.avatar } className='avatar tiny'/>
-              { pr.title }&nbsp;(#{ pr.number })
-              <Horn events={ flattenPREvents(pr) } />
-            </Link>
-          ))
-      }
-      <Link
-        to={ `/repo/${ owner }/${ name }/new` }
-        className='as-link tac list-link'>
-        <PLUS size={ 14 } style={ { transform: 'translateY(2px)'} }/>New pull request
+      {prs
+        .sort((pr1, pr2) => (parseInt(pr1.number, 10) > parseInt(pr2.number, 10) ? -1 : 1))
+        .map((pr, i) => (
+          <Link to={`/repo/${owner}/${name}/${pr.number}`} key={pr.id} className={getLinkClasses(pr)}>
+            <img src={pr.author.avatar} className='avatar tiny' />
+            {pr.title}&nbsp;(#{pr.number})
+            <Horn events={flattenPREvents(pr)} />
+          </Link>
+        ))}
+      <Link to={`/repo/${owner}/${name}/new`} className='as-link tac list-link'>
+        <PLUS size={14} style={{ transform: 'translateY(2px)' }} />
+        New pull request
       </Link>
-      <a
-        onClick={ triggerUpdate }
-        className='as-link tac list-link'>
-        <GITHUB size={ 14 } style={ { transform: 'translateY(3px)'} }/>
-        Fetch data <sup style={ { opacity: 0.3 } }>{ numberOfFetches }</sup>
+      <a onClick={triggerUpdate} className='as-link tac list-link'>
+        <GITHUB size={14} style={{ transform: 'translateY(3px)' }} />
+        Fetch data <sup style={{ opacity: 0.3 }}>{numberOfFetches}</sup>
       </a>
     </div>
   );

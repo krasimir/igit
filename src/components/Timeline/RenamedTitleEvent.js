@@ -8,17 +8,18 @@ import { withHorn } from '../Horn';
 
 function RenamedTitleEvent({ event }) {
   return (
-    <div className='timeline-thread-comment media small relative' id={ event.id }>
-      <img src={ event.author.avatar } className='avatar' title={ event.author.login }/>
+    <div className='timeline-thread-comment media small relative' id={event.id}>
+      <img src={event.author.avatar} className='avatar' title={event.author.login} />
       <div>
-        { event.author.login }&nbsp;
-        <Date event={ event } />&nbsp;
-        <EDIT size={ 18 }/>
-        { trim(`renamed to ${ event.currentTitle }`) }
+        {event.author.login}&nbsp;
+        <Date event={event} />
+        &nbsp;
+        <EDIT size={18} />
+        {trim(`renamed to ${event.currentTitle}`)}
       </div>
     </div>
   );
-};
+}
 
 RenamedTitleEvent.propTypes = {
   event: PropTypes.object.isRequired
