@@ -27,7 +27,7 @@ function* init({ api, profile }) {
     yield put(SET_ERROR, new Error('IGit can not get your organizations. Wait a bit and refresh the page.'));
   }
 }
-function* fetchAllRepos({ api }, query) {
+function* fetchAllRepos(api, query) {
   const remoteRepos = yield api.fetchRemoteRepos(query + (yield take(SEARCH_QUERY_COMPILED)));
   const localRepos = yield api.getLocalRepos();
 
@@ -46,12 +46,12 @@ function* fetchAllRepos({ api }, query) {
 
   return repos;
 }
-function* searchTrigger({ render, repos }) {
+function* searchTrigger({ render, repos, api }) {
   const filter = yield take(REPOS_SEARCH);
 
   try {
     render({ isFetchingRepos: true });
-    const allRepos = yield call(fetchAllRepos, `${filter} in:name `);
+    const allRepos = yield call(fetchAllRepos, api, `${filter} in:name `);
     if (allRepos.length === 0) {
       render({ noRepos: true });
     }

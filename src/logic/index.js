@@ -1,4 +1,4 @@
-import { state, register, sub, sput } from 'riew';
+import { state, register, sread, sput } from 'riew';
 
 import api from '../api';
 import './postman';
@@ -221,9 +221,9 @@ repos.mutate(DELETE_EVENT, (repos, { id }) => {
   });
 });
 
-sub(TOGGLE_REPO, ({ repoId }) => {
+sread(TOGGLE_REPO, ({ repoId }) => {
   api.toggleRepo(repos.get().find((r) => r.repoId === repoId));
-});
+}).listen();
 
 register('profile', profile);
 register('repos', repos);

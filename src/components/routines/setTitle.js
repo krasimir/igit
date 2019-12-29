@@ -1,4 +1,4 @@
-import { sub, stake } from 'riew';
+import { sread, stake } from 'riew';
 
 import flattenPRsEvents from '../utils/flattenRPsEvens';
 import isItANewEvent from '../utils/isItANewEvent';
@@ -23,7 +23,7 @@ export default function* setTitle({ notifications }) {
     });
   };
 
-  sub(SUBSCRIBED_REPOS, updateTitle);
-  sub(notifications, updateTitle);
+  sread(SUBSCRIBED_REPOS, updateTitle).listen();
+  sread(notifications, updateTitle).listen();
   updateTitle();
 }

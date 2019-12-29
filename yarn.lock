@@ -2916,7 +2916,7 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fast-deep-equal@2.0.1, fast-deep-equal@^2.0.1:
+fast-deep-equal@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
@@ -6158,12 +6158,10 @@ ret@~0.1.10:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
-riew@1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/riew/-/riew-1.14.0.tgz#91bdb9c0bb75317dad61f3cf83dafedd66a426f8"
-  integrity sha512-axxdL8D9g0yZ+rm9r4tKKkaZK40i1JGw7POA48OqB8kq6amg0h497Ise/SO/kdxswQSyESx9o1jh0o6du71g/w==
-  dependencies:
-    fast-deep-equal "2.0.1"
+riew@1.24.1:
+  version "1.24.1"
+  resolved "https://registry.yarnpkg.com/riew/-/riew-1.24.1.tgz#3d4972e26689e0bae44c2493dfd54590aec4e312"
+  integrity sha512-QhAZXmhqASXrHFukpCe7WWLyJhpT7GcAy2hfquIn1+yb2QfLx5ID9C9Rfyfgfm+9PyunzxFfyyHrv1KdXk7mtQ==
 
 rimraf@2.6.3, rimraf@^2.2.8, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2:
   version "2.6.3"
