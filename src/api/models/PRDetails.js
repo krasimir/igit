@@ -219,7 +219,7 @@ function filesToTree(tree) {
         {
           path: p,
           fullPath,
-          items: parts.length === 0 ? null : [ file ]
+          items: parts.length === 0 ? [] : [file]
         },
         parts.length === 0 && { additions: file.additions, deletions: file.deletions }
       );
